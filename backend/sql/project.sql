@@ -9,7 +9,7 @@ CREATE TABLE member
     password  VARCHAR(100) NOT NULL,
     name      VARCHAR(20)  NOT NULL,
     nick_name VARCHAR(50)  NOT NULL UNIQUE,
-    gender    INT(1)       NOT NULL,
+    gender    INT(1)       NOT NULL, # 남자면 0, 여자면 1
     birth     DATETIME     NOT NULL,
     phone     VARCHAR(20)  NOT NULL,
     inserted  DATETIME     NOT NULL DEFAULT NOW()
