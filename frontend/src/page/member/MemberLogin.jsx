@@ -71,7 +71,7 @@ export function MemberLogin() {
             </Button>
 
             <Flex alignItems={"center"}>
-              <Box>아직 계정이 없으신가요?</Box>
+              <Box mr={2}>아직 계정이 없으신가요?</Box>
               <Button
                 onClick={handleSignupClick}
                 colorScheme={"blue"}
