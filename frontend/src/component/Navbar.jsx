@@ -19,19 +19,24 @@ export function Navbar() {
 
   return (
     <Flex
+      width="100%"
       px={{
         lg: 200,
-        base: 0,
+        base: 4,
       }}
       gap={3}
-      height={20}
-      bgColor="gray.100"
+      height={300}
+      bgImage="url('/image/sea.jpg')" // 배경 이미지 경로
+      bgSize="cover" // 배경 이미지 크기 조절
+      bgPosition="center" // 배경 이미지 위치
+      bgRepeat="no-repeat" // 배경 이미지 반복 설정
+      align="center"
     >
       <Center
         onClick={() => navigate("/")}
         cursor={"pointer"}
         _hover={{
-          bgColor: "gray.200",
+          bgColor: "rgba(255, 255, 255, 0.5)", // 호버 시 배경색을 반투명으로 설정
         }}
         p={6}
         fontSize={20}
@@ -40,14 +45,14 @@ export function Navbar() {
         <Show below={"lg"}>
           <FontAwesomeIcon icon={faHouse} />
         </Show>
-        <Hide below={"lg"}>HOME</Hide>
+        <Hide below={"lg"}>Travel Place</Hide>
       </Center>
       {account.isLoggedIn() && (
         <Center
           onClick={() => navigate("/write")}
           cursor={"pointer"}
           _hover={{
-            bgColor: "gray.200",
+            bgColor: "rgba(255, 255, 255, 0.5)", // 호버 시 배경색을 반투명으로 설정
           }}
           p={6}
           fontSize={20}
@@ -65,7 +70,7 @@ export function Navbar() {
           onClick={() => navigate(`/member/${account.id}`)}
           cursor={"pointer"}
           _hover={{
-            bgColor: "gray.200",
+            bgColor: "rgba(255, 255, 255, 0.5)", // 호버 시 배경색을 반투명으로 설정
           }}
           p={6}
           fontSize={20}
@@ -86,7 +91,7 @@ export function Navbar() {
           onClick={() => navigate("/member/list")}
           cursor={"pointer"}
           _hover={{
-            bgColor: "gray.200",
+            bgColor: "rgba(255, 255, 255, 0.5)", // 호버 시 배경색을 반투명으로 설정
           }}
           p={6}
           fontSize={20}
@@ -95,12 +100,12 @@ export function Navbar() {
           <FontAwesomeIcon icon={faUsers} />
         </Center>
       )}
-      {account.isLoggedIn() || (
+      {!account.isLoggedIn() && (
         <Center
           onClick={() => navigate("/signup")}
           cursor={"pointer"}
           _hover={{
-            bgColor: "gray.200",
+            bgColor: "rgba(255, 255, 255, 0.5)", // 호버 시 배경색을 반투명으로 설정
           }}
           p={6}
           fontSize={20}
@@ -109,12 +114,12 @@ export function Navbar() {
           <FontAwesomeIcon icon={faUserPlus} />
         </Center>
       )}
-      {account.isLoggedIn() || (
+      {!account.isLoggedIn() && (
         <Center
           onClick={() => navigate("/login")}
           cursor={"pointer"}
           _hover={{
-            bgColor: "gray.200",
+            bgColor: "rgba(255, 255, 255, 0.5)", // 호버 시 배경색을 반투명으로 설정
           }}
           p={6}
           fontSize={20}
@@ -131,7 +136,7 @@ export function Navbar() {
           }}
           cursor={"pointer"}
           _hover={{
-            bgColor: "gray.200",
+            bgColor: "rgba(255, 255, 255, 0.5)", // 호버 시 배경색을 반투명으로 설정
           }}
           p={6}
           fontSize={20}
