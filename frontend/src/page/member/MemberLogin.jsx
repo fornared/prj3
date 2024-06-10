@@ -22,7 +22,7 @@ export function MemberLogin() {
   const navigate = useNavigate();
   const account = useContext(LoginContext);
 
-  const handleSignupClick = () => {
+  const handleSignup = () => {
     navigate("/signup");
   };
 
@@ -73,7 +73,7 @@ export function MemberLogin() {
             <Flex alignItems={"center"}>
               <Box mr={2}>아직 계정이 없으신가요?</Box>
               <Button
-                onClick={handleSignupClick}
+                onClick={handleSignup}
                 colorScheme={"blue"}
                 _hover={{ bg: "skyblue" }}
               >
