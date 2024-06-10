@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  Flex,
   FormControl,
   FormLabel,
   Heading,
@@ -20,6 +21,10 @@ export function MemberLogin() {
   const toast = useToast();
   const navigate = useNavigate();
   const account = useContext(LoginContext);
+
+  const handleSignupClick = () => {
+    navigate("/signup");
+  };
 
   function handleLogin() {
     axios
@@ -48,7 +53,7 @@ export function MemberLogin() {
   return (
     <Center>
       <Box w={500}>
-        <Box mb={10} mt={40}>
+        <Box mb={10} mt={30}>
           <Center mb={10}>
             <Heading>로그인</Heading>
           </Center>
@@ -64,6 +69,17 @@ export function MemberLogin() {
             <Button onClick={handleLogin} colorScheme={"blue"}>
               Login
             </Button>
+
+            <Flex alignItems={"center"}>
+              <Box>아직 계정이 없으신가요?</Box>
+              <Button
+                onClick={handleSignupClick}
+                colorScheme={"blue"}
+                _hover={{ bg: "skyblue" }}
+              >
+                회원가입
+              </Button>
+            </Flex>
           </VStack>
         </Box>
       </Box>
