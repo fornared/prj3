@@ -9,11 +9,18 @@ import { MemberLogin } from "./page/member/MemberLogin.jsx";
 import { MemberList } from "./page/member/MemberList.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { LoginProvider } from "./component/LoginProvider.jsx";
+import { Navbar } from "./component/Navbar.jsx";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Home />,
+    element: (
+      <>
+        <Navbar />
+        <Home />
+      </>
+    ),
+
     children: [
       {
         index: true,
