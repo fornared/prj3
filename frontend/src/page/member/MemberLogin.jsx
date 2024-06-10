@@ -61,7 +61,7 @@ export function MemberLogin() {
               <FormLabel>암호</FormLabel>
               <Input onChange={(e) => setPassword(e.target.value)} />
             </FormControl>
-            <Button onClick={handleLogin} colorScheme={"green"}>
+            <Button onClick={handleLogin} colorScheme={"blue"}>
               Login
             </Button>
           </VStack>

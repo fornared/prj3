@@ -5,6 +5,10 @@ import { BoardWrite } from "./page/board/BoardWrite.jsx";
 import { BoardList } from "./page/board/BoardList.jsx";
 import { BoardView } from "./page/board/BoardView.jsx";
 import { TourSearch } from "./page/tour/TourSearch.jsx";
+import { MemberLogin } from "./page/member/MemberLogin.jsx";
+import { MemberList } from "./page/member/MemberList.jsx";
+import { MemberSignup } from "./page/member/MemberSignup.jsx";
+import { LoginProvider } from "./component/LoginProvider.jsx";
 
 const router = createBrowserRouter([
   {
@@ -17,6 +21,10 @@ const router = createBrowserRouter([
       { path: "board/write", element: <BoardWrite /> },
       { path: "board", element: <BoardList /> },
       { path: "board/:id", element: <BoardView /> },
+      { path: "login", element: <MemberLogin /> },
+      { path: "member/list", element: <MemberList /> },
+      { path: "signup", element: <MemberSignup /> },
+      { path: "home", element: <Home /> },
       { path: "tour", element: <TourSearch /> },
     ],
   },
@@ -25,7 +33,9 @@ const router = createBrowserRouter([
 function App(props) {
   return (
     <ChakraProvider>
-      <RouterProvider router={router} />
+      <LoginProvider>
+        <RouterProvider router={router} />
+      </LoginProvider>
     </ChakraProvider>
   );
 }
