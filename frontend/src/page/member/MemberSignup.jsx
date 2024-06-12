@@ -40,7 +40,7 @@ export function MemberSignup() {
           position: "top",
         });
         // todo : 로그인 화면으로 이동
-        navigate("/component/page/member/MemberLogin");
+        navigate("/page/member/MemberLogin");
       })
       .catch((err) => {
         if (err.response.status === 400) {
