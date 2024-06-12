@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { Home } from "./page/Home.jsx";
 import { BoardWrite } from "./page/board/BoardWrite.jsx";
 import { BoardList } from "./page/board/BoardList.jsx";
@@ -10,6 +10,10 @@ import { MemberList } from "./page/member/MemberList.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { LoginProvider } from "./component/LoginProvider.jsx";
 import { Navbar } from "./component/Navbar.jsx";
+import Announcement from "./page/menu/Announcement.jsx";
+import Question from "./page/menu/Question.jsx";
+import Inquiry from "./page/menu/Inquiry.jsx";
+import Event from "./page/menu/Event.jsx";
 
 const router = createBrowserRouter([
   {
@@ -17,13 +21,14 @@ const router = createBrowserRouter([
     element: (
       <>
         <Navbar />
-        <Home />
+        <Outlet />
       </>
     ),
 
     children: [
       {
         index: true,
+        element: <Home />,
       },
       { path: "/write", element: <BoardWrite /> },
       { path: "board", element: <BoardList /> },
@@ -32,6 +37,10 @@ const router = createBrowserRouter([
       { path: "member/list", element: <MemberList /> },
       { path: "signup", element: <MemberSignup /> },
       { path: "tour", element: <TourSearch /> },
+      { path: "announcement", element: <Announcement /> },
+      { path: "question", element: <Question /> },
+      { path: "inquiry", element: <Inquiry /> },
+      { path: "event", element: <Event /> },
     ],
   },
 ]);
