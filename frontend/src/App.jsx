@@ -25,7 +25,7 @@ const router = createBrowserRouter([
       {
         index: true,
       },
-      { path: "board/write", element: <BoardWrite /> },
+      { path: "/write", element: <BoardWrite /> },
       { path: "board", element: <BoardList /> },
       { path: "board/:id", element: <BoardView /> },
       { path: "login", element: <MemberLogin /> },
