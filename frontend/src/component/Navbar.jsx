@@ -33,7 +33,7 @@ export function Navbar() {
 
   const handleSearch = (event) => {
     if (event.key === "Enter") {
-      // 엔터 키를 누르면 검색을 수행합니다.
+      // 엔터 키를 누르면 검색을 수행
       const query = event.target.value;
       navigate(`/search?query=${query}`);
     }
@@ -61,7 +61,7 @@ export function Navbar() {
           bgColor: "rgba(255, 255, 255, 0.5)", // 호버 시 배경색을 반투명으로 설정
         }}
         p={6}
-        fontSize={20}
+        fontSize={30}
         fontWeight={600}
       >
         <Show below={"lg"}>
@@ -73,7 +73,7 @@ export function Navbar() {
       {/* 검색창 추가 */}
       <Center ml={4}>
         <Input
-          placeholder="검색어를 입력하세요..."
+          placeholder="계속되는 여행을 검색하세요!"
           onKeyPress={handleSearch}
           width="300px"
           bg="rgba(255, 255, 255, 0.8)" // 검색창 배경색을 반투명하게 설정
@@ -125,32 +125,6 @@ export function Navbar() {
         </Center>
       )}
 
-      {/* 메뉴 추가 */}
-      <Center ml={700}>
-        <Menu>
-          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-            고객센터
-          </MenuButton>
-          <MenuList>
-            <MenuItem onClick={() => navigate("/question")}>
-              자주 묻는 질문
-            </MenuItem>
-            <MenuItem onClick={() => navigate("/inquiry")}>
-              1:1 문의 하기
-            </MenuItem>
-            <MenuItem onClick={() => navigate("/Cooperation")}>
-              협업 문의하기
-            </MenuItem>
-            <MenuItem onClick={() => navigate("/announcement")}>
-              공지사항
-            </MenuItem>
-            <MenuItem onClick={() => navigate("/event")}>이벤트</MenuItem>
-          </MenuList>
-        </Menu>
-      </Center>
-
-      <Spacer />
-
       {account.isAdmin() && (
         <Center
           onClick={() => navigate("/member/list")}
@@ -166,6 +140,26 @@ export function Navbar() {
         </Center>
       )}
 
+      {/* 메뉴 추가 */}
+      <Center ml={700}>
+        <Menu>
+          <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+            고객센터
+          </MenuButton>
+          <MenuList>
+            <MenuItem onClick={() => navigate("/question")}>질문</MenuItem>
+            <MenuItem onClick={() => navigate("/inquiry")}>
+              1:1 문의 하기
+            </MenuItem>
+            <MenuItem onClick={() => navigate("/announcement")}>
+              공지사항
+            </MenuItem>
+            <MenuItem onClick={() => navigate("/event")}>이벤트</MenuItem>
+          </MenuList>
+        </Menu>
+      </Center>
+
+      <Spacer />
       {!account.isLoggedIn() && (
         <Center
           onClick={() => navigate("/signup")}
