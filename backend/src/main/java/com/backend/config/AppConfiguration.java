@@ -42,6 +42,9 @@ public class AppConfiguration {
     @Value("${aws.secret.key}")
     String secretKey;
 
+    @Value("${data.service.key}")
+    String serviceKey;
+
     @Bean
     public S3Client s3Client() {
         AwsBasicCredentials credentials = AwsBasicCredentials.create(accessKey, secretKey);
