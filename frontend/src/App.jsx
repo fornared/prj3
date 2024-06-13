@@ -14,7 +14,7 @@ import Announcement from "./page/menu/Announcement.jsx";
 import Question from "./page/menu/Question.jsx";
 import Inquiry from "./page/menu/Inquiry.jsx";
 import Event from "./page/menu/Event.jsx";
-// import Schedule from "./page/menu/Schedule.jsx";
+import Schedule from "./page/menu/Schedule.jsx";
 
 const router = createBrowserRouter([
   {
@@ -42,7 +42,7 @@ const router = createBrowserRouter([
       { path: "question", element: <Question /> },
       { path: "inquiry", element: <Inquiry /> },
       { path: "event", element: <Event /> },
-      // { path: "schedule", element: <Schedule /> },
+      { path: "schedule", element: <Schedule /> },
     ],
   },
 ]);
