@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Box,
   Button,
@@ -16,14 +17,28 @@ import axios from "axios";
 
 export function BoardList() {
   const [boardList, setBoardList] = useState([]);
+  const [searchType, setSearchType] = useState("title");
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
-    axios.get("/api/board/list").then((res) => setBoardList(res.data));
+    fetchBoardList();
   }, []);
 
+  const fetchBoardList = async () => {
+    const response = await axios.get("/api/board/list");
+    setBoardList(response.data);
+  };
+
+  const handleSearch = async () => {
+    const response = await axios.get(
+      `/api/board/list?type=${searchType}&text=${searchText}`,
+    );
+    setBoardList(response.data);
+  };
+
   return (
-    <Box>
-      <Box>게시판</Box>
+    <Box fontSize={20} fontWeight={700}>
+      <Box>리뷰</Box>
       <Box>
         <Table>
           <Thead>
@@ -38,9 +53,11 @@ export function BoardList() {
             {boardList.map((board) => (
               <Tr key={board.id}>
                 <Td>{board.id}</Td>
-                <Td>{board.title}</Td>
+                <Td>
+                  <Link to={`/board/${board.id}`}>{board.title}</Link>
+                </Td>
                 <Td>{board.writer}</Td>
-                <Td>123</Td>
+                <Td>{board.createdAt}</Td>
               </Tr>
             ))}
           </Tbody>
@@ -48,25 +65,35 @@ export function BoardList() {
       </Box>
       <Box>
         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((pageNumber) => (
-          <Button key={pageNumber}>{pageNumber}</Button>
+          <Button key={pageNumber} onClick={() => fetchBoardList(pageNumber)}>
+            {pageNumber}
+          </Button>
         ))}
       </Box>
       <Box>
         <Flex>
           <Box>
-            <Select>
+            <Select
+              value={searchType}
+              onChange={(e) => setSearchType(e.target.value)}
+            >
               <option value="title">제목</option>
               <option value="writer">작성자</option>
             </Select>
           </Box>
           <Box>
-            <Input />
+            <Input
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+            />
           </Box>
           <Box>
-            <Button>검색</Button>
+            <Button onClick={handleSearch}>검색</Button>
           </Box>
           <Box>
-            <Button>글쓰기</Button>
+            <Link to="/write">
+              <Button>글쓰기</Button>
+            </Link>
           </Box>
         </Flex>
       </Box>
