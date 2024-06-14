@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import {
   Box,
   Button,
+  Center,
   FormControl,
   FormLabel,
   Input,
@@ -11,7 +12,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 
-function Inquiry(props) {
+function Inquiry() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -96,9 +97,11 @@ function Inquiry(props) {
             onChange={(e) => setMessage(e.target.value)}
           />
         </FormControl>
-        <Button type="submit" colorScheme="teal" width="full">
-          제출
-        </Button>
+        <Center>
+          <Button type="submit" colorScheme="teal" mt={4} width="200px">
+            제출
+          </Button>
+        </Center>
       </VStack>
     </Box>
   );
