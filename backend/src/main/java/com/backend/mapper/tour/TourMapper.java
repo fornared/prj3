@@ -3,9 +3,11 @@ package com.backend.mapper.tour;
 import com.backend.domain.tour.Area;
 import com.backend.domain.tour.Category;
 import com.backend.domain.tour.Content;
+import com.backend.domain.tour.Info2;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -96,5 +98,27 @@ public interface TourMapper {
             FROM content
             WHERE ex_content_id=#{contentId}
             """)
-    int countExContentIdByContentId(Integer contentId);
+    int countContentByExContentId(Integer contentId);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM info1 i JOIN content c ON i.content_id = c.id
+            WHERE c.ex_content_id=#{contentId}
+            """)
+    int countInfo1ByExContentIdOnContent(Integer contentId);
+
+    @Update("""
+            UPDATE info1 
+            SET homepage=#{homepage}, overview=#{overview}
+            WHERE content_id=#{contentId}
+            """)
+    int insertInfo1Detail(Content content);
+
+    @Insert("""
+            INSERT INTO info2 (content_id, number, info_name, info_text)
+            VALUES (#{contentId}, #{number}, #{infoName}, #{infoText})
+            """)
+    int insertInfo2(Info2 info2);
+
+
 }

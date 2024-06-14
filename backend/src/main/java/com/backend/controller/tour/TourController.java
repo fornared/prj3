@@ -80,6 +80,20 @@ public class TourController {
     public ResponseEntity addContent(@RequestBody List<Content> contents) {
         service.addContent(contents);
 
-        return null;
+        return ResponseEntity.ok("데이터 저장 완료");
+    }
+
+    @PostMapping("add/info1")
+    public ResponseEntity addInfo1(@RequestBody List<Content> contents) {
+        service.addInfo1(contents);
+
+        return ResponseEntity.ok("데이터 저장 완료");
+    }
+
+    @PutMapping("add/info1detail")
+    public ResponseEntity addInfo1detail(@RequestBody List<Content> contents) {
+        service.addInfo1detail(contents);
+
+        return ResponseEntity.ok().build();
     }
 }

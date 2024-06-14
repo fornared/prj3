@@ -19,11 +19,10 @@ export function TourSearch() {
           _type: "json",
           numOfRows: 100,
           pageNo: 1,
-          // areaCode: 1,
         },
       })
       .then((res) => {
-        const data = res.data.response.body.items.item;
+        const data = res.data.response.body.items.item.reverse();
         setArea(
           data.map((item) => ({
             areaCode: item.code,
@@ -184,14 +183,14 @@ export function TourSearch() {
                 cat2: cat2,
               },
             })
-            .then(async (res) => {
+            .then((res) => {
               const data = res.data.response.body.items.item;
               const category3 = data.map((item) => ({
                 cat2: cat2,
                 cat3: item.code,
                 name: item.name,
               }));
-              await axios
+              axios
                 .post("/api/tour/add/cat3", category3)
                 .then(() => {})
                 .catch(() => {});
@@ -253,7 +252,8 @@ export function TourSearch() {
   }
 
   function handleAddContent2() {
-    // for (let pageNo = 5; pageNo > 0; pageNo--) {
+    // for (let pageNo = 6; pageNo > 0; pageNo--) {
+    setIsProcessing(true);
     axios
       .get(`https://apis.data.go.kr/B551011/KorService1/areaBasedSyncList1`, {
         params: {
@@ -265,11 +265,11 @@ export function TourSearch() {
           listYN: "Y", // Y: 목록, N: 개수
           arrange: "C", // 정렬 (A=제목순, C=수정일순, D=생성일순)
           numOfRows: 9000,
-          pageNo: 6,
+          pageNo: 1,
         },
       })
-      .then(async (res) => {
-        const data = res.data.response.body.items.item;
+      .then((res) => {
+        const data = res.data.response.body.items.item.reverse();
         const content = data.map((item) => ({
           contentId: item.contentid,
           typeId: item.contenttypeid,
@@ -278,11 +278,147 @@ export function TourSearch() {
           sigunguCode: item.sigungucode,
           title: item.title,
         }));
-        await axios
+
+        axios
           .post("/api/tour/add/content", content)
-          .then(() => console.log("post"));
+          .then(() => {
+            console.log("post");
+          })
+          .catch()
+          .finally(() => {
+            setIsProcessing(false);
+          });
       });
     // }
+  }
+
+  function handleAddContentInfo1() {
+    // for (let pageNo = 6; pageNo > 0; pageNo--) {
+    setIsProcessing(true);
+    axios
+      .get(`https://apis.data.go.kr/B551011/KorService1/areaBasedSyncList1`, {
+        params: {
+          serviceKey: serviceKey,
+          MobileOS: "ETC",
+          MobileApp: "AppTest",
+          _type: "json",
+          showflag: 1,
+          listYN: "Y", // Y: 목록, N: 개수
+          arrange: "C", // 정렬 (A=제목순, C=수정일순, D=생성일순)
+          numOfRows: 9000,
+          pageNo: 1,
+        },
+      })
+      .then((res) => {
+        const data = res.data.response.body.items.item.reverse();
+        const info1 = data.map((item) => ({
+          contentId: item.contentid,
+          zipcode: item.zipcode,
+          address: item.addr1 + " " + item.addr2,
+          tel: item.tel,
+          //  homepage, overview 는 detailCommon1 조회 필요
+          //  상세 정보는 각 content마다 하나하나 api 요청이 필요하므로 운영계정 신청해야 입력 가능
+          // homepage: item.homepage,
+          // overview: item.overview,
+          homepage: null,
+          overview: null,
+          firstImage1: item.firstimage,
+          firstImage2: item.firstimage2,
+          mapx: item.mapx,
+          mapy: item.mapy,
+          created: item.createdtime,
+          modified: item.modifiedtime,
+        }));
+
+        axios
+          .post("/api/tour/add/info1", info1)
+          .then(() => {
+            console.log("post");
+          })
+          .catch(() => {})
+          .finally(() => {
+            setIsProcessing(false);
+          });
+      });
+    // }
+  }
+
+  function handleAddContentInfo1detail() {
+    setIsProcessing(true);
+    axios
+      .get(`https://apis.data.go.kr/B551011/KorService1/detailCommon1`, {
+        params: {
+          serviceKey: serviceKey,
+          MobileOS: "ETC",
+          MobileApp: "AppTest",
+          _type: "json",
+          contentId: 126508,
+          defaultYN: "Y",
+          firstImageYN: "N",
+          areacodeYN: "N",
+          catcodeYN: "N",
+          addrinfoYN: "N",
+          mapinfoYN: "N",
+          overviewYN: "Y",
+          numOfRows: 1,
+          pageNo: 1,
+        },
+      })
+      .then((res) => {
+        const data = res.data.response.body.items.item;
+        const info1detail = data.map((item) => ({
+          // info1 의 나머지 정보
+          contentId: item.contentid,
+          homepage: item.homepage,
+          overview: item.overview,
+        }));
+
+        axios
+          .putForm("/api/tour/add/info1detail", info1detail)
+          .then(() => {
+            console.log("post");
+          })
+          .catch()
+          .finally(() => {
+            setIsProcessing(false);
+          });
+      });
+  }
+
+  function handleAddContentInfo2() {
+    setIsProcessing(true);
+    axios
+      .get(`https://apis.data.go.kr/B551011/KorService1/detailInfo1`, {
+        params: {
+          serviceKey: serviceKey,
+          MobileOS: "ETC",
+          MobileApp: "AppTest",
+          _type: "json",
+          contentId: 126508,
+          typeId: 12,
+          numOfRows: 100,
+          pageNo: 1,
+        },
+      })
+      .then((res) => {
+        const data = res.data.response.body.items.item;
+        const info2 = data.map((item) => ({
+          contentId: item.contentid,
+          number: item.serialnum,
+          infoName: item.infoname,
+          infoText: item.infotext,
+        }));
+
+        axios
+          .post("/api/tour/add/info2", info2)
+          .then(() => {
+            console.log("post");
+          })
+          .catch()
+          .finally(() => {
+            setIsProcessing(false);
+          });
+      });
   }
 
   return (
@@ -293,8 +429,21 @@ export function TourSearch() {
       <Button onClick={handleAddCat1}>대분류 입력</Button>
       <Button onClick={handleAddCat2}>중분류 입력</Button>
       <Button onClick={handleAddCat3}>소분류 입력</Button>
-      <Button onClick={handleAddContent1}>콘텐츠 입력1</Button>
-      <Button onClick={handleAddContent2}>콘텐츠 입력2</Button>
+      <Button isDisabled onClick={handleAddContent1}>
+        콘텐츠 입력1
+      </Button>
+      <Button isDisabled onClick={handleAddContent2}>
+        콘텐츠 입력2
+      </Button>
+      <Button isDisabled onClick={handleAddContentInfo1}>
+        콘텐츠 기본 정보 입력
+      </Button>
+      <Button isDisabled onClick={handleAddContentInfo1detail}>
+        나머지 기본 정보 입력
+      </Button>
+      <Button isDisabled onClick={handleAddContentInfo2}>
+        콘텐츠 상제 정보 입력
+      </Button>
       {area.length > 0 && (
         <Box>
           {areaCodes}
