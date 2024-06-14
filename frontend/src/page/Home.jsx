@@ -109,7 +109,7 @@ export function Home() {
                 <Image src="/image/image4.jpg" alt="여행지 4" />
                 <Box p={4}>
                   <Heading as="h3" size="md">
-                    여행지 4
+                    경주
                   </Heading>
                   <Text mt={2}>여행지 4 설명</Text>
                 </Box>
@@ -118,7 +118,7 @@ export function Home() {
                 <Image src="/image/image5.jpg" alt="여행지 5" />
                 <Box p={4}>
                   <Heading as="h3" size="md">
-                    여행지 5
+                    부산
                   </Heading>
                   <Text mt={2}>여행지 5 설명</Text>
                 </Box>
@@ -127,7 +127,7 @@ export function Home() {
                 <Image src="/image/image6.jpg" alt="여행지 6" />
                 <Box p={4}>
                   <Heading as="h3" size="md">
-                    여행지 6
+                    제주도
                   </Heading>
                   <Text mt={2}>여행지 6 설명</Text>
                 </Box>
