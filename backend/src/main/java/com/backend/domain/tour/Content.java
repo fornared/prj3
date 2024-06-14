@@ -2,6 +2,8 @@ package com.backend.domain.tour;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @Data
 public class Content {
     //content
@@ -14,15 +16,15 @@ public class Content {
     private String title;
     //info1
     private Integer contentId;
-    private Integer zipcode;
+    private String zipcode;
     private String address;
     private String tel;
     private String homepage;
     private String overview;
     private String firstImage1;
     private String firstImage2;
-    private Double mapx;
-    private Double mapy;
+    private BigDecimal mapx;
+    private BigDecimal mapy;
     private String created;
     private String modified;
 }

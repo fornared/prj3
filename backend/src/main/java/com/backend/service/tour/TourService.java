@@ -80,10 +80,35 @@ public class TourService {
 
     public void addContent(List<Content> contents) {
         for (Content content : contents) {
-            int dbCount = mapper.countExContentIdByContentId(content.getContentId());
+            int dbCount = mapper.countContentByExContentId(content.getContentId());
             if (dbCount == 0) {
                 mapper.insertContent(content);
             }
+        }
+    }
+
+    public void addInfo1(List<Content> contents) {
+        int i = 0;
+        for (Content content : contents) {
+            // info1에 이미 있는 데이터가 아닐때만(0) 진행
+            int dbCountInfo1 = mapper.countInfo1ByExContentIdOnContent(content.getContentId());
+            // content에 있어야(1) info 데이터 삽입
+            int dbCountContent = mapper.countContentByExContentId(content.getContentId());
+
+            if (dbCountInfo1 == 0 && dbCountContent == 1) {
+                System.out.println(STR."\{i}: \{content.getContentId()}");
+                mapper.insertInfo1(content);
+            } else {
+                System.out.println(STR."\{i}: \{content.getContentId()} - 입력실패");
+            }
+
+            i++;
+        }
+    }
+
+    public void addInfo1detail(List<Content> contents) {
+        for (Content content : contents) {
+            mapper.insertInfo1Detail(content);
         }
     }
 }
