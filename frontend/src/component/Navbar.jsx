@@ -212,7 +212,7 @@ export function Navbar() {
         <Center
           ml={4}
           cursor={"pointer"}
-          onClick={() => navigate("/board")}
+          onClick={() => navigate("/board/list")}
           _hover={{
             bgColor: "rgba(255, 255, 255, 0.5)",
           }}

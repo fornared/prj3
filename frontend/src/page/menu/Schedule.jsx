@@ -58,7 +58,7 @@ function Schedule() {
 
   return (
     <Box
-      maxW="1500px"
+      maxW="1200px"
       mx="auto"
       mt={8}
       p={4}

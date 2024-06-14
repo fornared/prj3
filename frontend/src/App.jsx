@@ -10,11 +10,13 @@ import { MemberList } from "./page/member/MemberList.jsx";
 import { MemberSignup } from "./page/member/MemberSignup.jsx";
 import { LoginProvider } from "./component/LoginProvider.jsx";
 import { Navbar } from "./component/Navbar.jsx";
+import { BoardEdit } from "./page/board/BoardEdit.jsx";
 import Announcement from "./page/menu/Announcement.jsx";
 import Question from "./page/menu/Question.jsx";
 import Inquiry from "./page/menu/Inquiry.jsx";
 import Event from "./page/menu/Event.jsx";
 import Schedule from "./page/menu/Schedule.jsx";
+import { BoardDetail } from "./page/board/BoardDetail.jsx";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +34,9 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       { path: "/write", element: <BoardWrite /> },
-      { path: "board", element: <BoardList /> },
+      { path: "board/list", element: <BoardList /> },
+      { path: "board/edit/:id", element: <BoardEdit /> },
+      { path: "board/:id", element: <BoardDetail /> },
       { path: "board/:id", element: <BoardView /> },
       { path: "login", element: <MemberLogin /> },
       { path: "member/list", element: <MemberList /> },
