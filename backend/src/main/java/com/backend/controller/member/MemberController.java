@@ -23,7 +23,7 @@ public class MemberController {
             return ResponseEntity.badRequest().build();
         }
     }
-
+//
     @GetMapping("/check")
     public ResponseEntity<?> checkExistence(@RequestParam(required = false) String email,
                                             @RequestParam(required = false) String nickName) {

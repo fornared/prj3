@@ -15,7 +15,7 @@ public interface MemberMapper {
             """)
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(Member member);
-
+//
     @Select("""
             SELECT * 
             FROM member 
