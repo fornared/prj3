@@ -374,7 +374,7 @@ export function TourSearch() {
         }));
 
         axios
-          .putForm("/api/tour/add/info1detail", info1detail)
+          .put("/api/tour/add/info1detail", info1detail)
           .then(() => {
             console.log("post");
           })
@@ -421,6 +421,43 @@ export function TourSearch() {
       });
   }
 
+  function handleAddImages() {
+    setIsProcessing(true);
+    axios
+      .get(`https://apis.data.go.kr/B551011/KorService1/detailImage1`, {
+        params: {
+          serviceKey: serviceKey,
+          MobileOS: "ETC",
+          MobileApp: "AppTest",
+          _type: "json",
+          contentId: 126508,
+          imageYN: "Y",
+          subImageYN: "Y",
+          numOfRows: 100,
+          pageNo: 1,
+        },
+      })
+      .then((res) => {
+        const data = res.data.response.body.items.item;
+        const images = data.map((item) => ({
+          // info1 의 나머지 정보
+          contentId: item.contentid,
+          originalUrl: item.originimgurl,
+          smallUrl: item.smallimageurl,
+        }));
+
+        axios
+          .post("/api/tour/add/image", images)
+          .then(() => {
+            console.log("post");
+          })
+          .catch(() => {})
+          .finally(() => {
+            setIsProcessing(false);
+          });
+      });
+  }
+
   return (
     <Box>
       <Button onClick={handleAddArea}>지역 입력</Button>
@@ -435,14 +472,16 @@ export function TourSearch() {
       <Button isDisabled onClick={handleAddContent2}>
         콘텐츠 입력2
       </Button>
-      <Button isDisabled onClick={handleAddContentInfo1}>
-        콘텐츠 기본 정보 입력
-      </Button>
-      <Button isDisabled onClick={handleAddContentInfo1detail}>
+      <Button onClick={handleAddContentInfo1}>콘텐츠 기본 정보 입력</Button>
+      <Button onClick={handleAddContentInfo1detail}>
         나머지 기본 정보 입력
       </Button>
       <Button isDisabled onClick={handleAddContentInfo2}>
         콘텐츠 상제 정보 입력
+      </Button>
+      <Button onClick={handleAddImages}>
+        {/* 음식점 제외 */}
+        이미지 입력
       </Button>
       {area.length > 0 && (
         <Box>

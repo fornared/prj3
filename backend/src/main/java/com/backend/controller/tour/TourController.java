@@ -3,12 +3,14 @@ package com.backend.controller.tour;
 import com.backend.domain.tour.Area;
 import com.backend.domain.tour.Category;
 import com.backend.domain.tour.Content;
+import com.backend.domain.tour.Image;
 import com.backend.service.tour.TourService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tour")
@@ -93,7 +95,50 @@ public class TourController {
     @PutMapping("add/info1detail")
     public ResponseEntity addInfo1detail(@RequestBody List<Content> contents) {
         service.addInfo1detail(contents);
+        System.out.println(contents);
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("list0")
+    public List<Content> list() {
+        return service.list();
+    }
+
+    @GetMapping("list")
+    public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page,
+                                    @RequestParam(value = "type", required = false) String typeName,
+                                    @RequestParam(value = "category", required = false) String catName,
+                                    @RequestParam(value = "area", required = false) String areaName,
+                                    @RequestParam(value = "sigungu", required = false) String sigunguName,
+                                    @RequestParam(value = "keyword", required = false) String keyword) {
+        Integer typeId = service.typeNameAsId(typeName);
+        String catCode = service.catNameAsCode(catName);
+        Integer areaCode = service.areaNameAsCode(areaName);
+        Integer sigunguCode = service.sigunguNameAsCode(areaCode, sigunguName);
+//        System.out.println(STR."\{page}, \{typeId}, \{catCode}, \{areaCode}, \{sigunguCode}, \{keyword}");
+//        System.out.println(service.list(page, typeId, catCode, areaCode, sigunguCode, keyword));
+
+        return service.list(page, typeId, catCode, areaCode, sigunguCode, keyword);
+    }
+
+    @PostMapping("get/searchOption")
+    public ResponseEntity getSearchOption(@RequestBody List<String> options) {
+        System.out.println(options);
+
+        return null;
+    }
+
+    @GetMapping("list/{id}")
+    public Map<String, Object> get(@PathVariable Integer id) {
+        return service.get(id);
+    }
+
+    @PostMapping("add/image")
+    public ResponseEntity addImage(@RequestBody List<Image> images) {
+        System.out.println(images);
+        service.addImage(images);
+
+        return null;
     }
 }
