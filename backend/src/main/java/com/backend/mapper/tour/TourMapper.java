@@ -1,9 +1,6 @@
 package com.backend.mapper.tour;
 
-import com.backend.domain.tour.Area;
-import com.backend.domain.tour.Category;
-import com.backend.domain.tour.Content;
-import com.backend.domain.tour.Info2;
+import com.backend.domain.tour.*;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
@@ -110,7 +107,7 @@ public interface TourMapper {
     @Update("""
             UPDATE info1 
             SET homepage=#{homepage}, overview=#{overview}
-            WHERE content_id=#{contentId}
+            WHERE content_id=#{id}
             """)
     int insertInfo1Detail(Content content);
 
@@ -120,5 +117,186 @@ public interface TourMapper {
             """)
     int insertInfo2(Info2 info2);
 
+    @Select("""
+            SELECT c.id, c.title, i.first_image1
+            FROM content c JOIN info1 i ON c.id = i.content_id
+            ORDER BY i.modified DESC
+            LIMIT 12
+            """)
+    List<Content> selectAll();
 
+    @Select("""
+            SELECT c.id, c.title, i.zipcode, i.address, i.tel, i.homepage, i.overview, i.first_image1, i.first_image2, i.mapx, i.mapy, i.modified
+            FROM content c JOIN info1 i ON c.id = i.content_id
+            WHERE c.id=#{id}
+            """)
+    Content selectContentInfoById(Integer id);
+
+    @Select("""
+            SELECT id
+            FROM content
+            WHERE ex_content_id=#{contentId}
+            """)
+    Integer selectIdByExContentId(Integer contentId);
+
+    @Insert("""
+            INSERT INTO image(content_id, original_url, small_url)
+            VALUES (#{contentId}, #{originalUrl}, #{smallUrl})
+            """)
+    int insertImage(Image image);
+
+    @Select("""
+            <script>
+            SELECT COUNT(c.id)
+            FROM content c
+                <if test="typeId != null">
+                    JOIN content_type ct ON c.type_id=ct.id
+                </if>
+                <if test="catCode != null">
+                    <choose>
+                        <when test = "catCode.length == 3">
+                            JOIN category1 cat1 ON LEFT(c.cat3, 3) = cat1.cat1
+                        </when>
+                        <when test = "catCode.length == 5">
+                            JOIN category2 cat2 ON LEFT(c.cat3, 5) = cat2.cat2
+                        </when>
+                        <otherwise>
+                            JOIN category3 cat3 ON c.cat3 = cat3.cat3
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test="areaCode != null">
+                    JOIN area a ON c.area_code = a.area_code
+                </if>
+                <if test="sigunguCode != null">
+                    JOIN sigungu s ON c.area_code = s.area_code AND c.sigungu_code = s.sigungu_code
+                </if>
+            <trim prefix="WHERE" prefixOverrides="AND">
+                <if test="typeId != null">
+                    c.type_id=#{typeId}
+                </if>
+                <if test="catCode != null">
+                    AND
+                    <choose>
+                        <when test = "catCode.length == 3">
+                            LEFT(c.cat3, 3) = #{catCode}
+                        </when>
+                        <when test = "catCode.length == 5">
+                            LEFT(c.cat3, 5) = #{catCode}
+                        </when>
+                        <otherwise>
+                            c.cat3 = #{catCode}
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test="areaCode != null">
+                    AND c.area_code=#{areaCode}
+                </if>
+                <if test="sigunguCode != null">
+                    AND c.sigungu_code=#{sigunguCode}
+                </if>
+                <if test="keyword != null">
+                    AND c.title LIKE CONCAT('%', #{keyword}, '%')
+                </if>
+            </trim>
+            </script>
+            """)
+    Integer countAllWithSearch(Integer typeId, String catCode, Integer areaCode, Integer sigunguCode, String keyword);
+
+    @Select("""
+            <script>
+            SELECT c.id, c.title, i.id, i.first_image1
+            FROM content c
+                JOIN info1 i ON c.id = i.content_id
+                <if test="typeId != null">
+                    JOIN content_type ct ON c.type_id=ct.id
+                </if>
+                <if test="catCode != null">
+                    <choose>
+                        <when test = "catCode.length == 3">
+                            JOIN category1 cat1 ON LEFT(c.cat3, 3) = cat1.cat1
+                        </when>
+                        <when test = "catCode.length == 5">
+                            JOIN category2 cat2 ON LEFT(c.cat3, 5) = cat2.cat2
+                        </when>
+                        <otherwise>
+                            JOIN category3 cat3 ON c.cat3 = cat3.cat3
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test="areaCode != null">
+                    JOIN area a ON c.area_code = a.area_code
+                </if>
+                <if test="sigunguCode != null">
+                    JOIN sigungu s ON c.area_code = s.area_code AND c.sigungu_code = s.sigungu_code
+                </if>
+            <trim prefix="WHERE" prefixOverrides="AND">
+                <if test="typeId != null">
+                    c.type_id=#{typeId}
+                </if>
+                <if test="catCode != null">
+                    AND
+                    <choose>
+                        <when test = "catCode.length == 3">
+                            LEFT(c.cat3, 3) = #{catCode}
+                        </when>
+                        <when test = "catCode.length == 5">
+                            LEFT(c.cat3, 5) = #{catCode}
+                        </when>
+                        <otherwise>
+                            c.cat3 = #{catCode}
+                        </otherwise>
+                    </choose>
+                </if>
+                <if test="areaCode != null">
+                    AND c.area_code=#{areaCode}
+                </if>
+                <if test="sigunguCode != null">
+                    AND c.sigungu_code=#{sigunguCode}
+                </if>
+                <if test="keyword != null">
+                    AND title LIKE CONCAT('%', #{keyword}, '%')
+                </if>
+            </trim>
+            ORDER BY i.modified DESC
+            LIMIT #{offset}, 12
+            </script>
+            """)
+    List<Content> selectAllPaging(Integer offset, Integer typeId, String catCode, Integer areaCode, Integer sigunguCode, String keyword);
+
+    @Select("""
+            SELECT id
+            FROM content_type
+            WHERE name=#{name}
+            """)
+    Integer selectTypeIdByName(String name);
+
+    @Select("""
+            SELECT DISTINCT CASE
+                    WHEN c1.name=#{name} THEN c1.cat1
+                    WHEN c2.name=#{name} THEN c2.cat2
+                    WHEN c3.name=#{name} THEN c3.cat3
+                    END AS catCode
+            FROM category1 c1
+                     JOIN category2 c2 ON c1.cat1 = c2.cat1
+                     JOIN category3 c3 ON c2.cat2 = c3.cat2
+            WHERE c1.name=#{name}
+               OR c2.name=#{name}
+               OR c3.name=#{name};
+            """)
+    String selectCatByName(String name);
+
+    @Select("""
+            SELECT area_code
+            FROM area
+            WHERE name=#{name}
+            """)
+    Integer selectAreaCodeByName(String name);
+
+    @Select("""
+            SELECT sigungu_code
+            FROM sigungu
+            WHERE area_code=#{areaCode} AND name=#{name}
+            """)
+    Integer selectSigunguCodeByName(Integer areaCode, String name);
 }

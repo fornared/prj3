@@ -15,6 +15,8 @@ import Announcement from "./page/menu/Announcement.jsx";
 import Question from "./page/menu/Question.jsx";
 import Inquiry from "./page/menu/Inquiry.jsx";
 import Event from "./page/menu/Event.jsx";
+import { TourList } from "./page/tour/TourList.jsx";
+import { TourDetail } from "./page/tour/TourDetail.jsx"; // import Schedule from "./page/menu/Schedule.jsx";
 import Schedule from "./page/menu/Schedule.jsx";
 import { BoardDetail } from "./page/board/BoardDetail.jsx";
 
@@ -42,6 +44,8 @@ const router = createBrowserRouter([
       { path: "member/list", element: <MemberList /> },
       { path: "signup", element: <MemberSignup /> },
       { path: "tour", element: <TourSearch /> },
+      { path: "tour/list", element: <TourList /> },
+      { path: "tour/list/:id", element: <TourDetail /> },
       { path: "announcement", element: <Announcement /> },
       { path: "question", element: <Question /> },
       { path: "inquiry", element: <Inquiry /> },
