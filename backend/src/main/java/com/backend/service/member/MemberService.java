@@ -1,11 +1,25 @@
-package com.backend.service;
+package com.backend.service.member;
 
-import com.backend.domain.Member;
+import com.backend.domain.member.Member;
+import com.backend.mapper.member.MemberMapper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
-public interface MemberService {
-    void signup(Member member);
-    Member getByEmail(String email);
-    Member getByNickName(String nickName);
-    Member login(String email, String password);
+@Service
+@RequiredArgsConstructor
+public class MemberService {
+
+    private final MemberMapper memberMapper;
+
+    public void add(Member member) {
+        memberMapper.insertMember(member);
+    }
+
+    public Member getByEmail(String email) {
+        return memberMapper.findMemberByEmail(email);
+    }
+
+    public Member getByNickName(String nick_name) {
+        return memberMapper.findMemberByNickName(nick_name);
+    }
 }
-//

@@ -1,48 +1,48 @@
-package com.backend.controller;
+package com.backend.controller.member;
 
-import com.backend.domain.Member;
-import com.backend.service.MemberService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import com.backend.domain.member.Member;
+import com.backend.service.member.MemberService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/member")
+@RequiredArgsConstructor
 public class MemberController {
 
-    @Autowired
-    private MemberService memberService;
+    private final MemberService memberService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody Member member) {
-        try {
-            memberService.signup(member);
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> signUp(@RequestBody Member member) {
+        if (memberService.getByEmail(member.getEmail()) != null) {
+            return ResponseEntity.badRequest().body("이미 사용 중인 이메일입니다.");
         }
+
+        if (memberService.getByNickName(member.getNick_name()) != null) {
+            return ResponseEntity.badRequest().body("이미 사용 중인 닉네임입니다.");
+        }
+
+        memberService.add(member);
+        return ResponseEntity.ok("회원 가입이 완료되었습니다.");
     }
-//
-    @GetMapping("/check")
-    public ResponseEntity<?> checkExistence(@RequestParam(required = false) String email,
-                                            @RequestParam(required = false) String nickName) {
-        if (email != null && memberService.getByEmail(email) != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists");
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody Member member) {
+        Member foundMember = memberService.getByEmail(member.getEmail());
+        if (foundMember == null || !foundMember.getPassword().equals(member.getPassword())) {
+            return ResponseEntity.badRequest().body("이메일이나 비밀번호가 일치하지 않습니다.");
         }
-        if (nickName != null && memberService.getByNickName(nickName) != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Nickname already exists");
-        }
-        return ResponseEntity.ok().build();
+
+        return ResponseEntity.ok("로그인 성공!");
     }
 
     @PostMapping("/token")
-    public ResponseEntity<?> login(@RequestBody Member member) {
-        Member loginMember = memberService.login(member.getEmail(), member.getPassword());
-        if (loginMember != null) {
-            return ResponseEntity.ok().body("token"); // 실제로는 JWT 등을 생성하여 반환해야 함
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+    public ResponseEntity<String> getToken(@RequestBody String requestPayload) {
+        // 토큰 생성 로직을 구현하거나 응답을 반환합니다.
+        return ResponseEntity.ok("토큰 생성 성공");
     }
 }
