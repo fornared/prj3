@@ -299,4 +299,25 @@ public interface TourMapper {
             WHERE area_code=#{areaCode} AND name=#{name}
             """)
     Integer selectSigunguCodeByName(Integer areaCode, String name);
+
+    @Select("""
+            SELECT id
+            FROM content_type
+            """)
+    List<Integer> selectTypeId();
+
+    @Insert("""
+            INSERT INTO type_category_mapping (type_id, cat1, cat2)
+            VALUES (#{contentTypeId}, #{cat1}, #{cat2})
+            """)
+    int insertTypeCategoryMapping(Category typeCatMaps);
+
+    @Select("""
+            SELECT DISTINCT c1.name
+            FROM category1 c1
+                JOIN type_category_mapping tcm on c1.cat1 = tcm.cat1
+                JOIN temp.content_type ct on tcm.type_id = ct.id
+            WHERE ct.name = #{contentTypeName}
+            """)
+    List<String> selectCat1NamesByContentTypeNameOnMap(String contentTypeName);
 }
