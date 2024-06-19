@@ -4,35 +4,58 @@ import com.backend.domain.member.Member;
 import com.backend.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
-@RequestMapping("/api/member")
 @RequiredArgsConstructor
+@RequestMapping("/api/member")
 public class MemberController {
 
     private final MemberService memberService;
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody Member member) {
-        if (memberService.getByEmail(member.getEmail()) != null) {
+        // 이메일 중복 확인
+        if (memberService.getMemberByEmail(member.getEmail()) != null) {
             return ResponseEntity.badRequest().body("이미 사용 중인 이메일입니다.");
         }
 
-        if (memberService.getByNickName(member.getNick_name()) != null) {
+        // 닉네임 중복 확인
+        if (memberService.getMemberByNickName(member.getNick_name()) != null) {
             return ResponseEntity.badRequest().body("이미 사용 중인 닉네임입니다.");
         }
 
-        memberService.add(member);
+        // 회원 가입 처리
+        memberService.addMember(member);
         return ResponseEntity.ok("회원 가입이 완료되었습니다.");
+    }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<Void> checkEmail(@RequestParam String email) {
+        // 이메일 중복 확인
+        if (memberService.getMemberByEmail(email) != null) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/check-nickName")
+    public ResponseEntity<Void> checkNickName(@RequestParam String nickName) {
+        // 닉네임 중복 확인
+        if (memberService.getMemberByNickName(nickName) != null) {
+            return ResponseEntity.ok().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Member member) {
-        Member foundMember = memberService.getByEmail(member.getEmail());
+        // 로그인 처리
+        Member foundMember = memberService.getMemberByEmail(member.getEmail());
         if (foundMember == null || !foundMember.getPassword().equals(member.getPassword())) {
             return ResponseEntity.badRequest().body("이메일이나 비밀번호가 일치하지 않습니다.");
         }
@@ -41,8 +64,20 @@ public class MemberController {
     }
 
     @PostMapping("/token")
-    public ResponseEntity<String> getToken(@RequestBody String requestPayload) {
-        // 토큰 생성 로직을 구현하거나 응답을 반환합니다.
-        return ResponseEntity.ok("토큰 생성 성공");
+    public ResponseEntity<String> getToken(@RequestBody Map<String, String> requestPayload) {
+        String email = requestPayload.get("email");
+        String password = requestPayload.get("password");
+
+        if (email != null && password != null) {
+            // 토큰 발급 처리
+            String token = memberService.login(email, password);
+            if (token != null) {
+                return ResponseEntity.ok(token);
+            } else {
+                return ResponseEntity.status(401).body("이메일이나 비밀번호가 맞지 않습니다.");
+            }
+        } else {
+            return ResponseEntity.badRequest().body("이메일과 비밀번호를 제공해야 합니다.");
+        }
     }
 }
