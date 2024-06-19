@@ -107,9 +107,9 @@ public class TourService {
             String mapyPattern = "^[0-9]{1,2}\\.[0-9]{1,10}$";
 
             if (dbCountInfo1 == 0
-                && dbCountContent == 1
-                && content.getMapx().toString().matches(mapxPattern)
-                && content.getMapy().toString().matches(mapyPattern)) {
+                    && dbCountContent == 1
+                    && content.getMapx().toString().matches(mapxPattern)
+                    && content.getMapy().toString().matches(mapyPattern)) {
                 System.out.println(STR."\{i}: \{content.getContentId()}");
                 mapper.insertInfo1(content);
             } else {
@@ -191,5 +191,32 @@ public class TourService {
 
     public Integer sigunguNameAsCode(Integer areaCode, String sigunguName) {
         return mapper.selectSigunguCodeByName(areaCode, sigunguName);
+    }
+
+    public Map<String, Object> getNextSearchOption(Map<String, Object> options) {
+        String contentTypeName = options.get("contentType").toString();
+//        String cat1Name = options.get("cat1").toString();
+//        String cat2Name = options.get("cat2").toString();
+//        String areaName = options.get("area").toString();
+
+        Map<String, Object> nextSearchOption = new HashMap<>();
+
+        if (!contentTypeName.isEmpty()) {
+            List<String> nextCat1 = mapper.selectCat1NamesByContentTypeNameOnMap(contentTypeName);
+            nextSearchOption.put("nextCat1", nextCat1);
+        }
+
+
+        return nextSearchOption;
+    }
+
+    public List<Integer> getContentTypeId() {
+        return mapper.selectTypeId();
+    }
+
+    public void addTypeCategoryMapping(List<Category> typeCatMaps) {
+        for (Category typeCatMap : typeCatMaps) {
+            mapper.insertTypeCategoryMapping(typeCatMap);
+        }
     }
 }

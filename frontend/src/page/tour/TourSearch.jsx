@@ -458,6 +458,70 @@ export function TourSearch() {
       });
   }
 
+  function handleAddTypeCategoryMapping() {
+    setIsProcessing(true);
+    axios
+      .get("/api/tour/get/contentType")
+      .then((res) => {
+        const contentTypes = res.data;
+        for (const typeId of contentTypes) {
+          axios
+            .get(`https://apis.data.go.kr/B551011/KorService1/categoryCode1`, {
+              params: {
+                serviceKey: serviceKey,
+                MobileOS: "ETC",
+                MobileApp: "AppTest",
+                _type: "json",
+                contentTypeId: typeId,
+                numOfRows: 20,
+                pageNo: 1,
+              },
+            })
+            .then((res) => {
+              const data1 = res.data.response.body.items.item;
+              data1.map((item1) => {
+                const cat1 = item1.code;
+
+                axios
+                  .get(
+                    `https://apis.data.go.kr/B551011/KorService1/categoryCode1`,
+                    {
+                      params: {
+                        serviceKey: serviceKey,
+                        MobileOS: "ETC",
+                        MobileApp: "AppTest",
+                        _type: "json",
+                        contentTypeId: typeId,
+                        cat1: cat1,
+                        numOfRows: 20,
+                        pageNo: 1,
+                      },
+                    },
+                  )
+                  .then((res) => {
+                    const data2 = res.data.response.body.items.item;
+                    const typeCatMap = data2.map((item2) => ({
+                      contentTypeId: typeId,
+                      cat1: cat1,
+                      cat2: item2.code,
+                    }));
+
+                    axios
+                      .post("/api/tour/add/typeCatMap", typeCatMap)
+                      .then(() => {
+                        console.log("post");
+                      })
+                      .catch(() => {})
+                      .finally(() => {});
+                  });
+              });
+            });
+        }
+      })
+      .catch()
+      .finally(() => setIsProcessing(false));
+  }
+
   return (
     <Box>
       <Button onClick={handleAddArea}>지역 입력</Button>
@@ -482,6 +546,9 @@ export function TourSearch() {
       <Button onClick={handleAddImages}>
         {/* 음식점 제외 */}
         이미지 입력
+      </Button>
+      <Button onClick={handleAddTypeCategoryMapping}>
+        타입-카테고리 매핑 정보 입력
       </Button>
       {area.length > 0 && (
         <Box>

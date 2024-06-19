@@ -18,6 +18,7 @@ export function TourList() {
   const [pageInfo, setPageInfo] = useState({});
   const [contentType, setContentType] = useState("");
   const [category, setCategory] = useState("");
+  const [cat1, setCat1] = useState([]);
   const [area, setArea] = useState("");
   const [sigungu, setSigungu] = useState("");
   const [keword, setKeword] = useState("");
@@ -61,12 +62,29 @@ export function TourList() {
     });
   }, [searchParams]);
 
+  // useEffect(() => {
+  //   searchOption.push(contentType, category, area);
+  //
+  //   console.log(searchOption);
+  //
+  //   axios.post(`/api/tour/get/searchOption`, searchOption);
+  // }, [contentType, category, area]);
+
   useEffect(() => {
     searchOption.push(contentType, category, area);
 
     console.log(searchOption);
 
-    axios.post(`/api/tour/get/searchOption`, searchOption);
+    axios
+      .post(`/api/tour/get/searchOption`, {
+        contentType: contentType,
+        category: category,
+        area: area,
+      })
+      .then((res) => {
+        setCat1(res.data.nextCat1);
+        console.log(cat1);
+      });
   }, [contentType, category, area]);
 
   const pageNums = [];
@@ -116,8 +134,23 @@ export function TourList() {
             onChange={(e) => setCategory(e.target.value)}
           >
             <option value="">전체</option>
-            <option>대분류1</option>
-            <option>대분류2</option>
+            {/*{cat1.map((item, index) => (*/}
+            {/*  <option key={index}>{item}</option>*/}
+            {/*))}*/}
+          </Select>
+        </Box>
+        <Box>
+          <Select value={area} onChange={(e) => setArea(e.target.value)}>
+            <option value="">전체</option>
+            <option>서울</option>
+            <option>인천</option>
+            <option>대전</option>
+            <option>대구</option>
+            <option>광주</option>
+            <option>부산</option>
+            <option>울산</option>
+            <option>세종특별자치시</option>
+            <option>경기도</option>
           </Select>
         </Box>
         <Box>
