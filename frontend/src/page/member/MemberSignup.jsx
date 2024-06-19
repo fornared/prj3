@@ -9,6 +9,7 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  Select,
   useToast,
   VStack,
 } from "@chakra-ui/react";
@@ -21,6 +22,11 @@ export function MemberSignup() {
   const [password, setPassword] = useState("");
   const [passwordCheck, setPasswordCheck] = useState("");
   const [nickName, setNickName] = useState("");
+  const [name, setName] = useState("");
+  const [gender, setGender] = useState("");
+  const [birth, setBirth] = useState("");
+  const [phone, setPhone] = useState("");
+  const [inserted, setInserted] = useState(new Date().toISOString());
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckedEmail, setIsCheckedEmail] = useState(false);
   const [isCheckedNickName, setIsCheckedNickName] = useState(false);
@@ -32,18 +38,26 @@ export function MemberSignup() {
   function handleClick() {
     setIsLoading(true);
     axios
-      .post("/api/member/signup", { email, password, nickName })
+      .post("/api/member/signup", {
+        email,
+        password,
+        nickName,
+        name,
+        gender,
+        birth,
+        phone,
+        inserted,
+      })
       .then((res) => {
         toast({
           status: "success",
           description: "회원 가입이 완료되었습니다.",
           position: "top",
         });
-        // todo : 로그인 화면으로 이동
-        navigate("/page/member/MemberLogin");
+        navigate("/login");
       })
       .catch((err) => {
-        if (err.response.status === 400) {
+        if (err.response && err.response.status === 400) {
           toast({
             status: "error",
             description: "입력값을 확인해 주세요.",
@@ -64,17 +78,16 @@ export function MemberSignup() {
 
   function handleCheckEmail() {
     axios
-      .get(`/api/member/check?email=${email}`)
+      .get(`/api/member/check-email?email=${email}`)
       .then((res) => {
         toast({
           status: "warning",
           description: "사용할 수 없는 이메일입니다.",
           position: "top",
         });
-      }) // 이미 있는 이메일 (사용 못함)
+      })
       .catch((err) => {
-        if (err.response.status === 404) {
-          // 사용할 수 있는 이메일
+        if (err.response && err.response.status === 404) {
           toast({
             status: "info",
             description: "사용할 수 있는 이메일입니다.",
@@ -82,13 +95,12 @@ export function MemberSignup() {
           });
           setIsCheckedEmail(true);
         }
-      })
-      .finally();
+      });
   }
 
   function handleCheckNickName() {
     axios
-      .get(`/api/member/check?nickName=${nickName}`)
+      .get(`/api/member/check-nickName?nickName=${nickName}`)
       .then((res) => {
         toast({
           status: "warning",
@@ -97,7 +109,7 @@ export function MemberSignup() {
         });
       })
       .catch((err) => {
-        if (err.response.status === 404) {
+        if (err.response && err.response.status === 404) {
           toast({
             status: "info",
             description: "사용할 수 있는 별명입니다.",
@@ -105,39 +117,24 @@ export function MemberSignup() {
           });
           setIsCheckedNickName(true);
         }
-      })
-      .finally();
+      });
   }
 
   const isCheckedPassword = password === passwordCheck;
 
-  let isDisabled = false;
-
-  if (!isCheckedPassword) {
-    isDisabled = true;
-  }
-
-  if (
-    !(
-      email.trim().length > 0 &&
-      password.trim().length > 0 &&
-      nickName.trim().length > 0
-    )
-  ) {
-    isDisabled = true;
-  }
-
-  if (!isCheckedEmail) {
-    isDisabled = true;
-  }
-
-  if (!isCheckedNickName) {
-    isDisabled = true;
-  }
-
-  if (!isValidEmail) {
-    isDisabled = true;
-  }
+  let isDisabled = !(
+    email.trim().length > 0 &&
+    password.trim().length > 0 &&
+    nickName.trim().length > 0 &&
+    isCheckedPassword &&
+    isCheckedEmail &&
+    isCheckedNickName &&
+    isValidEmail &&
+    name.trim().length > 0 &&
+    gender.trim().length > 0 &&
+    birth.trim().length > 0 &&
+    phone.trim().length > 0
+  );
 
   return (
     <Center>
@@ -168,9 +165,7 @@ export function MemberSignup() {
               </InputRightElement>
             </InputGroup>
             {!isCheckedEmail && (
-              <FormHelperText mt={2}>
-                이메일 중복확인을 해주세요.
-              </FormHelperText>
+              <FormHelperText mt={2}>이메일 중복확인을 해주세요.</FormHelperText>
             )}
             {!isValidEmail && (
               <FormHelperText mt={2}>
@@ -195,6 +190,47 @@ export function MemberSignup() {
               <FormHelperText mt={2}>암호가 일치하지 않습니다.</FormHelperText>
             )}
           </FormControl>
+          <FormControl id="name" isRequired>
+            <FormLabel>이름</FormLabel>
+            <Input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            {!name && (
+              <FormHelperText mt={2} color="red.500">
+                이름을 입력해주세요.
+              </FormHelperText>
+            )}
+          </FormControl>
+          <FormControl>
+            <FormLabel>성별</FormLabel>
+            <Select
+              placeholder="성별을 선택해주세요"
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+            >
+              <option value="male">남성</option>
+              <option value="female">여성</option>
+              <option value="other">기타</option>
+            </Select>
+          </FormControl>
+          <FormControl>
+            <FormLabel>생년월일</FormLabel>
+            <Input
+              type="date"
+              value={birth}
+              onChange={(e) => setBirth(e.target.value)}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>전화번호</FormLabel>
+            <Input
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </FormControl>
           <FormControl>
             <FormLabel>별명</FormLabel>
             <InputGroup>
@@ -204,6 +240,7 @@ export function MemberSignup() {
                   setNickName(e.target.value.trim());
                   setIsCheckedNickName(false);
                 }}
+                required
               />
               <InputRightElement w="75px" mr={1}>
                 <Button
