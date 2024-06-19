@@ -33,6 +33,11 @@ public class TourController {
         return areaCode;
     }
 
+    @GetMapping("get/areaName")
+    public List<String> getAreaName() {
+        return service.getAreaName();
+    }
+
     @GetMapping("get/contentType")
     public List<Integer> getContentType() {
         List<Integer> typeId = service.getContentTypeId();
@@ -135,6 +140,7 @@ public class TourController {
         System.out.println(options);
 
         System.out.println(options.get("contentType"));
+        System.out.println(service.getNextSearchOption(options));
 
         return service.getNextSearchOption(options);
     }

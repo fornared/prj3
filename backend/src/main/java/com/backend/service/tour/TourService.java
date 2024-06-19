@@ -195,8 +195,8 @@ public class TourService {
 
     public Map<String, Object> getNextSearchOption(Map<String, Object> options) {
         String contentTypeName = options.get("contentType").toString();
-//        String cat1Name = options.get("cat1").toString();
-//        String cat2Name = options.get("cat2").toString();
+        String cat1Name = options.get("cat1").toString();
+        String cat2Name = options.get("cat2").toString();
 //        String areaName = options.get("area").toString();
 
         Map<String, Object> nextSearchOption = new HashMap<>();
@@ -204,6 +204,14 @@ public class TourService {
         if (!contentTypeName.isEmpty()) {
             List<String> nextCat1 = mapper.selectCat1NamesByContentTypeNameOnMap(contentTypeName);
             nextSearchOption.put("nextCat1", nextCat1);
+        }
+        if (!contentTypeName.isEmpty() && !cat1Name.isEmpty()) {
+            List<String> nextCat2 = mapper.selectCat2NamesByCat1NameOnMap(contentTypeName, cat1Name);
+            nextSearchOption.put("nextCat2", nextCat2);
+        }
+        if (!contentTypeName.isEmpty() && !cat1Name.isEmpty() && !cat2Name.isEmpty()) {
+            List<String> nextCat3 = mapper.selectCat3NamesByCat2Name(cat2Name);
+            nextSearchOption.put("nextCat3", nextCat3);
         }
 
 
@@ -218,5 +226,9 @@ public class TourService {
         for (Category typeCatMap : typeCatMaps) {
             mapper.insertTypeCategoryMapping(typeCatMap);
         }
+    }
+
+    public List<String> getAreaName() {
+        return mapper.selectAreaName();
     }
 }
