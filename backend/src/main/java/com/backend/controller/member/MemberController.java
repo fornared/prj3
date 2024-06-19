@@ -18,24 +18,24 @@ public class MemberController {
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody Member member) {
         // 이메일 중복 확인
-        if (memberService.getMemberByEmail(member.getEmail()) != null) {
+        if (memberService.getByEmail(member.getEmail()) != null) {
             return ResponseEntity.badRequest().body("이미 사용 중인 이메일입니다.");
         }
 
         // 닉네임 중복 확인
-        if (memberService.getMemberByNickName(member.getNick_name()) != null) {
+        if (memberService.getByNickName(member.getNickname()) != null) {
             return ResponseEntity.badRequest().body("이미 사용 중인 닉네임입니다.");
         }
 
         // 회원 가입 처리
-        memberService.addMember(member);
+        memberService.add(member);
         return ResponseEntity.ok("회원 가입이 완료되었습니다.");
     }
 
     @GetMapping("/check-email")
     public ResponseEntity<Void> checkEmail(@RequestParam String email) {
         // 이메일 중복 확인
-        if (memberService.getMemberByEmail(email) != null) {
+        if (memberService.getByEmail(email) != null) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
@@ -45,7 +45,7 @@ public class MemberController {
     @GetMapping("/check-nickName")
     public ResponseEntity<Void> checkNickName(@RequestParam String nickName) {
         // 닉네임 중복 확인
-        if (memberService.getMemberByNickName(nickName) != null) {
+        if (memberService.getByNickName(nickName) != null) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
@@ -55,7 +55,7 @@ public class MemberController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Member member) {
         // 로그인 처리
-        Member foundMember = memberService.getMemberByEmail(member.getEmail());
+        Member foundMember = memberService.getByEmail(member.getEmail());
         if (foundMember == null || !foundMember.getPassword().equals(member.getPassword())) {
             return ResponseEntity.badRequest().body("이메일이나 비밀번호가 일치하지 않습니다.");
         }

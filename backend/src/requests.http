@@ -1,7 +1,14 @@
-POST http://localhost:5173/api/member/login
+POST http://localhost:5173/api/member/signup
 Content-Type: application/json
 
 {
-  "email": "11@11",
-  "password": "11"
+  "id": 22,
+  "email": "22@22",
+  "password": "22",
+  "name": "rts",
+  "nickname": "22",
+  "gender": "male",
+  "birth": "2001-06-16",
+  "phone": "010-4066-3695",
+  "inserted": ""
 }
