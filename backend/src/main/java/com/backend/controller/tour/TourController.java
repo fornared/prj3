@@ -33,6 +33,14 @@ public class TourController {
         return areaCode;
     }
 
+    @GetMapping("get/contentType")
+    public List<Integer> getContentType() {
+        List<Integer> typeId = service.getContentTypeId();
+        System.out.println(typeId);
+
+        return typeId;
+    }
+
     @PostMapping("add/sigungu")
     public ResponseEntity addSigungu(@RequestBody List<Area> sigungu) {
         service.addSigungu(sigungu);
@@ -123,10 +131,12 @@ public class TourController {
     }
 
     @PostMapping("get/searchOption")
-    public ResponseEntity getSearchOption(@RequestBody List<String> options) {
+    public Map<String, Object> getSearchOption(@RequestBody Map<String, Object> options) {
         System.out.println(options);
 
-        return null;
+        System.out.println(options.get("contentType"));
+
+        return service.getNextSearchOption(options);
     }
 
     @GetMapping("list/{id}")
@@ -138,6 +148,14 @@ public class TourController {
     public ResponseEntity addImage(@RequestBody List<Image> images) {
         System.out.println(images);
         service.addImage(images);
+
+        return null;
+    }
+
+    @PostMapping("add/typeCatMap")
+    public ResponseEntity addTypeCatMap(@RequestBody List<Category> typeCatMaps) {
+        System.out.println(typeCatMaps);
+        service.addTypeCategoryMapping(typeCatMaps);
 
         return null;
     }
