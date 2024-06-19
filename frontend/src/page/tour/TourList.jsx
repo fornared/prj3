@@ -19,13 +19,24 @@ export function TourList() {
   const [contentType, setContentType] = useState("");
   const [category, setCategory] = useState("");
   const [cat1, setCat1] = useState([]);
+  const [selectedCat1, setSelectedCat1] = useState("");
+  const [cat2, setCat2] = useState([]);
+  const [selectedCat2, setSelectedCat2] = useState("");
+  const [cat3, setCat3] = useState([]);
+  const [selectedCat3, setSelectedCat3] = useState("");
   const [area, setArea] = useState("");
+  const [areas, setAreas] = useState([]);
   const [sigungu, setSigungu] = useState("");
-  const [keword, setKeword] = useState("");
+  const [keyword, setKeyword] = useState("");
   const [searchParams] = useSearchParams();
 
-  const searchOption = [];
   const navigate = useNavigate();
+
+  useEffect(() => {
+    axios.get("/api/tour/get/areaName").then((res) => {
+      setAreas(res.data);
+    });
+  }, []);
 
   useEffect(() => {
     axios.get(`/api/tour/list?${searchParams}`).then((res) => {
@@ -36,7 +47,7 @@ export function TourList() {
       setCategory("");
       setArea("");
       setSigungu("");
-      setKeword("");
+      setKeyword("");
 
       const typeParam = searchParams.get("type");
       const categoryParam = searchParams.get("category");
@@ -57,35 +68,27 @@ export function TourList() {
         setSigungu(sigunguParam);
       }
       if (keywordParam) {
-        setKeword(keywordParam);
+        setKeyword(keywordParam);
       }
     });
   }, [searchParams]);
 
-  // useEffect(() => {
-  //   searchOption.push(contentType, category, area);
-  //
-  //   console.log(searchOption);
-  //
-  //   axios.post(`/api/tour/get/searchOption`, searchOption);
-  // }, [contentType, category, area]);
-
   useEffect(() => {
-    searchOption.push(contentType, category, area);
-
-    console.log(searchOption);
-
     axios
       .post(`/api/tour/get/searchOption`, {
         contentType: contentType,
-        category: category,
+        cat1: selectedCat1,
+        cat2: selectedCat2,
         area: area,
       })
       .then((res) => {
-        setCat1(res.data.nextCat1);
+        setCat1(res.data.nextCat1 || []);
         console.log(cat1);
+        setCat2(res.data.nextCat2 || []);
+        console.log(cat2);
+        setCat3(res.data.nextCat3 || []);
       });
-  }, [contentType, category, area]);
+  }, [contentType, selectedCat1, selectedCat2, area]);
 
   const pageNums = [];
   for (let i = pageInfo.leftPageNum; i <= pageInfo.rightPageNum; i++) {
@@ -98,7 +101,7 @@ export function TourList() {
   }
 
   function handleClickSearch() {
-    navigate(`/tour/list?type=${contentType}`);
+    navigate(`/tour/list?type=${contentType}&category=${category}`);
   }
 
   return (
@@ -111,13 +114,16 @@ export function TourList() {
       <Box mb={10}>
         <Heading>list</Heading>
       </Box>
-      <Center mb={10}>
+      <Center mb={10} gap={2}>
         <Box>
           <Select
             value={contentType}
-            onChange={(e) => setContentType(e.target.value)}
+            onChange={(e) => {
+              setContentType(e.target.value);
+              setSelectedCat1("");
+            }}
           >
-            <option value="">전체</option>
+            <option value="">관광타입</option>
             <option>관광지</option>
             <option>문화시설</option>
             <option>축제/공연/행사</option>
@@ -130,29 +136,88 @@ export function TourList() {
         </Box>
         <Box>
           <Select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={selectedCat1}
+            onChange={(e) => {
+              setSelectedCat1(e.target.value);
+              setCategory(e.target.value);
+              setSelectedCat2("");
+            }}
           >
-            <option value="">전체</option>
-            {/*{cat1.map((item, index) => (*/}
-            {/*  <option key={index}>{item}</option>*/}
-            {/*))}*/}
+            <option value="">대분류</option>
+            {cat1.map((item, index) => (
+              <option key={index}>{item}</option>
+            ))}
           </Select>
         </Box>
         <Box>
-          <Select value={area} onChange={(e) => setArea(e.target.value)}>
-            <option value="">전체</option>
-            <option>서울</option>
-            <option>인천</option>
-            <option>대전</option>
-            <option>대구</option>
-            <option>광주</option>
-            <option>부산</option>
-            <option>울산</option>
-            <option>세종특별자치시</option>
-            <option>경기도</option>
+          <Select
+            value={selectedCat2}
+            onChange={(e) => {
+              const opt = e.target.value;
+
+              setSelectedCat2(opt);
+
+              if (opt === "") {
+                setCategory(selectedCat1);
+              } else {
+                setCategory(opt);
+              }
+
+              setSelectedCat3("");
+            }}
+          >
+            <option value="">중분류</option>
+            {cat2.map((item, index) => (
+              <option key={index}>{item}</option>
+            ))}
           </Select>
         </Box>
+        <Box>
+          <Select
+            value={selectedCat3}
+            onChange={(e) => {
+              const opt = e.target.value;
+
+              setSelectedCat3(opt);
+
+              if (opt === "") {
+                setCategory(selectedCat2);
+              } else {
+                setCategory(opt);
+              }
+            }}
+          >
+            <option value="">소분류</option>
+            {cat3.map((item, index) => (
+              <option key={index}>{item}</option>
+            ))}
+          </Select>
+        </Box>
+
+        <Box>
+          <Select
+            value={area}
+            onChange={(e) => {
+              setArea(e.target.value);
+              setSigungu("");
+            }}
+          >
+            <option value="">지역</option>
+            {areas.map((item, index) => (
+              <option key={index}>{item}</option>
+            ))}
+          </Select>
+        </Box>
+
+        {/*<Box>*/}
+        {/*  <Select value={sigungu} onChange={(e) => setSigungu(e.target.value)}>*/}
+        {/*    <option value="">전체</option>*/}
+        {/*    {sigungu.map((item, index) => (*/}
+        {/*      <option key={index}>{item}</option>*/}
+        {/*    ))}*/}
+        {/*  </Select>*/}
+        {/*</Box>*/}
+
         <Box>
           <Button onClick={handleClickSearch}>검색버튼</Button>
         </Box>

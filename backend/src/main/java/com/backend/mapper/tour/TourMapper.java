@@ -316,8 +316,32 @@ public interface TourMapper {
             SELECT DISTINCT c1.name
             FROM category1 c1
                 JOIN type_category_mapping tcm on c1.cat1 = tcm.cat1
-                JOIN temp.content_type ct on tcm.type_id = ct.id
+                JOIN content_type ct on tcm.type_id = ct.id
             WHERE ct.name = #{contentTypeName}
             """)
     List<String> selectCat1NamesByContentTypeNameOnMap(String contentTypeName);
+
+    @Select("""
+            SELECT c2.name
+            FROM category2 c2
+                JOIN type_category_mapping tcm on c2.cat2 = tcm.cat2
+                JOIN content_type ct on tcm.type_id = ct.id
+                JOIN category1 c1 on c2.cat1 = c1.cat1
+            WHERE ct.name=#{contentTypeName} AND c1.name=#{cat1Name}
+            """)
+    List<String> selectCat2NamesByCat1NameOnMap(String contentTypeName, String cat1Name);
+
+    @Select("""
+            SELECT c3.name
+            FROM category3 c3
+                JOIN category2 c2 ON c3.cat2 = c2.cat2
+            WHERE c2.name=#{cat2Name}
+            """)
+    List<String> selectCat3NamesByCat2Name(String cat2Name);
+
+    @Select("""
+            SELECT name
+            FROM area
+            """)
+    List<String> selectAreaName();
 }
