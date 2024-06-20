@@ -469,7 +469,11 @@ export function TourSearch() {
             toiletries: item.roomtoiletries,
             tv: item.roomtv,
           }));
-
+          const info2Img = data.map((item, index) => ({
+            contentId: item.contentid,
+            number: index,
+            img_url: item.roomimg1,
+          }))
           axios
             .post("/api/tour/add/lodgingInfo2", info2)
             .then(() => {
