@@ -214,7 +214,6 @@ export function MemberSignup() {
             >
               <option value="male">남성</option>
               <option value="female">여성</option>
-              <option value="other">기타</option>
             </Select>
           </FormControl>
           <FormControl>
