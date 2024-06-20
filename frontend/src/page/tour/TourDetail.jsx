@@ -19,6 +19,7 @@ import { useParams } from "react-router-dom";
 export function TourDetail() {
   const { id } = useParams();
   const [info, setInfo] = useState([]);
+  const [info2, setInfo2] = useState(null);
   const [showAll, setShowAll] = useState(false);
   const [showBtnMore, setShowBtnMore] = useState(false);
 
@@ -35,11 +36,21 @@ export function TourDetail() {
             setShowBtnMore(overviewHeight > 96);
           }
         }
+        handleResize();
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
       })
       .catch(() => {});
+
+    axios
+      .get(`/api/tour/list/info2/${id}`)
+      .then((res) => {
+        setInfo2(res.data);
+      })
+      .catch();
   }, [info.overview]);
+
+  useEffect(() => {}, []);
 
   if (info && info.length === 0) {
     return <Spinner />;
@@ -55,7 +66,7 @@ export function TourDetail() {
       border="1px solid black"
       mx={{
         base: 0,
-        lg: 200,
+        lg: 100,
       }}
     >
       <Box>
@@ -103,6 +114,21 @@ export function TourDetail() {
           </Tbody>
         </Table>
       </Box>
+      {info2 !== null && (
+        <Box p={4} mt={"10px"} border="1px solid black">
+          (상세정보..)
+          <Table>
+            <Tbody>
+              {info2.map((item) => (
+                <Tr key={item.number}>
+                  <Th>{item.infoName}</Th>
+                  <Td dangerouslySetInnerHTML={{ __html: item.infoText }}></Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      )}
       <Box p={4} mt={"10px"} border="1px solid black">
         (리뷰..)
       </Box>

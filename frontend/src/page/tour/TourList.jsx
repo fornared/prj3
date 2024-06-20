@@ -272,31 +272,25 @@ export function TourList() {
             {tourList.map((item) => (
               <Box
                 key={item.id}
-                bg={"tomato"}
-                width={"280px"}
-                height={"210px"}
+                border={"1px solid blue"}
+                width={"300px"}
+                height={"240px"}
                 cursor={"pointer"}
                 onClick={() => navigate(`/tour/list/${item.id}`)}
+                _hover={{
+                  border: "1px solid red",
+                }}
               >
-                <Box
-                  border={"1px solid black"}
-                  height={"180px"}
-                  align={"center"}
-                  overflow={"hidden"}
-                >
+                <Box height={"190px"} align={"center"} overflow={"hidden"}>
                   {item.firstImage1 !== "" && (
-                    <Image
-                      // maxWidth={"100%"}
-                      // maxHeight={"100%"}
-                      objectFit={"contain"}
-                      src={item.firstImage1}
-                    />
+                    <Image objectFit={"contain"} src={item.firstImage1} />
                   )}
                   {item.firstImage1 === "" && <Text>없음</Text>}
                 </Box>
                 <Box
                   border={"1px solid black"}
-                  mt={"1"}
+                  height={"40px"}
+                  mt={"5px"}
                   fontWeight={"semibold"}
                   display={"flex"}
                   alignItems={"center"}
