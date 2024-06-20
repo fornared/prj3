@@ -49,6 +49,7 @@ export function MemberSignup() {
         inserted,
       })
       .then((res) => {
+
         toast({
           status: "success",
           description: "회원 가입이 완료되었습니다.",

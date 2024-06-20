@@ -2,10 +2,14 @@ package com.backend.controller.member;
 
 import com.backend.domain.member.Member;
 import com.backend.service.member.MemberService;
+import com.backend.util.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -15,6 +19,9 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody Member member) {
         // 이메일 중복 확인
@@ -23,7 +30,7 @@ public class MemberController {
         }
 
         // 닉네임 중복 확인
-        if (memberService.getByNickName(member.getNickname()) != null) {
+        if (memberService.getByNickName(member.getNickName()) != null) {
             return ResponseEntity.badRequest().body("이미 사용 중인 닉네임입니다.");
         }
 
@@ -64,20 +71,19 @@ public class MemberController {
     }
 
     @PostMapping("/token")
-    public ResponseEntity<String> getToken(@RequestBody Map<String, String> requestPayload) {
-        String email = requestPayload.get("email");
-        String password = requestPayload.get("password");
-
-        if (email != null && password != null) {
-            // 토큰 발급 처리
-            String token = memberService.login(email, password);
-            if (token != null) {
-                return ResponseEntity.ok(token);
-            } else {
-                return ResponseEntity.status(401).body("이메일이나 비밀번호가 맞지 않습니다.");
-            }
-        } else {
-            return ResponseEntity.badRequest().body("이메일과 비밀번호를 제공해야 합니다.");
+    public ResponseEntity<?> generateToken(@RequestBody Member member) {
+        // 로그인 검증 로직
+        Member foundMember = memberService.getByEmail(member.getEmail());
+        if (foundMember == null || !foundMember.getPassword().equals(member.getPassword())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
         }
+
+        // 토큰 생성
+        String token = jwtTokenUtil.generateToken(String.valueOf(foundMember));
+
+        // 토큰 반환
+        Map<String, String> response = new HashMap<>();
+        response.put("token", token);
+        return ResponseEntity.ok(response);
     }
 }

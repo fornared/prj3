@@ -16,6 +16,11 @@ public class MemberService {
     private final JwtTokenUtil jwtTokenUtil;
 
     public void add(Member member) {
+        if ("male".equalsIgnoreCase(member.getGender())) {
+            member.setGender("0");
+        } else if ("female".equalsIgnoreCase(member.getGender())) {
+            member.setGender("1");
+        }
         memberMapper.insertMember(member);
     }
 
