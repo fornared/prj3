@@ -257,6 +257,20 @@ public class TourService {
     }
 
     public void addLodgingInfo2(List<LodgingInfo2> info2List) {
+        for (LodgingInfo2 info2 : info2List) {
+            Integer dbId = mapper.selectIdByExContentId(info2.getContentId());
 
+            // content에 있어야(1) info 데이터 삽입
+            int dbCountContent = mapper.countContentByContentId(dbId);
+            // info2에 이미 있는 데이터가 아닐때만(0) 진행
+            int dbCountLodgingInfo2 = mapper.countLodgingInfo2ByContentIdOnContent(dbId, info2.getNumber());
+
+            if (dbCountContent == 1 && dbCountLodgingInfo2 == 0) {
+                info2.setContentId(dbId);
+                mapper.insertLodgingInfo2(info2);
+            } else {
+                System.out.println("입력실패");
+            }
+        }
     }
 }
