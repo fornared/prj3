@@ -2,15 +2,10 @@ package com.backend.controller.member;
 
 import com.backend.domain.member.Member;
 import com.backend.service.member.MemberService;
-import com.backend.util.JwtTokenUtil;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,9 +13,6 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
-
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody Member member) {
@@ -60,30 +52,28 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Member member) {
-        // 로그인 처리
-        Member foundMember = memberService.getByEmail(member.getEmail());
-        if (foundMember == null || !foundMember.getPassword().equals(member.getPassword())) {
+    public ResponseEntity<String> login(@RequestBody Member member, HttpSession session) {
+        boolean isAuthenticated = memberService.login(member.getEmail(), member.getPassword(), session);
+        if (isAuthenticated) {
+            return ResponseEntity.ok("로그인 성공");
+        } else {
             return ResponseEntity.badRequest().body("이메일이나 비밀번호가 일치하지 않습니다.");
         }
-
-        return ResponseEntity.ok("로그인 성공!");
     }
 
-    @PostMapping("/token")
-    public ResponseEntity<?> generateToken(@RequestBody Member member) {
-        // 로그인 검증 로직
-        Member foundMember = memberService.getByEmail(member.getEmail());
-        if (foundMember == null || !foundMember.getPassword().equals(member.getPassword())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        memberService.logout(session);
+        return ResponseEntity.ok("로그아웃 성공");
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<String> status(HttpSession session) {
+        boolean isAuthenticated = memberService.isAuthenticated(session);
+        if (isAuthenticated) {
+            return ResponseEntity.ok("Authenticated");
+        } else {
+            return ResponseEntity.status(401).body("Not authenticated");
         }
-
-        // 토큰 생성
-        String token = jwtTokenUtil.generateToken(String.valueOf(foundMember));
-
-        // 토큰 반환
-        Map<String, String> response = new HashMap<>();
-        response.put("token", token);
-        return ResponseEntity.ok(response);
     }
 }

@@ -2,6 +2,6 @@ POST http://localhost:5173/api/member/login
 Content-Type: application/json
 
 {
-  "email": "22@22",
-  "password": "22"
+  "email": "11@11",
+  "password": "11"
 }

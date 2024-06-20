@@ -2,8 +2,9 @@ package com.backend.service.member;
 
 import com.backend.domain.member.Member;
 import com.backend.mapper.member.MemberMapper;
-import com.backend.util.JwtTokenUtil;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
 
     private final MemberMapper memberMapper;
-    private final JwtTokenUtil jwtTokenUtil;
+    private final PasswordEncoder passwordEncoder;
 
     public void add(Member member) {
         if ("male".equalsIgnoreCase(member.getGender())) {
@@ -21,6 +22,7 @@ public class MemberService {
         } else if ("female".equalsIgnoreCase(member.getGender())) {
             member.setGender("1");
         }
+        member.setPassword(passwordEncoder.encode(member.getPassword())); // 비밀번호 암호화
         memberMapper.insertMember(member);
     }
 
@@ -32,12 +34,21 @@ public class MemberService {
         return memberMapper.findMemberByNickName(nickName);
     }
 
-    public String login(String email, String password) {
+    public boolean login(String email, String password, HttpSession session) {
         Member member = memberMapper.findMemberByEmail(email);
-        if (member != null && member.getPassword().equals(password)) {
-            return jwtTokenUtil.generateToken(member.getEmail());
+        if (member != null && passwordEncoder.matches(password, member.getPassword())) { // 암호화된 비밀번호 비교
+            session.setAttribute("member", member);
+            return true;
         } else {
-            return null;
+            return false;
         }
+    }
+
+    public boolean isAuthenticated(HttpSession session) {
+        return session.getAttribute("member") != null;
+    }
+
+    public void logout(HttpSession session) {
+        session.invalidate();
     }
 }
