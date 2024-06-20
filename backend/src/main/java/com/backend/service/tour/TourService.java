@@ -1,9 +1,6 @@
 package com.backend.service.tour;
 
-import com.backend.domain.tour.Area;
-import com.backend.domain.tour.Category;
-import com.backend.domain.tour.Content;
-import com.backend.domain.tour.Image;
+import com.backend.domain.tour.*;
 import com.backend.mapper.tour.TourMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -197,7 +194,7 @@ public class TourService {
         String contentTypeName = options.get("contentType").toString();
         String cat1Name = options.get("cat1").toString();
         String cat2Name = options.get("cat2").toString();
-//        String areaName = options.get("area").toString();
+        String areaName = options.get("area").toString();
 
         Map<String, Object> nextSearchOption = new HashMap<>();
 
@@ -214,6 +211,10 @@ public class TourService {
             nextSearchOption.put("nextCat3", nextCat3);
         }
 
+        if (!areaName.isEmpty()) {
+            List<String> nextSigungu = mapper.selectSigunguNameByAreaName(areaName);
+            nextSearchOption.put("nextSigungu", nextSigungu);
+        }
 
         return nextSearchOption;
     }
@@ -230,5 +231,32 @@ public class TourService {
 
     public List<String> getAreaName() {
         return mapper.selectAreaName();
+    }
+
+    public void addInfo2(List<Info2> info2List) {
+        for (Info2 info2 : info2List) {
+            Integer dbId = mapper.selectIdByExContentId(info2.getContentId());
+
+            // content에 있어야(1) info 데이터 삽입
+            int dbCountContent = mapper.countContentByContentId(dbId);
+            // info2에 이미 있는 데이터가 아닐때만(0) 진행
+            int dbCountInfo2 = mapper.countInfo2ByContentIdOnContent(dbId, info2.getNumber());
+
+            if (dbCountContent == 1 && dbCountInfo2 == 0) {
+                // content_id를 미리 db의 content_id로 set
+                info2.setContentId(dbId);
+                mapper.insertInfo2(info2);
+            } else {
+                System.out.println("입력실패");
+            }
+        }
+    }
+
+    public List<Info2> getInfo2(Integer id) {
+        return mapper.selectInfo2ByContentId(id);
+    }
+
+    public void addLodgingInfo2(List<LodgingInfo2> info2List) {
+
     }
 }

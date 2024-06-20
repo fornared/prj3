@@ -1,9 +1,6 @@
 package com.backend.controller.tour;
 
-import com.backend.domain.tour.Area;
-import com.backend.domain.tour.Category;
-import com.backend.domain.tour.Content;
-import com.backend.domain.tour.Image;
+import com.backend.domain.tour.*;
 import com.backend.service.tour.TourService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -150,6 +147,11 @@ public class TourController {
         return service.get(id);
     }
 
+    @GetMapping("list/info2/{id}")
+    public List<Info2> getInfo2(@PathVariable Integer id) {
+        return service.getInfo2(id);
+    }
+
     @PostMapping("add/image")
     public ResponseEntity addImage(@RequestBody List<Image> images) {
         System.out.println(images);
@@ -162,6 +164,23 @@ public class TourController {
     public ResponseEntity addTypeCatMap(@RequestBody List<Category> typeCatMaps) {
         System.out.println(typeCatMaps);
         service.addTypeCategoryMapping(typeCatMaps);
+
+        return null;
+    }
+
+    @PostMapping("add/info2")
+    public ResponseEntity addInfo2(@RequestBody List<Info2> info2List) {
+        System.out.println(info2List);
+        service.addInfo2(info2List);
+
+        return null;
+    }
+
+    @PostMapping("add/lodgingInfo2")
+    public ResponseEntity addLodgingInfo2(@RequestBody List<LodgingInfo2> info2List) {
+        System.out.println(info2List);
+
+        service.addLodgingInfo2(info2List);
 
         return null;
     }

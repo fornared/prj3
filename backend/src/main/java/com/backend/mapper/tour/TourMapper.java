@@ -344,4 +344,33 @@ public interface TourMapper {
             FROM area
             """)
     List<String> selectAreaName();
+
+    @Select("""
+            SELECT s.name
+            FROM sigungu s JOIN area a ON s.area_code = a.area_code
+            WHERE a.name=#{areaName}
+            """)
+    List<String> selectSigunguNameByAreaName(String areaName);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM content
+            WHERE id=#{id}
+            """)
+    int countContentByContentId(Integer id);
+
+    @Select("""
+            SELECT COUNT(*)
+            FROM info2
+            WHERE content_id=#{contentId} AND number=#{number}
+            """)
+    int countInfo2ByContentIdOnContent(Integer contentId, Integer number);
+
+
+    @Select("""
+            SELECT number ,info_name, info_text
+            FROM info2
+            WHERE content_id=#{id}
+            """)
+    List<Info2> selectInfo2ByContentId(Integer id);
 }

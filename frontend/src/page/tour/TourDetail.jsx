@@ -12,25 +12,47 @@ import {
   Th,
   Tr,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
 export function TourDetail() {
   const { id } = useParams();
-  const [info, setInfo] = useState(null);
+  const [info, setInfo] = useState([]);
+  const [info2, setInfo2] = useState(null);
   const [showAll, setShowAll] = useState(false);
+  const [showBtnMore, setShowBtnMore] = useState(false);
+
+  const overviewRef = useRef(null);
 
   useEffect(() => {
     axios
       .get(`/api/tour/list/${id}`)
       .then((res) => {
         setInfo(res.data.info1);
+        function handleResize() {
+          if (overviewRef.current) {
+            const overviewHeight = overviewRef.current.clientHeight;
+            setShowBtnMore(overviewHeight > 96);
+          }
+        }
+        handleResize();
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
       })
       .catch(() => {});
-  }, []);
 
-  if (info === null) {
+    axios
+      .get(`/api/tour/list/info2/${id}`)
+      .then((res) => {
+        setInfo2(res.data);
+      })
+      .catch();
+  }, [info.overview]);
+
+  useEffect(() => {}, []);
+
+  if (info && info.length === 0) {
     return <Spinner />;
   }
 
@@ -44,7 +66,7 @@ export function TourDetail() {
       border="1px solid black"
       mx={{
         base: 0,
-        lg: 200,
+        lg: 100,
       }}
     >
       <Box>
@@ -58,14 +80,16 @@ export function TourDetail() {
         (설명..)
         <Box whiteSpace="pre-wrap">
           <Collapse startingHeight={"6em"} in={showAll}>
-            {info.overview}
+            <div ref={overviewRef}>{info.overview}</div>
           </Collapse>
         </Box>
-        <Flex justifyContent="flex-end">
-          <Button variant="unstyled" size={"sm"} onClick={handleToggleShow}>
-            {showAll ? "접기" : "..더보기"}
-          </Button>
-        </Flex>
+        {showBtnMore && (
+          <Flex justifyContent="flex-end">
+            <Button variant="unstyled" size={"sm"} onClick={handleToggleShow}>
+              {showAll ? "접기" : "..더보기"}
+            </Button>
+          </Flex>
+        )}
       </Box>
       <Box p={4} mt={"10px"} border="1px solid black">
         (정보..)
@@ -90,6 +114,21 @@ export function TourDetail() {
           </Tbody>
         </Table>
       </Box>
+      {info2 !== null && (
+        <Box p={4} mt={"10px"} border="1px solid black">
+          (상세정보..)
+          <Table>
+            <Tbody>
+              {info2.map((item) => (
+                <Tr key={item.number}>
+                  <Th>{item.infoName}</Th>
+                  <Td dangerouslySetInnerHTML={{ __html: item.infoText }}></Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      )}
       <Box p={4} mt={"10px"} border="1px solid black">
         (리뷰..)
       </Box>

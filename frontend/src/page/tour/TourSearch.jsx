@@ -387,38 +387,100 @@ export function TourSearch() {
 
   function handleAddContentInfo2() {
     setIsProcessing(true);
-    axios
-      .get(`https://apis.data.go.kr/B551011/KorService1/detailInfo1`, {
-        params: {
-          serviceKey: serviceKey,
-          MobileOS: "ETC",
-          MobileApp: "AppTest",
-          _type: "json",
-          contentId: 126508,
-          typeId: 12,
-          numOfRows: 100,
-          pageNo: 1,
-        },
-      })
-      .then((res) => {
-        const data = res.data.response.body.items.item;
-        const info2 = data.map((item) => ({
-          contentId: item.contentid,
-          number: item.serialnum,
-          infoName: item.infoname,
-          infoText: item.infotext,
-        }));
 
-        axios
-          .post("/api/tour/add/info2", info2)
-          .then(() => {
-            console.log("post");
-          })
-          .catch()
-          .finally(() => {
-            setIsProcessing(false);
-          });
-      });
+    const contentTypeId = 32;
+
+    // typeId 가 32가 아니면
+    if (contentTypeId !== 32) {
+      axios
+        .get(`https://apis.data.go.kr/B551011/KorService1/detailInfo1`, {
+          params: {
+            serviceKey: serviceKey,
+            MobileOS: "ETC",
+            MobileApp: "AppTest",
+            _type: "json",
+            contentId: 126508,
+            contentTypeId: contentTypeId,
+            numOfRows: 100,
+            pageNo: 1,
+          },
+        })
+        .then((res) => {
+          const data = res.data.response.body.items.item;
+          const info2 = data.map((item) => ({
+            contentId: item.contentid,
+            number: item.serialnum,
+            infoName: item.infoname,
+            infoText: item.infotext,
+          }));
+
+          axios
+            .post("/api/tour/add/info2", info2)
+            .then(() => {
+              console.log("post");
+            })
+            .catch()
+            .finally(() => {
+              setIsProcessing(false);
+            });
+        });
+    }
+    // typeId 가 32일 경우
+    if (contentTypeId === 32) {
+      axios
+        .get(`https://apis.data.go.kr/B551011/KorService1/detailInfo1`, {
+          params: {
+            serviceKey: serviceKey,
+            MobileOS: "ETC",
+            MobileApp: "AppTest",
+            _type: "json",
+            contentId: 138361,
+            contentTypeId: contentTypeId,
+            numOfRows: 100,
+            pageNo: 1,
+          },
+        })
+        .then((res) => {
+          const data = res.data.response.body.items.item;
+          const info2 = data.map((item, index) => ({
+            contentId: item.contentid,
+            number: index,
+            title: item.roomtitle,
+            size: item.roomsize1,
+            roomCount: item.roomcount,
+            baseAccomCount: item.roombasecount,
+            maxAccomCount: item.roommaxcount,
+            offSeasonFeeWd: item.roomoffseasonminfee1,
+            peakSeasonFeeWd: item.roompeakseasonminfee1,
+            offSeasonFeeWe: item.roomoffseasonminfee2,
+            peakSeasonFeeWe: item.roompeakseasonminfee2,
+            intro: item.roomintro,
+            aircondition: item.roomaircondition,
+            bath: item.roombath,
+            bathFacility: item.roombathfacility,
+            cable: item.roomcable,
+            cook: item.roomcook,
+            hairdryer: item.roomhairdryer,
+            homeTheater: item.roomhometheater, // 추가
+            internet: item.roominternet,
+            pc: item.roompc,
+            sofa: item.roomsofa,
+            refrigerator: item.roomrefrigerator,
+            toiletries: item.roomtoiletries,
+            tv: item.roomtv,
+          }));
+
+          axios
+            .post("/api/tour/add/lodgingInfo2", info2)
+            .then(() => {
+              console.log("post");
+            })
+            .catch()
+            .finally(() => {
+              setIsProcessing(false);
+            });
+        });
+    }
   }
 
   function handleAddImages() {
@@ -540,9 +602,7 @@ export function TourSearch() {
       <Button onClick={handleAddContentInfo1detail}>
         나머지 기본 정보 입력
       </Button>
-      <Button isDisabled onClick={handleAddContentInfo2}>
-        콘텐츠 상제 정보 입력
-      </Button>
+      <Button onClick={handleAddContentInfo2}>콘텐츠 상세 정보 입력</Button>
       <Button onClick={handleAddImages}>
         {/* 음식점 제외 */}
         이미지 입력
@@ -550,6 +610,7 @@ export function TourSearch() {
       <Button onClick={handleAddTypeCategoryMapping}>
         타입-카테고리 매핑 정보 입력
       </Button>
+
       {area.length > 0 && (
         <Box>
           {areaCodes}
