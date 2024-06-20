@@ -2,11 +2,10 @@ package com.backend.controller.member;
 
 import com.backend.domain.member.Member;
 import com.backend.service.member.MemberService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,7 +22,7 @@ public class MemberController {
         }
 
         // 닉네임 중복 확인
-        if (memberService.getByNickName(member.getNickname()) != null) {
+        if (memberService.getByNickName(member.getNickName()) != null) {
             return ResponseEntity.badRequest().body("이미 사용 중인 닉네임입니다.");
         }
 
@@ -53,31 +52,28 @@ public class MemberController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Member member) {
-        // 로그인 처리
-        Member foundMember = memberService.getByEmail(member.getEmail());
-        if (foundMember == null || !foundMember.getPassword().equals(member.getPassword())) {
+    public ResponseEntity<String> login(@RequestBody Member member, HttpSession session) {
+        boolean isAuthenticated = memberService.login(member.getEmail(), member.getPassword(), session);
+        if (isAuthenticated) {
+            return ResponseEntity.ok("로그인 성공");
+        } else {
             return ResponseEntity.badRequest().body("이메일이나 비밀번호가 일치하지 않습니다.");
         }
-
-        return ResponseEntity.ok("로그인 성공!");
     }
 
-    @PostMapping("/token")
-    public ResponseEntity<String> getToken(@RequestBody Map<String, String> requestPayload) {
-        String email = requestPayload.get("email");
-        String password = requestPayload.get("password");
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpSession session) {
+        memberService.logout(session);
+        return ResponseEntity.ok("로그아웃 성공");
+    }
 
-        if (email != null && password != null) {
-            // 토큰 발급 처리
-            String token = memberService.login(email, password);
-            if (token != null) {
-                return ResponseEntity.ok(token);
-            } else {
-                return ResponseEntity.status(401).body("이메일이나 비밀번호가 맞지 않습니다.");
-            }
+    @GetMapping("/status")
+    public ResponseEntity<String> status(HttpSession session) {
+        boolean isAuthenticated = memberService.isAuthenticated(session);
+        if (isAuthenticated) {
+            return ResponseEntity.ok("Authenticated");
         } else {
-            return ResponseEntity.badRequest().body("이메일과 비밀번호를 제공해야 합니다.");
+            return ResponseEntity.status(401).body("Not authenticated");
         }
     }
 }

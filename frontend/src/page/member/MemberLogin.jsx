@@ -37,10 +37,8 @@ export function MemberLogin() {
     }
 
     axios
-      .post("/api/member/token", { email, password })
+      .post("/api/member/login", { email, password })
       .then((res) => {
-        account.login(res.data.token);
-
         toast({
           status: "success",
           description: "로그인 되었습니다.",
@@ -68,7 +66,6 @@ export function MemberLogin() {
             position: "top",
           });
         }
-        account.logout();
       });
   }
 
