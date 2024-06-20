@@ -12,25 +12,36 @@ import {
   Th,
   Tr,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
 export function TourDetail() {
   const { id } = useParams();
-  const [info, setInfo] = useState(null);
+  const [info, setInfo] = useState([]);
   const [showAll, setShowAll] = useState(false);
+  const [showBtnMore, setShowBtnMore] = useState(false);
+
+  const overviewRef = useRef(null);
 
   useEffect(() => {
     axios
       .get(`/api/tour/list/${id}`)
       .then((res) => {
         setInfo(res.data.info1);
+        function handleResize() {
+          if (overviewRef.current) {
+            const overviewHeight = overviewRef.current.clientHeight;
+            setShowBtnMore(overviewHeight > 96);
+          }
+        }
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
       })
       .catch(() => {});
-  }, []);
+  }, [info.overview]);
 
-  if (info === null) {
+  if (info && info.length === 0) {
     return <Spinner />;
   }
 
@@ -58,14 +69,16 @@ export function TourDetail() {
         (설명..)
         <Box whiteSpace="pre-wrap">
           <Collapse startingHeight={"6em"} in={showAll}>
-            {info.overview}
+            <div ref={overviewRef}>{info.overview}</div>
           </Collapse>
         </Box>
-        <Flex justifyContent="flex-end">
-          <Button variant="unstyled" size={"sm"} onClick={handleToggleShow}>
-            {showAll ? "접기" : "..더보기"}
-          </Button>
-        </Flex>
+        {showBtnMore && (
+          <Flex justifyContent="flex-end">
+            <Button variant="unstyled" size={"sm"} onClick={handleToggleShow}>
+              {showAll ? "접기" : "..더보기"}
+            </Button>
+          </Flex>
+        )}
       </Box>
       <Box p={4} mt={"10px"} border="1px solid black">
         (정보..)

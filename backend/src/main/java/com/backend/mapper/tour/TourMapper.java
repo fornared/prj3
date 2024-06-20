@@ -344,4 +344,11 @@ public interface TourMapper {
             FROM area
             """)
     List<String> selectAreaName();
+
+    @Select("""
+            SELECT s.name
+            FROM sigungu s JOIN area a ON s.area_code = a.area_code
+            WHERE a.name=#{areaName}
+            """)
+    List<String> selectSigunguNameByAreaName(String areaName);
 }

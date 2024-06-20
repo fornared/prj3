@@ -197,7 +197,7 @@ public class TourService {
         String contentTypeName = options.get("contentType").toString();
         String cat1Name = options.get("cat1").toString();
         String cat2Name = options.get("cat2").toString();
-//        String areaName = options.get("area").toString();
+        String areaName = options.get("area").toString();
 
         Map<String, Object> nextSearchOption = new HashMap<>();
 
@@ -214,6 +214,10 @@ public class TourService {
             nextSearchOption.put("nextCat3", nextCat3);
         }
 
+        if (!areaName.isEmpty()) {
+            List<String> nextSigungu = mapper.selectSigunguNameByAreaName(areaName);
+            nextSearchOption.put("nextSigungu", nextSigungu);
+        }
 
         return nextSearchOption;
     }

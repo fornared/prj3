@@ -5,6 +5,7 @@ import {
   Flex,
   Heading,
   Image,
+  Input,
   Select,
   SimpleGrid,
   Text,
@@ -27,6 +28,7 @@ export function TourList() {
   const [area, setArea] = useState("");
   const [areas, setAreas] = useState([]);
   const [sigungu, setSigungu] = useState("");
+  const [sigungus, setSigungus] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [searchParams] = useSearchParams();
 
@@ -83,10 +85,9 @@ export function TourList() {
       })
       .then((res) => {
         setCat1(res.data.nextCat1 || []);
-        console.log(cat1);
         setCat2(res.data.nextCat2 || []);
-        console.log(cat2);
         setCat3(res.data.nextCat3 || []);
+        setSigungus(res.data.nextSigungu || []);
       });
   }, [contentType, selectedCat1, selectedCat2, area]);
 
@@ -101,14 +102,42 @@ export function TourList() {
   }
 
   function handleClickSearch() {
-    navigate(`/tour/list?type=${contentType}&category=${category}`);
+    const params = new URLSearchParams();
+
+    if (contentType) {
+      params.append("type", contentType);
+    }
+    if (category) {
+      params.append("category", category);
+    }
+    if (area) {
+      params.append("area", area);
+    }
+    if (sigungu) {
+      params.append("sigungu", sigungu);
+    }
+    if (keyword) {
+      params.append("keyword", keyword);
+    }
+
+    // navigate(
+    //   `/tour/list?type=${contentType}&category=${category}&area=${area}&sigungu=${sigungu}&keyword=${keyword}`,
+    // );
+    navigate(`/tour/list?${params.toString()}`);
+  }
+
+  function handleClickReset() {
+    setContentType("");
+    setCategory("");
+    setArea("");
+    setSigungu("");
   }
 
   return (
     <Box
       mx={{
         base: 0,
-        lg: 200,
+        lg: 100,
       }}
     >
       <Box mb={10}>
@@ -121,6 +150,7 @@ export function TourList() {
             onChange={(e) => {
               setContentType(e.target.value);
               setSelectedCat1("");
+              setCategory("");
             }}
           >
             <option value="">관광타입</option>
@@ -208,24 +238,37 @@ export function TourList() {
             ))}
           </Select>
         </Box>
-
-        {/*<Box>*/}
-        {/*  <Select value={sigungu} onChange={(e) => setSigungu(e.target.value)}>*/}
-        {/*    <option value="">전체</option>*/}
-        {/*    {sigungu.map((item, index) => (*/}
-        {/*      <option key={index}>{item}</option>*/}
-        {/*    ))}*/}
-        {/*  </Select>*/}
-        {/*</Box>*/}
+        <Box>
+          <Select value={sigungu} onChange={(e) => setSigungu(e.target.value)}>
+            <option value="">전체</option>
+            {sigungus.map((item, index) => (
+              <option key={index}>{item}</option>
+            ))}
+          </Select>
+        </Box>
+        <Box>
+          <Input
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            placeholder="검색어"
+          />
+        </Box>
 
         <Box>
           <Button onClick={handleClickSearch}>검색버튼</Button>
+        </Box>
+        <Box>
+          <Button onClick={handleClickReset}>초기화버튼</Button>
         </Box>
       </Center>
       <Box mb={10}>
         {tourList.length === 0 && <Center>결과없음</Center>}
         {tourList.length > 0 && (
-          <SimpleGrid minChildWidth={"280px"} spacing={10}>
+          <SimpleGrid
+            minChildWidth={"280px"}
+            spacing={10}
+            justifyItems={"center"}
+          >
             {tourList.map((item) => (
               <Box
                 key={item.id}
