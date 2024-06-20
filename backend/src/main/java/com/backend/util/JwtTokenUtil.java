@@ -1,32 +1,23 @@
 package com.backend.util;
 
-import com.backend.domain.member.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class JwtTokenUtil {
 
-    private static final String SECRET_KEY = "your-secret-key";
-    private static final long EXPIRATION_TIME = 86400000; // 1일 (밀리초)
+    private static final String SECRET_KEY = "jwt.private.key"; // 실제 비밀 키로 변경
 
-    public String generateToken(Member member) {
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", member.getEmail());
-        claims.put("nickName", member.getNickname());
-
+    public String generateToken(String email) {
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(member.getEmail())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
+                .setSubject(email)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10시간 유효
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
@@ -37,17 +28,13 @@ public class JwtTokenUtil {
                 .getBody();
     }
 
-    public boolean validateToken(String token, Member member) {
-        final String email = getAllClaimsFromToken(token).getSubject();
-        return (email.equals(member.getEmail()) && !isTokenExpired(token));
+    public boolean validateToken(String token, String email) {
+        final String tokenEmail = getAllClaimsFromToken(token).getSubject();
+        return (tokenEmail.equals(email) && !isTokenExpired(token));
     }
 
     private boolean isTokenExpired(String token) {
         final Date expiration = getAllClaimsFromToken(token).getExpiration();
         return expiration.before(new Date());
-    }
-
-    public String generateToken(String email) {
-        return null;
     }
 }
