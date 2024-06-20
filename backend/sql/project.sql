@@ -89,3 +89,4 @@ CREATE TABLE itinerary_detail
     description  VARCHAR(300),
     visit_date   DATETIME NOT NULL
 );
+
