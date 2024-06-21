@@ -1,9 +1,8 @@
 import React, { createContext, useEffect, useState } from "react";
-import { jwtDecode } from "jwt-decode";
+import axios from "axios";
 
 export const LoginContext = createContext(null);
 
-// eslint-disable-next-line react/prop-types
 export function LoginProvider({ children }) {
   const [id, setId] = useState("");
   const [nickName, setNickName] = useState("");
@@ -18,48 +17,68 @@ export function LoginProvider({ children }) {
     login(token);
   }, []);
 
-  // isLoggedIn
-  function isLoggedIn() {
-    return Date.now() < expired * 1000;
-  }
+  const isLoggedIn = () => {
+    return id !== "";
+  };
 
-  // 권한 있는 지? 확인
-  function hasAccess(param) {
-    return id == param;
-  }
+  const hasAccess = (param) => {
+    return id === param;
+  };
 
-  function isAdmin() {
+  const isAdmin = () => {
     return authority.includes("admin");
-  }
+  };
 
-  // login
-  function login(token) {
+  const login = (token) => {
     localStorage.setItem("token", token);
-    const payload = jwtDecode(token);
+    // Assuming token has decoded data. Adjust as necessary.
+    const payload = JSON.parse(atob(token.split('.')[1]));
     setExpired(payload.exp);
     setId(payload.sub);
     setNickName(payload.nickName);
-    setAuthority(payload.scope.split(" ")); // "admin manager user"
-  }
-  // logout
-  function logout() {
+    setAuthority(payload.scope.split(" "));
+  };
+
+  const logout = () => {
     localStorage.removeItem("token");
     setExpired(0);
     setId("");
     setNickName("");
     setAuthority([]);
-  }
+  };
+
+  const handleLogout = (navigate, toast) => {
+    axios
+      .post("/api/member/logout")
+      .then(() => {
+        toast({
+          status: "success",
+          description: "로그아웃 되었습니다.",
+          position: "top",
+        });
+        logout();
+        navigate("/");
+      })
+      .catch(() => {
+        toast({
+          status: "error",
+          description: "로그아웃 중 오류가 발생했습니다.",
+          position: "top",
+        });
+      });
+  };
 
   return (
     <LoginContext.Provider
       value={{
-        id: id,
-        nickName: nickName,
-        login: login,
-        logout: logout,
-        isLoggedIn: isLoggedIn,
-        hasAccess: hasAccess,
-        isAdmin: isAdmin,
+        id,
+        nickName,
+        login,
+        logout,
+        isLoggedIn,
+        hasAccess,
+        isAdmin,
+        handleLogout,
       }}
     >
       {children}

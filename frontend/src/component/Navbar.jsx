@@ -130,7 +130,7 @@ export function Navbar() {
           </InputGroup>
         </Center>
 
-        {account.isLoggedIn() && (
+        {account.isLoggedIn && (
           <Center
             onClick={() => navigate("/write")}
             cursor={"pointer"}
@@ -150,9 +150,9 @@ export function Navbar() {
 
         <Spacer />
 
-        {account.isLoggedIn() && (
+        {account.isLoggedIn && (
           <Center
-            onClick={() => navigate(`/member/${account.id}`)}
+            onClick={() => navigate("/mypage")}
             cursor={"pointer"}
             _hover={{
               bgColor: "rgba(255, 255, 255, 0.5)",
@@ -240,7 +240,8 @@ export function Navbar() {
         </Center>
 
         <Spacer />
-        {!account.isLoggedIn() && (
+
+        {!account.isLoggedIn && (
           <Center
             onClick={() => navigate("/signup")}
             cursor={"pointer"}
@@ -250,13 +251,13 @@ export function Navbar() {
             p={6}
             fontSize={20}
             fontWeight={600}
-            color={"deepskyblue"}
+            color={"white"}
           >
             <FontAwesomeIcon icon={faUserPlus} />
           </Center>
         )}
 
-        {!account.isLoggedIn() && (
+        {!account.isLoggedIn && (
           <Center
             onClick={() => navigate("/login")}
             cursor={"pointer"}
@@ -272,7 +273,7 @@ export function Navbar() {
           </Center>
         )}
 
-        {account.isLoggedIn() && (
+        {account.isLoggedIn && (
           <Center
             onClick={() => {
               account.logout();
