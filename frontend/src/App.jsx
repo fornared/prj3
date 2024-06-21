@@ -1,24 +1,25 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
-import { Home } from "./page/Home.jsx";
-import { BoardWrite } from "./page/board/BoardWrite.jsx";
-import { BoardList } from "./page/board/BoardList.jsx";
-import { BoardView } from "./page/board/BoardView.jsx";
-import { TourSearch } from "./page/tour/TourSearch.jsx";
-import { MemberLogin } from "./page/member/MemberLogin.jsx";
-import { MemberList } from "./page/member/MemberList.jsx";
-import { MemberSignup } from "./page/member/MemberSignup.jsx";
-import { LoginProvider } from "./component/LoginProvider.jsx";
-import { Navbar } from "./component/Navbar.jsx";
-import { BoardEdit } from "./page/board/BoardEdit.jsx";
-import Announcement from "./page/menu/Announcement.jsx";
-import Question from "./page/menu/Question.jsx";
-import Inquiry from "./page/menu/Inquiry.jsx";
-import Event from "./page/menu/Event.jsx";
-import { TourList } from "./page/tour/TourList.jsx";
-import { TourDetail } from "./page/tour/TourDetail.jsx"; // import Schedule from "./page/menu/Schedule.jsx";
-import Schedule from "./page/menu/Schedule.jsx";
-import { BoardDetail } from "./page/board/BoardDetail.jsx";
+import { Home } from "./page/Home";
+import { BoardWrite } from "./page/board/BoardWrite";
+import { BoardList } from "./page/board/BoardList";
+import { BoardView } from "./page/board/BoardView";
+import { TourSearch } from "./page/tour/TourSearch";
+import { MemberLogin } from "./page/member/MemberLogin";
+import { MemberList } from "./page/member/MemberList";
+import { MemberSignup } from "./page/member/MemberSignup";
+import { LoginProvider } from "./component/LoginProvider";
+import { Navbar } from "./component/Navbar";
+import { BoardEdit } from "./page/board/BoardEdit";
+import Announcement from "./page/menu/Announcement";
+import Question from "./page/menu/Question";
+import Inquiry from "./page/menu/Inquiry";
+import Event from "./page/menu/Event";
+import { TourList } from "./page/tour/TourList";
+import { TourDetail } from "./page/tour/TourDetail";
+import Schedule from "./page/menu/Schedule";
+import { BoardDetail } from "./page/board/BoardDetail";
+import { MyPage } from "./page/MyPage";
 
 const router = createBrowserRouter([
   {
@@ -29,17 +30,13 @@ const router = createBrowserRouter([
         <Outlet />
       </>
     ),
-
     children: [
-      {
-        index: true,
-        element: <Home />,
-      },
-      { path: "/write", element: <BoardWrite /> },
+      { index: true, element: <Home /> },
+      { path: "write", element: <BoardWrite /> },
       { path: "board/list", element: <BoardList /> },
+      { path: "board/:id", element: <BoardView /> },
       { path: "board/edit/:id", element: <BoardEdit /> },
       { path: "board/:id", element: <BoardDetail /> },
-      { path: "board/:id", element: <BoardView /> },
       { path: "login", element: <MemberLogin /> },
       { path: "member/list", element: <MemberList /> },
       { path: "signup", element: <MemberSignup /> },
@@ -51,11 +48,12 @@ const router = createBrowserRouter([
       { path: "inquiry", element: <Inquiry /> },
       { path: "event", element: <Event /> },
       { path: "schedule", element: <Schedule /> },
+      { path: "mypage", element: <MyPage /> },
     ],
   },
 ]);
 
-function App(props) {
+function App() {
   return (
     <ChakraProvider>
       <LoginProvider>
