@@ -468,12 +468,12 @@ export function TourSearch() {
             refrigerator: item.roomrefrigerator,
             toiletries: item.roomtoiletries,
             tv: item.roomtv,
+            img1: item.roomimg1,
+            img2: item.roomimg2,
+            img3: item.roomimg3,
+            img4: item.roomimg4,
+            img5: item.roomimg5,
           }));
-          const info2Img = data.map((item, index) => ({
-            contentId: item.contentid,
-            number: index,
-            img_url: item.roomimg1,
-          }))
           axios
             .post("/api/tour/add/lodgingInfo2", info2)
             .then(() => {

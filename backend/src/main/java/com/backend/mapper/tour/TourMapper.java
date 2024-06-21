@@ -370,20 +370,40 @@ public interface TourMapper {
     @Select("""
             SELECT number ,info_name, info_text
             FROM info2
-            WHERE content_id=#{id}
+            WHERE content_id=#{contentId}
             """)
-    List<Info2> selectInfo2ByContentId(Integer id);
+    List<Info2> selectInfo2ByContentId(Integer contentId);
 
     @Insert("""
-            INSERT INTO lodging_info2 (content_id, number, title, size, room_count, base_accom_count, max_accom_count, off_season_fee_wd, peak_season_fee_wd, off_season_fee_we, peak_season_fee_we, intro, aircondition, bath, bath_facility, cable, cook, hairdryer, homeTheater, internet, pc, sofa, refrigerator, toiletries, tv)
+            INSERT INTO lodging_info2 (content_id, number, title, size, room_count, base_accom_count, max_accom_count, off_season_fee_wd, peak_season_fee_wd, off_season_fee_we, peak_season_fee_we, intro, aircondition, bath, bath_facility, cable, cook, hairdryer, home_theater, internet, pc, sofa, refrigerator, toiletries, tv)
             VALUES (#{contentId}, #{number}, #{title}, #{size}, #{roomCount}, #{baseAccomCount}, #{maxAccomCount}, #{offSeasonFeeWd}, #{peakSeasonFeeWd}, #{offSeasonFeeWe}, #{peakSeasonFeeWe}, #{intro}, #{aircondition}, #{bath}, #{bathFacility}, #{cable}, #{cook}, #{hairdryer}, #{homeTheater}, #{internet}, #{pc}, #{sofa}, #{refrigerator}, #{toiletries}, #{tv})
             """)
     int insertLodgingInfo2(LodgingInfo2 info2);
 
     @Select("""
-            SELECT COUNT(*)
+            SELECT id
             FROM lodging_info2
             WHERE content_id=#{contentId} AND number=#{number}
             """)
-    int countLodgingInfo2ByContentIdOnContent(Integer contentId, Integer number);
+    Integer selectLodgingInfo2IdByContentIdOnContent(Integer contentId, Integer number);
+
+    @Insert("""
+            INSERT INTO lodging_info2_img (content_id, lodging_info2_id, img_url)
+            VALUES (#{info2.contentId}, #{lodgingInfo2Id}, #{info2.imgUrl})
+            """)
+    int insertLodgingInfo2Img(LodgingInfo2 info2, Integer lodgingInfo2Id);
+
+    @Select("""
+            SELECT type_id
+            FROM content
+            WHERE id=#{contentId}
+            """)
+    Integer selectTypeIdByContentId(Integer contentId);
+
+    @Select("""
+            SELECT *
+            FROM lodging_info2
+            WHERE content_id=#{contentId}
+            """)
+    List<LodgingInfo2> selectLodgingInfo2ByContentId(Integer contentId);
 }
