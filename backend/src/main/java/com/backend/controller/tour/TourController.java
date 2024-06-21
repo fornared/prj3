@@ -148,8 +148,8 @@ public class TourController {
     }
 
     @GetMapping("list/info2/{id}")
-    public List<Info2> getInfo2(@PathVariable Integer id) {
-        return service.getInfo2(id);
+    public List<Info2> getInfo2(@PathVariable(value = "id") Integer contentId) {
+        return service.getInfo2(contentId);
     }
 
     @PostMapping("add/image")

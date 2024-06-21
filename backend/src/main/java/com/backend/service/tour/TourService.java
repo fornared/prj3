@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -252,8 +253,102 @@ public class TourService {
         }
     }
 
-    public List<Info2> getInfo2(Integer id) {
-        return mapper.selectInfo2ByContentId(id);
+    public List<Info2> getInfo2(Integer contentId) {
+        Integer contentType = mapper.selectTypeIdByContentId(contentId);
+
+        if (contentType == 32) {
+
+
+            List<Info2> info2List = new ArrayList<>();
+
+            List<LodgingInfo2> lodgingInfo2List = mapper.selectLodgingInfo2ByContentId(contentId);
+            System.out.println(lodgingInfo2List);
+
+
+            for (LodgingInfo2 lodgingInfo2 : lodgingInfo2List) {
+                // 처음 number 는 0
+                int i = 0;
+
+                // null 이거나 empty 이면 패스
+                if (lodgingInfo2.getTitle().isEmpty()) {
+                    // 새 객체 만들고
+                    Info2 info2 = new Info2();
+                    // 필요한 값 set
+                    info2.setNumber(i);
+                    info2.setInfoName("객실명");
+                    info2.setInfoText(lodgingInfo2.getTitle());
+                    // 리턴할 리스트에 add
+                    info2List.add(info2);
+                    // 다음 number
+                    i++;
+                }
+                if (lodgingInfo2.getSize().isEmpty()) {
+                    Info2 info2 = new Info2();
+
+                    info2.setNumber(i);
+                    info2.setInfoName("객실크기");
+                    info2.setInfoText(lodgingInfo2.getSize());
+
+                    info2List.add(info2);
+
+                    i++;
+                }
+                if (lodgingInfo2.getRoomCount().isEmpty()) {
+                    Info2 info2 = new Info2();
+
+                    info2.setNumber(i);
+                    info2.setInfoName("객실수");
+                    info2.setInfoText(lodgingInfo2.getRoomCount());
+
+                    info2List.add(info2);
+
+                    i++;
+                }
+                if (lodgingInfo2.getBaseAccomCount().isEmpty()) {
+                    Info2 info2 = new Info2();
+
+                    info2.setNumber(i);
+                    info2.setInfoName("기준인원");
+                    info2.setInfoText(lodgingInfo2.getBaseAccomCount());
+
+                    info2List.add(info2);
+
+                    i++;
+                }
+                if (lodgingInfo2.getMaxAccomCount().isEmpty()) {
+                    Info2 info2 = new Info2();
+
+                    info2.setNumber(i);
+                    info2.setInfoName("최대인원");
+                    info2.setInfoText(lodgingInfo2.getMaxAccomCount());
+
+                    info2List.add(info2);
+
+                    i++;
+                }
+                if (lodgingInfo2.getOffSeasonFeeWd().isEmpty() && lodgingInfo2.getOffSeasonFeeWe().isEmpty()) {
+                    Info2 info2 = new Info2();
+
+                    info2.setNumber(i);
+                    info2.setInfoName("");
+//                    info2.setInfoText(lodgingInfo2.getOffSeasonFeeWd());
+
+                    info2List.add(info2);
+
+                    i++;
+                }
+
+                System.out.println(lodgingInfo2);
+//                lodgingInfo2.
+//                Info2 info2 = new Info2();
+//                info2.setContentId(lodgingInfo2.getContentId());
+//                info2.setNumber(lodgingInfo2.getNumber());
+            }
+//            return null;
+            return mapper.selectInfo2ByContentId(67257);
+        } else {
+            return mapper.selectInfo2ByContentId(contentId);
+        }
     }
 
     public void addLodgingInfo2(List<LodgingInfo2> info2List) {
@@ -262,12 +357,21 @@ public class TourService {
 
             // content에 있어야(1) info 데이터 삽입
             int dbCountContent = mapper.countContentByContentId(dbId);
-            // info2에 이미 있는 데이터가 아닐때만(0) 진행
-            int dbCountLodgingInfo2 = mapper.countLodgingInfo2ByContentIdOnContent(dbId, info2.getNumber());
+            // info2에 이미 있는 데이터가 아닐때만(null) 진행
+            Integer lodgingInfo2Id = mapper.selectLodgingInfo2IdByContentIdOnContent(dbId, info2.getNumber());
 
-            if (dbCountContent == 1 && dbCountLodgingInfo2 == 0) {
+            if (dbCountContent == 1 && lodgingInfo2Id == null) {
                 info2.setContentId(dbId);
                 mapper.insertLodgingInfo2(info2);
+
+                String[] images = {info2.getImg1(), info2.getImg2(), info2.getImg3(), info2.getImg4(), info2.getImg5()};
+                for (String image : images) {
+                    if (!image.isEmpty()) {
+                        info2.setImgUrl(image);
+                        System.out.println(info2);
+                        mapper.insertLodgingInfo2Img(info2, mapper.selectLodgingInfo2IdByContentIdOnContent(dbId, info2.getNumber()));
+                    }
+                }
             } else {
                 System.out.println("입력실패");
             }
