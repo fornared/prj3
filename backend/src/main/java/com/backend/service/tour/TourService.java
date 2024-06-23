@@ -257,20 +257,28 @@ public class TourService {
         Integer contentType = mapper.selectTypeIdByContentId(contentId);
 
         if (contentType == 32) {
-
-
             List<Info2> info2List = new ArrayList<>();
-
             List<LodgingInfo2> lodgingInfo2List = mapper.selectLodgingInfo2ByContentId(contentId);
-            System.out.println(lodgingInfo2List);
-
 
             for (LodgingInfo2 lodgingInfo2 : lodgingInfo2List) {
                 // 처음 number 는 0
                 int i = 0;
 
+                // 객실 이미지
+                List<String> images = mapper.selectImgByLodgingInfo2Id(lodgingInfo2);
+                if (!images.isEmpty()) {
+                    Info2 info2 = new Info2();
+
+                    info2.setNumber(i);
+                    info2.setInfoName("객실사진");
+                    info2.setInfoText(images.toString().replace("[", "").replace("]", ""));
+
+                    info2List.add(info2);
+
+                    i++;
+                }
                 // null 이거나 empty 이면 패스
-                if (lodgingInfo2.getTitle().isEmpty()) {
+                if (!lodgingInfo2.getTitle().isEmpty()) {
                     // 새 객체 만들고
                     Info2 info2 = new Info2();
                     // 필요한 값 set
@@ -282,7 +290,7 @@ public class TourService {
                     // 다음 number
                     i++;
                 }
-                if (lodgingInfo2.getSize().isEmpty()) {
+                if (!lodgingInfo2.getSize().isEmpty()) {
                     Info2 info2 = new Info2();
 
                     info2.setNumber(i);
@@ -293,7 +301,7 @@ public class TourService {
 
                     i++;
                 }
-                if (lodgingInfo2.getRoomCount().isEmpty()) {
+                if (!lodgingInfo2.getRoomCount().isEmpty()) {
                     Info2 info2 = new Info2();
 
                     info2.setNumber(i);
@@ -304,7 +312,7 @@ public class TourService {
 
                     i++;
                 }
-                if (lodgingInfo2.getBaseAccomCount().isEmpty()) {
+                if (!lodgingInfo2.getBaseAccomCount().isEmpty()) {
                     Info2 info2 = new Info2();
 
                     info2.setNumber(i);
@@ -315,7 +323,7 @@ public class TourService {
 
                     i++;
                 }
-                if (lodgingInfo2.getMaxAccomCount().isEmpty()) {
+                if (!lodgingInfo2.getMaxAccomCount().isEmpty()) {
                     Info2 info2 = new Info2();
 
                     info2.setNumber(i);
@@ -326,29 +334,103 @@ public class TourService {
 
                     i++;
                 }
-                if (lodgingInfo2.getOffSeasonFeeWd().isEmpty() && lodgingInfo2.getOffSeasonFeeWe().isEmpty()) {
+                if (!lodgingInfo2.getOffSeasonFeeWd().isEmpty() && !lodgingInfo2.getOffSeasonFeeWe().isEmpty()) {
                     Info2 info2 = new Info2();
 
                     info2.setNumber(i);
-                    info2.setInfoName("");
-//                    info2.setInfoText(lodgingInfo2.getOffSeasonFeeWd());
+                    info2.setInfoName("비수기최소(주중/주말)");
+                    info2.setInfoText(STR."\{lodgingInfo2.getOffSeasonFeeWd()}/\{lodgingInfo2.getOffSeasonFeeWe()}");
+
+                    info2List.add(info2);
+
+                    i++;
+                }
+                if (!lodgingInfo2.getPeakSeasonFeeWd().isEmpty() && !lodgingInfo2.getPeakSeasonFeeWe().isEmpty()) {
+                    Info2 info2 = new Info2();
+
+                    info2.setNumber(i);
+                    info2.setInfoName("성수기최소(주중/주말)");
+                    info2.setInfoText(STR."\{lodgingInfo2.getPeakSeasonFeeWd()}/\{lodgingInfo2.getPeakSeasonFeeWe()}");
+
+                    info2List.add(info2);
+
+                    i++;
+                }
+                if (!lodgingInfo2.getIntro().isEmpty()) {
+                    Info2 info2 = new Info2();
+
+                    info2.setNumber(i);
+                    info2.setInfoName("객실소개");
+                    info2.setInfoText(lodgingInfo2.getIntro());
 
                     info2List.add(info2);
 
                     i++;
                 }
 
-                System.out.println(lodgingInfo2);
-//                lodgingInfo2.
-//                Info2 info2 = new Info2();
-//                info2.setContentId(lodgingInfo2.getContentId());
-//                info2.setNumber(lodgingInfo2.getNumber());
+                // 편의시설 여부 StringBuilder 에 저장
+                StringBuilder facilities = getStringBuilder(lodgingInfo2);
+                if (facilities.length() >= 2) {
+                    facilities.delete(facilities.length() - 2, facilities.length());
+                }
+
+                Info2 info2 = new Info2();
+
+                info2.setNumber(i);
+                info2.setInfoName("편의시설");
+                info2.setInfoText(facilities.toString());
+
+                info2List.add(info2);
             }
-//            return null;
-            return mapper.selectInfo2ByContentId(67257);
+//            return mapper.selectInfo2ByContentId(67257);
+            return info2List;
         } else {
             return mapper.selectInfo2ByContentId(contentId);
         }
+    }
+
+    private static StringBuilder getStringBuilder(LodgingInfo2 lodgingInfo2) {
+        StringBuilder facilities = new StringBuilder();
+        if (lodgingInfo2.getAircondition().matches("Y")) {
+            facilities.append("에어컨, ");
+        }
+        if (lodgingInfo2.getBath().matches("Y")) {
+            facilities.append("욕조, ");
+        }
+        if (lodgingInfo2.getBathFacility().matches("Y")) {
+            facilities.append("목욕시설, ");
+        }
+        if (lodgingInfo2.getCable().matches("Y")) {
+            facilities.append("케이블, ");
+        }
+        if (lodgingInfo2.getCook().matches("Y")) {
+            facilities.append("취사용품, ");
+        }
+        if (lodgingInfo2.getHairdryer().matches("Y")) {
+            facilities.append("드라이기, ");
+        }
+        if (lodgingInfo2.getHomeTheater().matches("Y")) {
+            facilities.append("홈시어터, ");
+        }
+        if (lodgingInfo2.getInternet().matches("Y")) {
+            facilities.append("인터넷, ");
+        }
+        if (lodgingInfo2.getPc().matches("Y")) {
+            facilities.append("PC, ");
+        }
+        if (lodgingInfo2.getSofa().matches("Y")) {
+            facilities.append("소파, ");
+        }
+        if (lodgingInfo2.getRefrigerator().matches("Y")) {
+            facilities.append("냉장고, ");
+        }
+        if (lodgingInfo2.getToiletries().matches("Y")) {
+            facilities.append("세면도구, ");
+        }
+        if (lodgingInfo2.getTv().matches("Y")) {
+            facilities.append("TV, ");
+        }
+        return facilities;
     }
 
     public void addLodgingInfo2(List<LodgingInfo2> info2List) {
@@ -376,5 +458,9 @@ public class TourService {
                 System.out.println("입력실패");
             }
         }
+    }
+
+    public List<Review> getReviewList(Integer contentId) {
+        return mapper.selectAllReviewByContentId(contentId);
     }
 }

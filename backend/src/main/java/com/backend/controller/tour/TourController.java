@@ -184,4 +184,15 @@ public class TourController {
 
         return null;
     }
+
+    @PostMapping("review/add")
+    public ResponseEntity addReview(@RequestBody Review review) {
+        System.out.println(review);
+        return null;
+    }
+
+    @GetMapping("review/list/{contentId}")
+    public List<Review> getReview(@PathVariable(value = "contentId") Integer contentId) {
+        return service.getReviewList(contentId);
+    }
 }
