@@ -9,12 +9,17 @@ import {
   Table,
   Tbody,
   Td,
+  Text,
   Th,
   Tr,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import * as PropTypes from "prop-types";
+import { ReviewComponent } from "../../component/review/ReviewComponent.jsx";
+
+ReviewComponent.propTypes = { contentId: PropTypes.any };
 
 export function TourDetail() {
   const { id } = useParams();
@@ -122,7 +127,20 @@ export function TourDetail() {
               {info2.map((item) => (
                 <Tr key={item.number}>
                   <Th>{item.infoName}</Th>
-                  <Td dangerouslySetInnerHTML={{ __html: item.infoText }}></Td>
+                  <Td>
+                    {item.infoName === "객실사진" &&
+                    item.infoText.trim().length > 0 ? (
+                      item.infoText
+                        .split(",")
+                        .map((imgUrl, index) => (
+                          <Image key={index} src={imgUrl.trim()} />
+                        ))
+                    ) : (
+                      <Text
+                        dangerouslySetInnerHTML={{ __html: item.infoText }}
+                      />
+                    )}
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
@@ -131,6 +149,7 @@ export function TourDetail() {
       )}
       <Box p={4} mt={"10px"} border="1px solid black">
         (리뷰..)
+        <ReviewComponent contentId={info.id} />
       </Box>
     </Box>
   );

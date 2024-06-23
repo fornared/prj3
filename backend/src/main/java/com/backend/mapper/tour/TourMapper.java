@@ -406,4 +406,19 @@ public interface TourMapper {
             WHERE content_id=#{contentId}
             """)
     List<LodgingInfo2> selectLodgingInfo2ByContentId(Integer contentId);
+
+    @Select("""
+            SELECT img_url
+            FROM lodging_info2_img
+            WHERE lodging_info2_id=#{id}
+            """)
+    List<String> selectImgByLodgingInfo2Id(LodgingInfo2 lodgingInfo2);
+
+    @Select("""
+            SELECT r.id, r.review, r.rating, r.inserted, m.nick_name
+            FROM review r JOIN member m ON r.member_id = m.id
+            WHERE r.content_id=#{contentId}
+            ORDER BY id DESC
+            """)
+    List<Review> selectAllReviewByContentId(Integer contentId);
 }
