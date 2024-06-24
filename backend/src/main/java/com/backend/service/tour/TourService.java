@@ -459,4 +459,74 @@ public class TourService {
             }
         }
     }
+
+    public void addIntroInfo(List<List<IntroInfo>> introInfoLists) {
+        for (List<IntroInfo> introInfoList : introInfoLists) {
+            for (IntroInfo introInfo : introInfoList) {
+                Integer cid = introInfo.getContentId();
+                // content에 있어야(1) 데이터 삽입
+                int dbCountContent = mapper.countContentByContentId(cid);
+                if (dbCountContent == 1) {
+                    if (introInfo.getTypeId() == 12) {
+                        // 각 info에 이미 있는 데이터가 아닐때만(null) 진행
+                        if (mapper.selectSpotInfoIdByContentIdOnContent(cid) == null) {
+                            if (introInfo.getHeritage1() == 1) {
+                                introInfo.setHeritage(1);
+                            } else if (introInfo.getHeritage2() == 1) {
+                                introInfo.setHeritage(2);
+                            } else if (introInfo.getHeritage3() == 1) {
+                                introInfo.setHeritage(3);
+                            } else {
+                                introInfo.setHeritage(0);
+                            }
+                            mapper.insertSpotInfo(introInfo);
+                        } else {
+                            System.out.println(STR."\{cid} - 이미 입력된 정보");
+                        }
+                    }
+                    if (introInfo.getTypeId() == 14) {
+                        if (mapper.selectCultureInfoIdByContentIdOnContent(cid) == null) {
+                            mapper.insertCultureInfo(introInfo);
+                        } else {
+                            System.out.println(STR."\{cid} - 이미 입력된 정보");
+                        }
+                    }
+                    if (introInfo.getTypeId() == 15) {
+                        if (mapper.selectFestivalInfoIdByContentIdOnContent(cid) == null) {
+                            mapper.insertFestivalInfo(introInfo);
+                        } else {
+                            System.out.println(STR."\{cid} - 이미 입력된 정보");
+                        }
+                    }
+                    if (introInfo.getTypeId() == 25) {
+                        //
+                    }
+                    if (introInfo.getTypeId() == 28) {
+
+                    }
+                    if (introInfo.getTypeId() == 32) {
+
+                    }
+                    if (introInfo.getTypeId() == 38) {
+
+                    }
+                    if (introInfo.getTypeId() == 39) {
+
+                    }
+                }
+            }
+        }
+    }
+
+    public List<Content> getAllContents() {
+        return mapper.selectAllContents();
+    }
+
+    public List<Content> getContent(Integer id) {
+        return mapper.selectContnetById(id);
+    }
+
+    public List<Integer> getAllContentId() {
+        return mapper.selectAllContentId();
+    }
 }

@@ -40,12 +40,12 @@ export function Navbar() {
 
   const handleSearch = (event) => {
     if (event.key === "Enter") {
-      navigate(`/search?query=${searchQuery}`);
+      navigate(`/tour/list?keyword=${searchQuery}`);
     }
   };
 
   const handleButtonClick = () => {
-    navigate(`/search?query=${searchQuery}`);
+    navigate(`/tour/list?keyword=${searchQuery}`);
   };
 
   const settings = {

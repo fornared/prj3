@@ -17,7 +17,7 @@ public interface TourMapper {
     int insertArea(Area area);
 
     @Select("""
-            SELECT area_code 
+            SELECT area_code
             FROM area
             """)
     List<Integer> selectAreaCode();
@@ -413,4 +413,64 @@ public interface TourMapper {
             WHERE lodging_info2_id=#{id}
             """)
     List<String> selectImgByLodgingInfo2Id(LodgingInfo2 lodgingInfo2);
+
+    @Select("""
+            SELECT *
+            FROM content
+            """)
+    List<Content> selectAllContents();
+
+    @Select("""
+            SELECT *
+            FROM content
+            WHERE id=#{id}
+            """)
+    List<Content> selectContnetById(Integer id);
+
+    // 추후에 수정일순 정렬로 변경
+    @Select("""
+            SELECT id
+            FROM content
+            ORDER BY id
+            """)
+    List<Integer> selectAllContentId();
+
+    @Select("""
+            SELECT id
+            FROM spot_info
+            WHERE content_id=#{cid}
+            """)
+    Integer selectSpotInfoIdByContentIdOnContent(Integer cid);
+
+    @Insert("""
+            INSERT INTO spot_info (content_id, accom_count, chk_baby_carriage, chk_credit_card, chk_pet, exp_age_range, exp_guide, heritage, parking, open_date, rest_date, tel_center, use_season, use_time)
+            VALUES (#{contentId}, #{accomCount}, #{chkBabyCarriage}, #{chkCreditCard}, #{chkPet}, #{expAgeRange}, #{expGuide}, #{heritage}, #{parking}, #{openDate}, #{restDate}, #{telCenter}, #{useSeason}, #{useTime})
+            """)
+    int insertSpotInfo(IntroInfo introInfo);
+
+    @Select("""
+            SELECT id
+            FROM culture_info
+            WHERE content_id=#{cid}
+            """)
+    Integer selectCultureInfoIdByContentIdOnContent(Integer cid);
+
+    @Insert("""
+            INSERT INTO culture_info (content_id, accom_count, chk_baby_carriage, chk_credit_card, chk_pet, discount, parking, parking_fee, rest_date, tel_center, use_fee, use_time, scale, spend_time)
+            VALUES (#{contentId}, #{accomCount}, #{chkBabyCarriage}, #{chkCreditCard}, #{chkPet}, #{discount}, #{parking}, #{parkingFee}, #{restDate}, #{telCenter}, #{useFee}, #{useTime}, #{scale}, #{spendTime})
+            """)
+    int insertCultureInfo(IntroInfo introInfo);
+
+    @Select("""
+            SELECT id
+            FROM festival_info
+            WHERE content_id=#{cid}
+            """)
+    Integer selectFestivalInfoIdByContentIdOnContent(Integer cid);
+
+    @Insert("""
+            INSERT INTO festival_info (content_id, age_limit, booking_place, discount, start_date, end_date, place, place_info, play_time, program, use_fee, spend_time, sponsor1, tel_sponsor1, sponsor2, tel_sponsor2, sub_event)
+            VALUES (#{contentId}, #{ageLimit}, #{bookingPlace}, #{discount}, #{startDate}, #{endDate}, #{place}, #{placeInfo}, #{playTime}, #{program}, #{useFee}, #{spendTime}, #{sponsor1}, #{telSponsor1}, #{sponsor2}, #{telSponsor2}, #{subEvent})
+            """)
+    int insertFestivalInfo(IntroInfo introInfo);
 }

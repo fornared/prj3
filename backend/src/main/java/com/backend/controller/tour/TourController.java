@@ -179,4 +179,30 @@ public class TourController {
 
         return null;
     }
+
+    @PostMapping("add/intro")
+    public ResponseEntity addIntroInfo(@RequestBody List<List<IntroInfo>> introInfoLists) {
+        System.out.println(introInfoLists);
+        service.addIntroInfo(introInfoLists);
+
+        return null;
+    }
+
+    @GetMapping("get/content/all")
+    public List<Content> getAllContents() {
+        System.out.println(service.getAllContents());
+
+        return service.getAllContents();
+    }
+
+    @GetMapping("get/content/{id}")
+    public List<Content> getContent(@PathVariable Integer id) {
+        return service.getContent(id);
+    }
+
+    @GetMapping("get/contentId")
+    public List<Integer> getContentId() {
+        return service.getAllContentId();
+    }
+
 }
