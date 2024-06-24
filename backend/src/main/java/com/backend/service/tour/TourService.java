@@ -459,8 +459,4 @@ public class TourService {
             }
         }
     }
-
-    public List<Review> getReviewList(Integer contentId) {
-        return mapper.selectAllReviewByContentId(contentId);
-    }
 }

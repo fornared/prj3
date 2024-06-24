@@ -11,7 +11,7 @@ export function ReviewList({ contentId, isSending }) {
   useEffect(() => {
     if (!isSending) {
       axios
-        .get(`/api/tour/review/list/${contentId}`)
+        .get(`/api/tour/${contentId}/review`)
         .then((res) => {
           setReviewList(res.data);
         })

@@ -110,11 +110,6 @@ public class TourController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("list0")
-    public List<Content> list() {
-        return service.list();
-    }
-
     @GetMapping("list")
     public Map<String, Object> list(@RequestParam(defaultValue = "1") Integer page,
                                     @RequestParam(value = "type", required = false) String typeName,
@@ -142,12 +137,12 @@ public class TourController {
         return service.getNextSearchOption(options);
     }
 
-    @GetMapping("list/{id}")
+    @GetMapping("/{id}")
     public Map<String, Object> get(@PathVariable Integer id) {
         return service.get(id);
     }
 
-    @GetMapping("list/info2/{id}")
+    @GetMapping("/{id}/info2")
     public List<Info2> getInfo2(@PathVariable(value = "id") Integer contentId) {
         return service.getInfo2(contentId);
     }
@@ -183,16 +178,5 @@ public class TourController {
         service.addLodgingInfo2(info2List);
 
         return null;
-    }
-
-    @PostMapping("review/add")
-    public ResponseEntity addReview(@RequestBody Review review) {
-        System.out.println(review);
-        return null;
-    }
-
-    @GetMapping("review/list/{contentId}")
-    public List<Review> getReview(@PathVariable(value = "contentId") Integer contentId) {
-        return service.getReviewList(contentId);
     }
 }
