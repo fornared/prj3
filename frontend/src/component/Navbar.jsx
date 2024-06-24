@@ -5,7 +5,6 @@ import {
   Button,
   Center,
   Flex,
-  Hide,
   Input,
   InputGroup,
   InputRightElement,
@@ -13,8 +12,9 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
-  Show,
   Spacer,
+  Hide,
+  Show
 } from "@chakra-ui/react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
@@ -28,6 +28,8 @@ import {
   faRightToBracket,
   faUserPlus,
   faUsers,
+  faCog,
+  faTrash
 } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -80,10 +82,7 @@ export function Navbar() {
 
       <Flex
         width="100%"
-        px={{
-          lg: 200,
-          base: 4,
-        }}
+        px={{ lg: 200, base: 4 }}
         gap={3}
         height={500}
         position="absolute"
@@ -95,9 +94,7 @@ export function Navbar() {
         <Center
           onClick={() => navigate("/")}
           cursor={"pointer"}
-          _hover={{
-            bgColor: "rgba(255, 255, 255, 0.5)",
-          }}
+          _hover={{ bgColor: "rgba(255, 255, 255, 0.5)" }}
           p={6}
           fontSize={25}
           fontWeight={700}
@@ -109,7 +106,6 @@ export function Navbar() {
           <Hide below={"lg"}>Travel Place</Hide>
         </Center>
 
-        {/* 검색창 추가 */}
         <Center ml={4} mb={5}>
           <InputGroup width="300px">
             <Input
@@ -118,9 +114,7 @@ export function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               bg="rgba(255, 255, 255, 0.8)"
-              _hover={{
-                bg: "rgba(255, 255, 255, 1)",
-              }}
+              _hover={{ bg: "rgba(255, 255, 255, 1)" }}
             />
             <InputRightElement width="4.5rem">
               <Button h="1.75rem" size="sm" onClick={handleButtonClick}>
@@ -130,13 +124,11 @@ export function Navbar() {
           </InputGroup>
         </Center>
 
-        {account.isLoggedIn && (
+        {account.user && (
           <Center
             onClick={() => navigate("/write")}
             cursor={"pointer"}
-            _hover={{
-              bgColor: "rgba(255, 255, 255, 0.5)",
-            }}
+            _hover={{ bgColor: "rgba(255, 255, 255, 0.5)" }}
             p={6}
             fontSize={20}
             fontWeight={600}
@@ -150,45 +142,66 @@ export function Navbar() {
 
         <Spacer />
 
-        {account.isLoggedIn && (
-          <Center
-            onClick={() => navigate("/mypage")}
-            cursor={"pointer"}
-            _hover={{
-              bgColor: "rgba(255, 255, 255, 0.5)",
-            }}
-            p={6}
-            fontSize={20}
-            fontWeight={600}
-          >
-            <Flex gap={2}>
-              <Box>
-                <FontAwesomeIcon icon={faUser} />
-              </Box>
-              <Box>
-                <Hide below={"lg"}>{account.nickName}</Hide>
-              </Box>
-            </Flex>
+        {account.user && (
+          <Menu>
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+              <Flex gap={2}>
+                <Box>
+                  <FontAwesomeIcon icon={faUser} />
+                </Box>
+                <Box>
+                  <Hide below={"lg"}>{account.user.nickName}</Hide>
+                </Box>
+              </Flex>
+            </MenuButton>
+            <MenuList>
+              <MenuItem onClick={() => navigate("/mypage")}>
+                <FontAwesomeIcon icon={faCog} />
+                <Box ml={2}>마이페이지</Box>
+              </MenuItem>
+              <MenuItem onClick={() => {
+                account.logout();
+                navigate("/login");
+              }}>
+                <FontAwesomeIcon icon={faRightFromBracket} />
+                <Box ml={2}>로그아웃</Box>
+              </MenuItem>
+              <MenuItem onClick={() => {
+                if (window.confirm("정말로 탈퇴하시겠습니까?")) {
+                  account.deleteUser();
+                }
+              }}>
+                <FontAwesomeIcon icon={faTrash} />
+                <Box ml={2}>회원 탈퇴</Box>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        )}
+
+        {!account.user && (
+          <Center>
+            <Menu>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                <Show below={"lg"}>
+                  <FontAwesomeIcon icon={faRightToBracket} />
+                </Show>
+                <Hide below={"lg"}>로그인</Hide>
+              </MenuButton>
+              <MenuList>
+                <MenuItem onClick={() => navigate("/login")}>
+                  <FontAwesomeIcon icon={faRightToBracket} />
+                  <Box ml={2}>로그인</Box>
+                </MenuItem>
+                <MenuItem onClick={() => navigate("/signup")}>
+                  <FontAwesomeIcon icon={faUserPlus} />
+                  <Box ml={2}>회원가입</Box>
+                </MenuItem>
+              </MenuList>
+            </Menu>
           </Center>
         )}
 
-        {account.isAdmin() && (
-          <Center
-            onClick={() => navigate("/member/list")}
-            cursor={"pointer"}
-            _hover={{
-              bgColor: "rgba(255, 255, 255, 0.5)",
-            }}
-            p={6}
-            fontSize={20}
-            fontWeight={600}
-          >
-            <FontAwesomeIcon icon={faUsers} />
-          </Center>
-        )}
-
-        {/* 메뉴 추가 */}
-        <Center ml={1}>
+        <Center ml={4}>
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               고객센터
@@ -208,14 +221,11 @@ export function Navbar() {
           </Menu>
         </Center>
 
-        {/* 게시판 및 일정관리 버튼 추가 */}
         <Center
           ml={4}
           cursor={"pointer"}
           onClick={() => navigate("/board/list")}
-          _hover={{
-            bgColor: "rgba(255, 255, 255, 0.5)",
-          }}
+          _hover={{ bgColor: "rgba(255, 255, 255, 0.5)" }}
           p={6}
           fontSize={20}
           fontWeight={600}
@@ -227,68 +237,26 @@ export function Navbar() {
         <Center
           ml={4}
           cursor={"pointer"}
-          onClick={() => navigate("/schedule")}
-          _hover={{
-            bgColor: "rgba(255, 255, 255, 0.5)",
-          }}
+          onClick={() => navigate("/course/list")}
+          _hover={{ bgColor: "rgba(255, 255, 255, 0.5)" }}
           p={6}
           fontSize={20}
           fontWeight={600}
           color={"white"}
         >
-          일정관리
+          추천코스
         </Center>
 
-        <Spacer />
-
-        {!account.isLoggedIn && (
+        {account.user && account.user.role === 'admin' && (
           <Center
-            onClick={() => navigate("/signup")}
+            onClick={() => navigate("/member/list")}
             cursor={"pointer"}
-            _hover={{
-              bgColor: "rgba(255, 255, 255, 0.5)",
-            }}
+            _hover={{ bgColor: "rgba(255, 255, 255, 0.5)" }}
             p={6}
             fontSize={20}
             fontWeight={600}
-            color={"white"}
           >
-            <FontAwesomeIcon icon={faUserPlus} />
-          </Center>
-        )}
-
-        {!account.isLoggedIn && (
-          <Center
-            onClick={() => navigate("/login")}
-            cursor={"pointer"}
-            _hover={{
-              bgColor: "rgba(255, 255, 255, 0.5)",
-            }}
-            p={6}
-            fontSize={20}
-            fontWeight={600}
-            color={"deepskyblue"}
-          >
-            <FontAwesomeIcon icon={faRightToBracket} />
-          </Center>
-        )}
-
-        {account.isLoggedIn && (
-          <Center
-            onClick={() => {
-              account.logout();
-              navigate("/login");
-            }}
-            cursor={"pointer"}
-            _hover={{
-              bgColor: "rgba(255, 255, 255, 0.5)",
-            }}
-            p={6}
-            fontSize={20}
-            fontWeight={600}
-            color={"deepskyblue"}
-          >
-            <FontAwesomeIcon icon={faRightFromBracket} />
+            <FontAwesomeIcon icon={faUsers} />
           </Center>
         )}
       </Flex>

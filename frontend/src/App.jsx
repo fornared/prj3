@@ -20,6 +20,10 @@ import { TourDetail } from "./page/tour/TourDetail";
 import Schedule from "./page/menu/Schedule";
 import { BoardDetail } from "./page/board/BoardDetail";
 import { MyPage } from "./page/MyPage";
+import {MemberInfo} from "./page/member/MemberInfo.jsx";
+import {MemberEdit} from "./page/member/MemberEdit.jsx";
+
+
 
 const router = createBrowserRouter([
   {
@@ -49,6 +53,8 @@ const router = createBrowserRouter([
       { path: "event", element: <Event /> },
       { path: "schedule", element: <Schedule /> },
       { path: "mypage", element: <MyPage /> },
+      { path: "member/:id", element: <MemberInfo /> },
+      { path: "member/edit/:id", element: <MemberEdit /> },
     ],
   },
 ]);
