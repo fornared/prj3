@@ -35,7 +35,12 @@ export function MemberList() {
             <Tr>
               <Th w={20}>#</Th>
               <Th>이메일</Th>
+              <Th>비밀번호</Th>
+              <Th>이름</Th>
               <Th w={"150px"}>별명</Th>
+              <Th>성별</Th>
+              <Th>생년월일</Th>
+              <Th>전화번호</Th>
               <Th w={96}>가입일시</Th>
             </Tr>
           </Thead>
@@ -49,8 +54,13 @@ export function MemberList() {
               >
                 <Td>{member.id}</Td>
                 <Td>{member.email}</Td>
+                <Td>{member.password}</Td>
+                <Td>{member.name}</Td>
                 <Td>{member.nickName}</Td>
-                <Td>{member.signupDateAndTime}</Td>
+                <Td>{member.gender}</Td>
+                <Td>{member.birth}</Td>
+                <Td>{member.phone}</Td>
+                <Td>{member.inserted}</Td>
               </Tr>
             ))}
           </Tbody>
