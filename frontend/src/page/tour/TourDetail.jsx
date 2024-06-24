@@ -32,7 +32,7 @@ export function TourDetail() {
 
   useEffect(() => {
     axios
-      .get(`/api/tour/list/${id}`)
+      .get(`/api/tour/${id}`)
       .then((res) => {
         setInfo(res.data.info1);
         function handleResize() {
@@ -48,7 +48,7 @@ export function TourDetail() {
       .catch(() => {});
 
     axios
-      .get(`/api/tour/list/info2/${id}`)
+      .get(`/api/tour/${id}/info2`)
       .then((res) => {
         setInfo2(res.data);
       })

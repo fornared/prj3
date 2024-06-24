@@ -9,7 +9,7 @@ export function ReviewWrite({ contentId, isSending, setIsSending }) {
   function handleClickReviewSubmit() {
     setIsSending(true);
     axios
-      .post("/api/tour/review/add", {
+      .post("/api/tour/add/review", {
         contentId,
         review,
       })

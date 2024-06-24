@@ -7,6 +7,7 @@ export function TourSearch() {
   const [areaCodes, setAreaCodes] = useState([]);
   const [isProcessing, setIsProcessing] = useState(false);
   const serviceKey = import.meta.env.VITE_API_TOUR_SERVICE_KEY1;
+  const [intros, setIntros] = useState([]);
 
   useEffect(() => {
     setIsProcessing(true);
@@ -35,6 +36,18 @@ export function TourSearch() {
         setIsProcessing(false);
       });
   }, []);
+
+  useEffect(() => {
+    if (intros.length > 0) {
+      axios
+        .post(`/api/tour/add/intro`, intros)
+        .then(() => {})
+        .catch()
+        .finally(() => {
+          setIntros([]);
+        });
+    }
+  }, [handleAddIntroInfo]);
 
   if (isProcessing) {
     return <Spinner />;
@@ -588,6 +601,224 @@ export function TourSearch() {
       .finally(() => setIsProcessing(false));
   }
 
+  function getIntroInfo(exContentId, typeId) {
+    return axios
+      .get(`https://apis.data.go.kr/B551011/KorService1/detailIntro1`, {
+        params: {
+          serviceKey: serviceKey,
+          MobileOS: "ETC",
+          MobileApp: "AppTest",
+          _type: "json",
+          contentId: exContentId,
+          contentTypeId: typeId,
+          numOfRows: 50,
+          pageNo: 1,
+        },
+      })
+      .then((res) => {
+        return res.data.response.body.items.item;
+      });
+  }
+
+  function handleAddIntroInfo() {
+    setIsProcessing(true);
+    /*
+    axios.get(`/api/tour/get/contentId`).then((res) => {
+      const idList = res.data;
+      for (const id of idList) {
+      //   모든 데이터 호출용
+      }
+    });
+     */
+    axios
+      .get(`/api/tour/get/content/41147`)
+      .then((res) => {
+        const contentList = res.data;
+        for (const content of contentList) {
+          const id = content.id;
+          const exContentId = content.exContentId;
+          const typeId = content.typeId;
+
+          // 관광지 ( 67257 )
+          if (typeId === 12) {
+            getIntroInfo(exContentId, typeId).then((data) => {
+              const intro = data.map((item) => ({
+                contentId: id,
+                typeId: typeId,
+                accomCount: item.accomcount,
+                chkBabyCarriage: item.chkbabycarriage,
+                chkCreditCard: item.chkcreditcard,
+                chkPet: item.chkpet,
+                expAgeRange: item.expagerange,
+                expGuide: item.expguide,
+                heritage1: item.heritage1,
+                heritage2: item.heritage2,
+                heritage3: item.heritage3,
+                parking: item.parking,
+                openDate: item.opendate,
+                restDate: item.restdate,
+                telCenter: item.infocenter,
+                useSeason: item.useseason,
+                useTime: item.usetime,
+              }));
+              setIntros([...intros, intro]);
+            });
+          }
+          // 문화시설 ( 40972 )
+          if (typeId === 14) {
+            getIntroInfo(exContentId, typeId).then((data) => {
+              const intro = data.map((item) => ({
+                contentId: id,
+                typeId: typeId,
+                accomCount: item.accomcountculture,
+                chkBabyCarriage: item.chkbabycarriageculture,
+                chkCreditCard: item.chkcreditcardculture,
+                chkPet: item.chkpetculture,
+                discount: item.discountinfo,
+                parking: item.parkingculture,
+                parkingFee: item.parkingfee,
+                restDate: item.restdateculture,
+                telCenter: item.infocenterculture,
+                useFee: item.usefee,
+                useTime: item.usetimeculture,
+                scale: item.scale,
+                spendTime: item.spendtime,
+              }));
+              setIntros([...intros, intro]);
+            });
+          }
+          // 축제/공연/행사 ( 70878 )
+          if (typeId === 15) {
+            getIntroInfo(exContentId, typeId).then((data) => {
+              const intro = data.map((item) => ({
+                contentId: id,
+                typeId: typeId,
+                ageLimit: item.agelimit,
+                bookingPlace: item.bookingplace,
+                discount: item.discountinfofestival,
+                startDate: item.eventstartdate,
+                endDate: item.eventenddate,
+                place: item.eventplace,
+                placeInfo: item.placeinfo,
+                playTime: item.playtime,
+                program: item.program,
+                useFee: item.usetimefestival,
+                spendTime: item.spendtimefestival,
+                sponsor1: item.sponsor1,
+                telSponsor1: item.sponsor1tel,
+                sponsor2: item.sponsor2,
+                telSponsor2: item.sponsor2tel,
+                subEvent: item.subevent,
+              }));
+              setIntros([...intros, intro]);
+            });
+          }
+          // 레포츠 ( 41147 )
+          if (typeId === 28) {
+            getIntroInfo(exContentId, typeId).then((data) => {
+              const intro = data.map((item) => ({
+                contentId: id,
+                typeId: typeId,
+                accomCount: item.accomcountleports,
+                chkBabyCarriage: item.chkbabycarriageleports,
+                chkCreditCard: item.chkcreditcardleports,
+                chkPet: item.chkpetleports,
+                expAgeRange: item.expagerangeleports,
+                openPeriod: item.openperiod,
+                parking: item.parkingleports,
+                parkingFee: item.parkingfeeleports,
+                restDate: item.restdateleports,
+                reservation: item.reservation,
+                telCenter: item.infocenterleports,
+                useFee: item.usefeeleports,
+                useTime: item.usetimeleports,
+                scale: item.scaleleports,
+              }));
+              setIntros([...intros, intro]);
+            });
+          }
+          // 숙박
+          if (typeId === 32) {
+            axios
+              .get(`https://apis.data.go.kr/B551011/KorService1/detailIntro1`, {
+                params: {
+                  serviceKey: serviceKey,
+                  MobileOS: "ETC",
+                  MobileApp: "AppTest",
+                  _type: "json",
+                  contentId: exContentId,
+                  contentTypeId: typeId,
+                  numOfRows: 50,
+                  pageNo: 1,
+                },
+              })
+              .then((res) => {
+                const data = res.data.response.body.items.item;
+                const intro = data.map((item, index) => ({
+                  contentId: item.contentid,
+                  number: index,
+                  title: item.roomtitle,
+                  size: item.roomsize1,
+                  roomCount: item.roomcount,
+                  baseAccomCount: item.roombasecount,
+                  maxAccomCount: item.roommaxcount,
+                  offSeasonFeeWd: item.roomoffseasonminfee1,
+                  peakSeasonFeeWd: item.roompeakseasonminfee1,
+                  offSeasonFeeWe: item.roomoffseasonminfee2,
+                  peakSeasonFeeWe: item.roompeakseasonminfee2,
+                  intro: item.roomintro,
+                  aircondition: item.roomaircondition,
+                  bath: item.roombath,
+                  bathFacility: item.roombathfacility,
+                  cable: item.roomcable,
+                  cook: item.roomcook,
+                  hairdryer: item.roomhairdryer,
+                  homeTheater: item.roomhometheater, // 추가
+                  internet: item.roominternet,
+                  pc: item.roompc,
+                  sofa: item.roomsofa,
+                  refrigerator: item.roomrefrigerator,
+                  toiletries: item.roomtoiletries,
+                  tv: item.roomtv,
+                  img1: item.roomimg1,
+                  img2: item.roomimg2,
+                  img3: item.roomimg3,
+                  img4: item.roomimg4,
+                  img5: item.roomimg5,
+                }));
+                setIntros([...intros, intro]);
+              });
+          }
+        }
+      })
+      .catch()
+      .finally(() => {});
+
+    setIsProcessing(false);
+  }
+
+  function handleTest() {
+    /*
+    axios.get("/api/tour/get/content/all").then((res) => {
+      const dataList = res.data;
+
+      for (const data of dataList) {
+        const id = data.id;
+        const contentId = data.exContentId;
+        const typeId = data.typeId;
+
+        console.log(id, contentId, typeId);
+      }
+    });
+    */
+    axios.get(`/api/tour/get/contentId`).then((res) => {
+      const idList = res.data;
+      for (const id of idList) {
+        console.log(id);
+      }
+    });
+  }
+
   return (
     <Box>
       <Button onClick={handleAddArea}>지역 입력</Button>
@@ -614,6 +845,8 @@ export function TourSearch() {
       <Button onClick={handleAddTypeCategoryMapping}>
         타입-카테고리 매핑 정보 입력
       </Button>
+      <Button onClick={handleAddIntroInfo}>소개정보 입력</Button>
+      <Button onClick={handleTest}>테스트 버튼</Button>
 
       {area.length > 0 && (
         <Box>

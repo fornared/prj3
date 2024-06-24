@@ -276,7 +276,7 @@ export function TourList() {
                 width={"300px"}
                 height={"240px"}
                 cursor={"pointer"}
-                onClick={() => navigate(`/tour/list/${item.id}`)}
+                onClick={() => navigate(`/tour/${item.id}`)}
                 _hover={{
                   border: "1px solid red",
                 }}
