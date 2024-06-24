@@ -7,6 +7,8 @@ import {
   FormLabel,
   Heading,
   Input,
+  InputGroup,
+  InputRightElement,
   useToast,
   VStack,
 } from "@chakra-ui/react";
@@ -18,6 +20,8 @@ import { LoginContext } from "../../component/LoginProvider.jsx";
 export function MemberLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
   const account = useContext(LoginContext);
@@ -26,7 +30,11 @@ export function MemberLogin() {
     navigate("/signup");
   };
 
-  function handleLogin() {
+  const handlePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleLogin = () => {
     if (!email || !password) {
       toast({
         status: "warning",
@@ -36,9 +44,12 @@ export function MemberLogin() {
       return;
     }
 
+    setIsLoading(true);
+
     axios
       .post("/api/member/login", { email, password })
       .then((res) => {
+        account.login(res.data.token);
         toast({
           status: "success",
           description: "로그인 되었습니다.",
@@ -47,10 +58,11 @@ export function MemberLogin() {
         navigate("/");
       })
       .catch((error) => {
+        setIsLoading(false);
         if (error.response) {
           toast({
             status: "warning",
-            description: "이메일과 패스워드를 확인해주세요.",
+            description: error.response.data.message || "이메일과 패스워드를 확인해주세요.",
             position: "top",
           });
         } else if (error.request) {
@@ -67,7 +79,7 @@ export function MemberLogin() {
           });
         }
       });
-  }
+  };
 
   return (
     <Center>
@@ -79,17 +91,32 @@ export function MemberLogin() {
           <VStack spacing={7}>
             <FormControl>
               <FormLabel>이메일</FormLabel>
-              <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </FormControl>
             <FormControl>
               <FormLabel>암호</FormLabel>
-              <Input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+              <InputGroup>
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <InputRightElement width="4.5rem">
+                  <Button h="1.75rem" size="sm" onClick={handlePasswordVisibility}>
+                    {showPassword ? "숨기기" : "보이기"}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
             </FormControl>
-            <Button onClick={handleLogin} colorScheme={"blue"}>
+            <Button
+              onClick={handleLogin}
+              colorScheme={"blue"}
+              isLoading={isLoading}
+            >
               Login
             </Button>
 
