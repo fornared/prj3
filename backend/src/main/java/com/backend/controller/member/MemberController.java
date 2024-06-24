@@ -1,11 +1,17 @@
 package com.backend.controller.member;
 
 import com.backend.domain.member.Member;
+import com.backend.mapper.member.MemberMapper;
 import com.backend.service.member.MemberService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -13,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MemberMapper memberMapper;
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody Member member) {
@@ -51,29 +58,43 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Member member, HttpSession session) {
-        boolean isAuthenticated = memberService.login(member.getEmail(), member.getPassword(), session);
-        if (isAuthenticated) {
-            return ResponseEntity.ok("로그인 성공");
+    @PostMapping("list")
+    public List<Member> list() {
+        return memberService.list();
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<Member> get(@PathVariable Integer id) {
+        Member member = memberService.getById(Long.valueOf(id));
+        if (member == null) {
+            return ResponseEntity.notFound().build();
         } else {
-            return ResponseEntity.badRequest().body("이메일이나 비밀번호가 일치하지 않습니다.");
+            return ResponseEntity.ok(member);
         }
     }
 
-    @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpSession session) {
-        memberService.logout(session);
-        return ResponseEntity.ok("로그아웃 성공");
+    @DeleteMapping("{id}")
+    public ResponseEntity delete(@RequestBody Member member) {
+        if (memberService.hasAccess(member)) {
+            memberService.remove(member.getId());
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
-    @GetMapping("/status")
-    public ResponseEntity<String> status(HttpSession session) {
-        boolean isAuthenticated = memberService.isAuthenticated(session);
-        if (isAuthenticated) {
-            return ResponseEntity.ok("Authenticated");
+    @PutMapping("modify")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity modify(@RequestBody Member member,
+                                 Authentication authentication) {
+        if (memberService.hasAccessModify(member, authentication)) {
+            Map<String, Object> result = memberService.modify(member, authentication);
+            return ResponseEntity.ok(result);
         } else {
-            return ResponseEntity.status(401).body("Not authenticated");
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 }
+
+
+
