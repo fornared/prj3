@@ -18,30 +18,30 @@ import java.util.Map;
 @RequestMapping("/api/member")
 public class MemberController {
 
-    private final MemberService memberService;
+    private final MemberService service;
     private final MemberMapper memberMapper;
 
     @PostMapping("/signup")
     public ResponseEntity<String> signUp(@RequestBody Member member) {
         // 이메일 중복 확인
-        if (memberService.getByEmail(member.getEmail()) != null) {
+        if (service.getByEmail(member.getEmail()) != null) {
             return ResponseEntity.badRequest().body("이미 사용 중인 이메일입니다.");
         }
 
         // 닉네임 중복 확인
-        if (memberService.getByNickName(member.getNickName()) != null) {
+        if (service.getByNickName(member.getNickName()) != null) {
             return ResponseEntity.badRequest().body("이미 사용 중인 닉네임입니다.");
         }
 
         // 회원 가입 처리
-        memberService.add(member);
+        service.add(member);
         return ResponseEntity.ok("회원 가입이 완료되었습니다.");
     }
 
     @GetMapping("/check-email")
     public ResponseEntity<Void> checkEmail(@RequestParam String email) {
         // 이메일 중복 확인
-        if (memberService.getByEmail(email) != null) {
+        if (service.getByEmail(email) != null) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
@@ -50,22 +50,30 @@ public class MemberController {
 
     @GetMapping("/check-nickName")
     public ResponseEntity<Void> checkNickName(@RequestParam String nickName) {
+        System.out.println("nickName: " + nickName);
         // 닉네임 중복 확인
-        if (memberService.getByNickName(nickName) != null) {
+        if (service.getByNickName(nickName) != null) {
             return ResponseEntity.ok().build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @PostMapping("list")
+    @PostMapping("/list")
+    @PreAuthorize("hasAuthority('SCOPE_admin')")
     public List<Member> list() {
-        return memberService.list();
+        return service.list();
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Member> get(@PathVariable Integer id) {
-        Member member = memberService.getById(Long.valueOf(id));
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<Member> get(@PathVariable Integer id, Authentication authentication) {
+
+        if (!service.hasAccess(id, authentication)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Member member = service.getById(id);
         if (member == null) {
             return ResponseEntity.notFound().build();
         } else {
@@ -74,9 +82,10 @@ public class MemberController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity delete(@RequestBody Member member) {
-        if (memberService.hasAccess(member)) {
-            memberService.remove(member.getId());
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity delete(@RequestBody Member member, Authentication authentication) {
+        if (service.hasAccess(member, authentication)) {
+            service.remove(member.getId());
             return ResponseEntity.ok().build();
         }
 
@@ -87,12 +96,22 @@ public class MemberController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity modify(@RequestBody Member member,
                                  Authentication authentication) {
-        if (memberService.hasAccessModify(member, authentication)) {
-            Map<String, Object> result = memberService.modify(member, authentication);
+        if (service.hasAccessModify(member, authentication)) {
+            Map<String, Object> result = service.modify(member, authentication);
             return ResponseEntity.ok(result);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
         }
+    }
+
+    @PostMapping("token")
+    public ResponseEntity token(@RequestBody Member member) {
+        Map<String, Object> map = service.getToken(member);
+        if (map == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(map);
     }
 }
 

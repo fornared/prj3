@@ -1,31 +1,41 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
   Center,
-  Flex,
   FormControl,
   FormLabel,
   Heading,
   Input,
   useToast,
   VStack,
-  Textarea
+  Textarea,
+  Avatar,
+  HStack,
+  Divider,
 } from "@chakra-ui/react";
 import { LoginContext } from "../component/LoginProvider.jsx";
-
+//
 export function MyPage() {
-  const { user, updateUser, deleteUser, logout } = useContext(LoginContext);
-  const [nickName, setNickName] = useState(user.nickName || "");
-  const [email, setEmail] = useState(user.email || "");
-  const [introduction, setIntroduction] = useState(user.introduction || "");
+  const { id, nickName, email, introduction, updateUser, deleteUser, logout } = useContext(LoginContext);
+  const [nickNameInput, setNickNameInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+  const [introductionInput, setIntroductionInput] = useState("");
   const toast = useToast();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (id) {
+      setNickNameInput(nickName || "");
+      setEmailInput(email || "");
+      setIntroductionInput(introduction || "");
+    }
+  }, [id, nickName, email, introduction]);
+
   const handleUpdate = async () => {
     try {
-      await updateUser({ nickName, email, introduction });
+      await updateUser({ nickName: nickNameInput, email: emailInput, introduction: introductionInput });
       toast({
         status: "success",
         description: "회원 정보가 업데이트되었습니다.",
@@ -66,40 +76,56 @@ export function MyPage() {
   };
 
   return (
-    <Center>
-      <Box w={500} mt={30}>
+    <Center py={10} bg="gray.50" minHeight="100vh">
+      <Box w={{ base: "90%", md: "600px" }} p={8} boxShadow="xl" borderRadius="md" bg="white">
         <Center mb={10}>
-          <Heading>마이페이지</Heading>
+          <Heading size="lg">마이페이지</Heading>
         </Center>
-        <VStack spacing={7}>
+        <VStack spacing={5}>
+          <Avatar size="xl" name={nickNameInput} mb={5} />
+          <Divider />
           <FormControl>
             <FormLabel>닉네임</FormLabel>
             <Input
-              value={nickName}
-              onChange={(e) => setNickName(e.target.value)}
+              value={nickNameInput}
+              onChange={(e) => setNickNameInput(e.target.value)}
+              placeholder="닉네임을 입력하세요"
+              bg="gray.100"
+              borderRadius="md"
+              _hover={{ bg: "gray.200" }}
             />
           </FormControl>
           <FormControl>
             <FormLabel>이메일</FormLabel>
             <Input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
+              placeholder="이메일을 입력하세요"
+              bg="gray.100"
+              borderRadius="md"
+              _hover={{ bg: "gray.200" }}
             />
           </FormControl>
           <FormControl>
             <FormLabel>자기소개</FormLabel>
             <Textarea
-              value={introduction}
-              onChange={(e) => setIntroduction(e.target.value)}
+              value={introductionInput}
+              onChange={(e) => setIntroductionInput(e.target.value)}
+              placeholder="자기소개를 입력하세요"
+              bg="gray.100"
+              borderRadius="md"
+              _hover={{ bg: "gray.200" }}
             />
           </FormControl>
-          <Button onClick={handleUpdate} colorScheme="blue">
-            정보 수정
-          </Button>
-          <Button onClick={handleLogout} colorScheme="blue" variant="outline">
-            로그아웃
-          </Button>
-          <Button onClick={handleDelete} colorScheme="red">
+          <HStack w="full" spacing={4}>
+            <Button onClick={handleUpdate} colorScheme="blue" flex={1}>
+              정보 수정
+            </Button>
+            <Button onClick={handleLogout} colorScheme="blue" variant="outline" flex={1}>
+              로그아웃
+            </Button>
+          </HStack>
+          <Button onClick={handleDelete} colorScheme="red" w="full">
             회원 탈퇴
           </Button>
         </VStack>

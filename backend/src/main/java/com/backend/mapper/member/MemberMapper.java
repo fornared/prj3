@@ -14,10 +14,10 @@ public interface MemberMapper {
     void insertMember(Member member);
 
     @Select("SELECT * FROM member WHERE email = #{email}")
-    Member findMemberByEmail(@Param("email") String email);
+    Member selectByEmail(@Param("email") String email);
 
     @Select("SELECT * FROM member WHERE nick_name = #{nickName}")
-    Member findMemberByNickName(@Param("nickName") String nickName);
+    Member selectByNickName(@Param("nickName") String nickName);
 
     @Select("""
             SELECT id, name, email, password, nick_name, gender, birth, phone, inserted
@@ -31,7 +31,7 @@ public interface MemberMapper {
             FROM member
             WHERE id = #{id}
             """)
-    Member selectById(Long id);
+    Member selectById(Integer id);
 
 
     @Delete("""
@@ -48,4 +48,5 @@ public interface MemberMapper {
             WHERE id = #{id}
             """)
     int update(Member member);
+
 }

@@ -22,8 +22,16 @@ import { BoardDetail } from "./page/board/BoardDetail";
 import { MyPage } from "./page/MyPage";
 import {MemberInfo} from "./page/member/MemberInfo.jsx";
 import {MemberEdit} from "./page/member/MemberEdit.jsx";
+import axios from "axios";
 
-
+// axios interceptor 설정
+axios.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 const router = createBrowserRouter([
   {
@@ -59,13 +67,14 @@ const router = createBrowserRouter([
   },
 ]);
 
+
 function App() {
   return (
+    <LoginProvider>
     <ChakraProvider>
-      <LoginProvider>
         <RouterProvider router={router} />
-      </LoginProvider>
     </ChakraProvider>
+    </LoginProvider>
   );
 }
 

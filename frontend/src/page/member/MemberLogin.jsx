@@ -34,22 +34,12 @@ export function MemberLogin() {
     setShowPassword(!showPassword);
   };
 
-  const handleLogin = () => {
-    if (!email || !password) {
-      toast({
-        status: "warning",
-        description: "이메일과 패스워드를 입력해주세요.",
-        position: "top",
-      });
-      return;
-    }
-
-    setIsLoading(true);
-
+  function handleLogin() {
     axios
-      .post("/api/member/login", { email, password })
+      .post("/api/member/token", { email, password })
       .then((res) => {
         account.login(res.data.token);
+
         toast({
           status: "success",
           description: "로그인 되었습니다.",
@@ -57,29 +47,16 @@ export function MemberLogin() {
         });
         navigate("/");
       })
-      .catch((error) => {
-        setIsLoading(false);
-        if (error.response) {
-          toast({
-            status: "warning",
-            description: error.response.data.message || "이메일과 패스워드를 확인해주세요.",
-            position: "top",
-          });
-        } else if (error.request) {
-          toast({
-            status: "error",
-            description: "서버 응답이 없습니다. 나중에 다시 시도해주세요.",
-            position: "top",
-          });
-        } else {
-          toast({
-            status: "error",
-            description: "요청 중 오류가 발생했습니다.",
-            position: "top",
-          });
-        }
+      .catch(() => {
+        account.logout();
+
+        toast({
+          status: "warning",
+          description: "이메일과 패스워드를 확인해주세요.",
+          position: "top",
+        });
       });
-  };
+  }
 
   return (
     <Center>
