@@ -1,4 +1,14 @@
-import {Box, Button, FormControl, FormLabel, Input, Spinner, useToast} from "@chakra-ui/react";
+import {
+  Box,
+  Button, Center,
+  FormControl,
+  FormLabel, Heading,
+  Input, Modal, ModalBody,
+  ModalContent, ModalFooter, ModalHeader,
+  ModalOverlay,
+  Spinner, useDisclosure,
+  useToast
+} from "@chakra-ui/react";
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {useNavigate, useParams} from "react-router-dom";
@@ -13,6 +23,7 @@ export function MemberInfo() {
   const toast = useToast();
   const navigate = useNavigate();
   const account = useContext(LoginContext);
+  const { isOpen, onClose, onOpen } = useDisclosure();
 
   useEffect(() => {
     axios.get(`/api/member/${id}`)
@@ -58,6 +69,7 @@ export function MemberInfo() {
       .finally(() => {
         setIsLoading(false);
         setPassword("");
+        onclose();
       });
   };
 
@@ -67,36 +79,78 @@ export function MemberInfo() {
 
   return (
     <Box>
-      <Box>회원정보</Box>
-      <Box>
-        <Box>
-          <FormControl>
-            <FormLabel>이메일</FormLabel>
-            <Input isReadOnly value={member.email}/>
-          </FormControl>
+      <Center>
+        <Box w={500}>
+          <Box mb={10}>
+            <Heading>회원 정보</Heading>
+          </Box>
+          <Box mb={10}>
+            <Box mb={7}>
+              <FormControl>
+                <FormLabel>이메일</FormLabel>
+                <Input isReadOnly value={member.email} />
+              </FormControl>
+            </Box>
+            <Box mb={7}>
+              <FormControl>
+                <FormLabel>별명</FormLabel>
+                <Input isReadOnly value={member.nickName} />
+              </FormControl>
+            </Box>
+            <Box mb={7}>
+              <FormControl>
+                <FormLabel>가입일시</FormLabel>
+                <Input
+                  isReadOnly
+                  value={member.inserted}
+                  type={"datetime-local"}
+                />
+              </FormControl>
+            </Box>
+            {account.hasAccess(member.id) && (
+              <Box>
+                <Button
+                  mr={2}
+                  onClick={() => navigate(`/member/edit/${member.id}`)}
+                  colorScheme={"purple"}
+                >
+                  수정
+                </Button>
+                <Button colorScheme={"red"} onClick={onOpen}>
+                  탈퇴
+                </Button>
+              </Box>
+            )}
+          </Box>
         </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>별명</FormLabel>
-            <Input isReadOnly value={member.nickName}/>
-          </FormControl>
-        </Box>
-        <Box>
-          <FormControl>
-            <FormLabel>가입일시</FormLabel>
-            <Input isReadOnly value={member.inserted} type={"datetime-local"}/>
-          </FormControl>
-        </Box>
-        <Box>
-          <Button colorScheme={"blue"}>수정</Button>
-          <Button
-            isLoading={isLoading}
-            colorScheme={"red"}
-            onClick={handleClickReMove}>
-            탈퇴
-          </Button>
-        </Box>
-      </Box>
+      </Center>
+      <Modal isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>탈퇴 확인</ModalHeader>
+          <ModalBody>
+            <FormControl>
+              <FormLabel>암호</FormLabel>
+              <Input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </FormControl>
+          </ModalBody>
+          <ModalFooter>
+            <Button mr={2} onClick={onClose}>
+              취소
+            </Button>
+            <Button
+              isLoading={isLoading}
+              colorScheme={"red"}
+              onClick={handleClickReMove}
+            >
+              확인
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }

@@ -60,6 +60,7 @@ public class MemberController {
     }
 
     @PostMapping("/list")
+    @PreAuthorize("hasAuthority('SCOPE_admin')")
     public List<Member> list() {
         return service.list();
     }

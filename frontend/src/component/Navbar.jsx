@@ -1,21 +1,21 @@
-import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
-  Button,
   Center,
   Flex,
+  Hide,
+  Show,
+  Spacer,
   Input,
   InputGroup,
   InputRightElement,
+  Button,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Spacer,
-  Hide,
-  Show
 } from "@chakra-ui/react";
+import React, { useContext, useState } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -29,7 +29,7 @@ import {
   faUserPlus,
   faUsers,
   faCog,
-  faTrash
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -124,7 +124,7 @@ export function Navbar() {
           </InputGroup>
         </Center>
 
-        {account.user && (
+        {account.isLoggedIn() && (
           <Center
             onClick={() => navigate("/write")}
             cursor={"pointer"}
@@ -142,7 +142,7 @@ export function Navbar() {
 
         <Spacer />
 
-        {account.user && (
+        {account.isLoggedIn() && (
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               <Flex gap={2}>
@@ -150,7 +150,7 @@ export function Navbar() {
                   <FontAwesomeIcon icon={faUser} />
                 </Box>
                 <Box>
-                  <Hide below={"lg"}>{account.user.nickName}</Hide>
+                  <Hide below={"lg"}>{account.nickName}</Hide>
                 </Box>
               </Flex>
             </MenuButton>
@@ -159,18 +159,23 @@ export function Navbar() {
                 <FontAwesomeIcon icon={faCog} />
                 <Box ml={2}>마이페이지</Box>
               </MenuItem>
-              <MenuItem onClick={() => {
-                account.logout();
-                navigate("/login");
-              }}>
+              <MenuItem
+                onClick={() => {
+                  account.logout();
+                  navigate("/login");
+                }}
+              >
                 <FontAwesomeIcon icon={faRightFromBracket} />
                 <Box ml={2}>로그아웃</Box>
               </MenuItem>
-              <MenuItem onClick={() => {
-                if (window.confirm("정말로 탈퇴하시겠습니까?")) {
-                  account.deleteUser();
-                }
-              }}>
+
+              <MenuItem
+                onClick={() => {
+                  if (window.confirm("정말로 탈퇴하시겠습니까?")) {
+                    account.deleteUser();
+                  }
+                }}
+              >
                 <FontAwesomeIcon icon={faTrash} />
                 <Box ml={2}>회원 탈퇴</Box>
               </MenuItem>
@@ -178,7 +183,7 @@ export function Navbar() {
           </Menu>
         )}
 
-        {!account.user && (
+        {!account.isLoggedIn() && (
           <Center>
             <Menu>
               <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
@@ -237,7 +242,7 @@ export function Navbar() {
         <Center
           ml={4}
           cursor={"pointer"}
-          onClick={() => navigate("/course/list")}
+          onClick={() => navigate("/tour/list")}
           _hover={{ bgColor: "rgba(255, 255, 255, 0.5)" }}
           p={6}
           fontSize={20}
@@ -247,7 +252,7 @@ export function Navbar() {
           추천코스
         </Center>
 
-        {account.user && account.user.role === 'admin' && (
+        {account.isAdmin() && (
           <Center
             onClick={() => navigate("/member/list")}
             cursor={"pointer"}

@@ -24,7 +24,6 @@ import {MemberInfo} from "./page/member/MemberInfo.jsx";
 import {MemberEdit} from "./page/member/MemberEdit.jsx";
 
 
-
 const router = createBrowserRouter([
   {
     path: "/",
@@ -59,13 +58,14 @@ const router = createBrowserRouter([
   },
 ]);
 
+
 function App() {
   return (
+    <LoginProvider>
     <ChakraProvider>
-      <LoginProvider>
         <RouterProvider router={router} />
-      </LoginProvider>
     </ChakraProvider>
+    </LoginProvider>
   );
 }
 

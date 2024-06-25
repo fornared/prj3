@@ -1,5 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
-import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 
 export const LoginContext = createContext(null);
 
@@ -17,68 +17,48 @@ export function LoginProvider({ children }) {
     login(token);
   }, []);
 
-  const isLoggedIn = () => {
-    return id !== "";
-  };
+  // isLoggedIn
+  function isLoggedIn() {
+    return Date.now() < expired * 1000;
+  }
 
-  const hasAccess = (param) => {
-    return id === param;
-  };
+  // 권한 있는 지? 확인
+  function hasAccess(param) {
+    return id == param;
+  }
 
-  const isAdmin = () => {
+  function isAdmin() {
     return authority.includes("admin");
-  };
+  }
 
-  const login = (token) => {
+  // login
+  function login(token) {
     localStorage.setItem("token", token);
-    // Assuming token has decoded data. Adjust as necessary.
-    const payload = JSON.parse(atob(token.split('.')[1]));
+    const payload = jwtDecode(token);
     setExpired(payload.exp);
     setId(payload.sub);
     setNickName(payload.nickName);
-    setAuthority(payload.scope.split(" "));
-  };
-
-  const logout = () => {
+    setAuthority(payload.scope.split(" ")); // "admin manager user"
+  }
+  // logout
+  function logout() {
     localStorage.removeItem("token");
     setExpired(0);
     setId("");
     setNickName("");
     setAuthority([]);
-  };
-
-  const handleLogout = (navigate, toast) => {
-    axios
-      .post("/api/member/logout")
-      .then(() => {
-        toast({
-          status: "success",
-          description: "로그아웃 되었습니다.",
-          position: "top",
-        });
-        logout();
-        navigate("/");
-      })
-      .catch(() => {
-        toast({
-          status: "error",
-          description: "로그아웃 중 오류가 발생했습니다.",
-          position: "top",
-        });
-      });
-  };
+  }
 
   return (
     <LoginContext.Provider
       value={{
-        id,
-        nickName,
-        login,
-        logout,
-        isLoggedIn,
-        hasAccess,
-        isAdmin,
-        handleLogout,
+        id: id,
+        nickName: nickName,
+        login: login,
+        logout: logout,
+        isLoggedIn: isLoggedIn,
+        hasAccess: hasAccess,
+        isAdmin: isAdmin,
       }}
     >
       {children}

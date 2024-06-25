@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -17,11 +17,19 @@ import { LoginContext } from "../component/LoginProvider.jsx";
 
 export function MyPage() {
   const { user, updateUser, deleteUser, logout } = useContext(LoginContext);
-  const [nickName, setNickName] = useState(user.nickName || "");
-  const [email, setEmail] = useState(user.email || "");
-  const [introduction, setIntroduction] = useState(user.introduction || "");
+  const [nickName, setNickName] = useState("");
+  const [email, setEmail] = useState("");
+  const [introduction, setIntroduction] = useState("");
   const toast = useToast();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      setNickName(user.nickName || "");
+      setEmail(user.email || "");
+      setIntroduction(user.introduction || "");
+    }
+  }, [user]);
 
   const handleUpdate = async () => {
     try {
@@ -66,17 +74,19 @@ export function MyPage() {
   };
 
   return (
-    <Center>
-      <Box w={500} mt={30}>
+    <Center py={10}>
+      <Box w={{ base: "90%", md: "500px" }} p={8} boxShadow="lg" borderRadius="md" bg="white">
         <Center mb={10}>
-          <Heading>마이페이지</Heading>
+          <Heading size="lg">마이페이지</Heading>
         </Center>
-        <VStack spacing={7}>
+        <VStack spacing={5}>
           <FormControl>
             <FormLabel>닉네임</FormLabel>
             <Input
               value={nickName}
               onChange={(e) => setNickName(e.target.value)}
+              placeholder="닉네임을 입력하세요"
+              bg="gray.100"
             />
           </FormControl>
           <FormControl>
@@ -84,6 +94,8 @@ export function MyPage() {
             <Input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="이메일을 입력하세요"
+              bg="gray.100"
             />
           </FormControl>
           <FormControl>
@@ -91,15 +103,17 @@ export function MyPage() {
             <Textarea
               value={introduction}
               onChange={(e) => setIntroduction(e.target.value)}
+              placeholder="자기소개를 입력하세요"
+              bg="gray.100"
             />
           </FormControl>
-          <Button onClick={handleUpdate} colorScheme="blue">
+          <Button onClick={handleUpdate} colorScheme="blue" w="full">
             정보 수정
           </Button>
-          <Button onClick={handleLogout} colorScheme="blue" variant="outline">
+          <Button onClick={handleLogout} colorScheme="blue" variant="outline" w="full">
             로그아웃
           </Button>
-          <Button onClick={handleDelete} colorScheme="red">
+          <Button onClick={handleDelete} colorScheme="red" w="full">
             회원 탈퇴
           </Button>
         </VStack>
