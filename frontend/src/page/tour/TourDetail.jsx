@@ -16,14 +16,12 @@ import {
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import * as PropTypes from "prop-types";
 import { ReviewComponent } from "../../component/review/ReviewComponent.jsx";
-
-ReviewComponent.propTypes = { contentId: PropTypes.any };
 
 export function TourDetail() {
   const { id } = useParams();
   const [info, setInfo] = useState([]);
+  const [introInfo, setIntroInfo] = useState(null);
   const [info2, setInfo2] = useState(null);
   const [showAll, setShowAll] = useState(false);
   const [showBtnMore, setShowBtnMore] = useState(false);
@@ -51,6 +49,13 @@ export function TourDetail() {
       .get(`/api/tour/${id}/info2`)
       .then((res) => {
         setInfo2(res.data);
+      })
+      .catch();
+
+    axios
+      .get(`/api/tour/${id}/intro`)
+      .then((res) => {
+        setIntroInfo(res.data);
       })
       .catch();
   }, [info.overview]);
@@ -119,6 +124,23 @@ export function TourDetail() {
           </Tbody>
         </Table>
       </Box>
+      {introInfo !== null && (
+        <Box p={4} mt={"10px"} border="1px solid black">
+          (소개정보..)
+          <Table>
+            <Tbody>
+              {introInfo.map((item) => (
+                <Tr key={item.number}>
+                  <Th>{item.infoName}</Th>
+                  <Td>
+                    <Text dangerouslySetInnerHTML={{ __html: item.infoText }} />
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
+          </Table>
+        </Box>
+      )}
       {info2 !== null && (
         <Box p={4} mt={"10px"} border="1px solid black">
           (상세정보..)

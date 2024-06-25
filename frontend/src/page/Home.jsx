@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
+  AspectRatio,
   Box,
   Button,
   Center,
@@ -9,54 +10,78 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-const EventCard = ({ event, onClick }) => (
-  <Box
-    borderWidth="1px"
-    borderRadius="md"
-    overflow="hidden"
-    _hover={{ shadow: "md" }}
-    onClick={() => onClick(event.id)}
-    cursor="pointer"
-  >
-    <Image src={event.imageUrl} alt={event.title} />
-    <Box p={4}>
-      <Heading as="h3" size="md">
-        {event.title}
-      </Heading>
-      <Text mt={2}>{event.description}</Text>
-    </Box>
-  </Box>
-);
-
-const TravelCard = ({ imageSrc, title, description }) => (
-  <Box borderWidth="1px" borderRadius="md" overflow="hidden">
-    <Image src={imageSrc} alt={title} />
-    <Box p={4}>
-      <Heading as="h3" size="md">
-        {title}
-      </Heading>
-      <Text mt={2}>{description}</Text>
-    </Box>
-  </Box>
-);
-
-const ReviewCard = ({ title, description }) => (
-  <Box borderWidth="1px" borderRadius="md" overflow="hidden">
-    <Box p={4}>
-      <Heading as="h3" size="md">
-        {title}
-      </Heading>
-      <Text mt={2}>{description}</Text>
-    </Box>
-  </Box>
-);
+import axios from "axios";
 
 export function Home() {
+  const [contents1, setContents1] = useState([]);
+  const [contents2, setContents2] = useState([]);
+
+  const navigate = useNavigate();
+  //
+  const EventCard = ({ event, onClick }) => (
+    <Box
+      borderWidth="1px"
+      borderRadius="md"
+      overflow="hidden"
+      _hover={{ shadow: "md" }}
+      onClick={() => onClick(event.id)}
+      cursor="pointer"
+    >
+      <Image src={event.imageUrl} alt={event.title} />
+      <Box p={4}>
+        <Heading as="h3" size="md">
+          {event.title}
+        </Heading>
+        <Text mt={2}>{event.description}</Text>
+      </Box>
+    </Box>
+  );
+
+  const TravelCard = ({ imageSrc, title, description, id }) => (
+    <Box
+      cursor="pointer"
+      onClick={() => navigate(`/tour/${id}`)}
+      borderWidth="1px"
+      borderRadius="md"
+      overflow="hidden"
+      mx={5}
+    >
+      <AspectRatio ratio={3 / 2}>
+        <Image src={imageSrc} alt={title} />
+      </AspectRatio>
+      <Box p={4}>
+        <Heading as="h3" size="md">
+          {title}
+        </Heading>
+        <Text mt={2}>{description}</Text>
+      </Box>
+    </Box>
+  );
+
+  const ReviewCard = ({ title, description }) => (
+    <Box borderWidth="1px" borderRadius="md" overflow="hidden" mx={5}>
+      <Box p={4}>
+        <Heading as="h3" size="md">
+          {title}
+        </Heading>
+        <Text mt={2}>{description}</Text>
+      </Box>
+    </Box>
+  );
+  //
+  useEffect(() => {
+    axios.get("/api/home/contents").then((res) => {
+      setContents1(res.data);
+    });
+    axios.get("/api/home/contents").then((res) => {
+      setContents2(res.data);
+    });
+  }, []);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -88,57 +113,46 @@ export function Home() {
   };
 
   return (
-    <Box>
+    <Box mt={10}>
       <Box p={4} mb={8}>
         <VStack spacing={8} align="stretch">
           <Box>
-            <Heading as="h2" size="xl" mb={4}>
+            <Heading as="h2" size="xl" mb={4} ml={5}>
               가볼만한곳
             </Heading>
+
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-              <TravelCard
-                imageSrc="/image/image1.jpg"
-                title="동대문 디자인 플라자(DDP)"
-                description="서울특별시 중구의 전시장 및 쇼핑몰. 영국의 건축가 자하 하디드가 설계했다. 세계 최대 규모의 3차원 비정형 건축물이다."
-              />
-              <TravelCard
-                imageSrc="/image/image2.jpg"
-                title="별마당 도서관"
-                description="별마당에 가면 책 읽는 사람들 외에도 사진 찍는 사람의 모습을 많이 볼 수 있다. 코엑스몰에서 에어컨이 가장 빵빵한 곳이라 여름에 특히 인기."
-              />
-              <TravelCard
-                imageSrc="/image/image3.jpg"
-                title="남산타워"
-                description="서울특별시 용산구 남산에 있는 송신탑이자 서울을 대표하는 랜드마크이다. 세계타워연맹(WFGT)에 가입되어 있다."
-              />
+              {contents1.map((item, index) => (
+                <TravelCard
+                  key={index}
+                  id={item.id}
+                  imageSrc={item.firstImage1}
+                  title={item.title}
+                  description={item.overview ? item.overview : "설명(추가예정)"}
+                />
+              ))}
             </SimpleGrid>
           </Box>
 
           <Box>
-            <Heading as="h2" size="xl" mb={4}>
+            <Heading as="h2" size="xl" mb={4} ml={5}>
               추천 여행지
             </Heading>
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-              <TravelCard
-                imageSrc="/image/image4.jpg"
-                title="경주"
-                description="여행지 4 설명"
-              />
-              <TravelCard
-                imageSrc="/image/image5.jpg"
-                title="부산"
-                description="여행지 5 설명"
-              />
-              <TravelCard
-                imageSrc="/image/image6.jpg"
-                title="제주도"
-                description="여행지 6 설명"
-              />
+              {contents2.map((item, index) => (
+                <TravelCard
+                  key={index}
+                  id={item.id}
+                  imageSrc={item.firstImage1}
+                  title={item.title}
+                  description={item.areaName}
+                />
+              ))}
             </SimpleGrid>
           </Box>
 
           <Box>
-            <Heading as="h2" size="xl" mb={4}>
+            <Heading as="h2" size="xl" mb={4} ml={5}>
               최근 리뷰
             </Heading>
             <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
@@ -149,7 +163,7 @@ export function Home() {
           </Box>
 
           <Box>
-            <Heading as="h2" size="xl" mb={4}>
+            <Heading as="h2" size="xl" mb={4} ml={5}>
               스토리
             </Heading>
             <Slider {...settings}>
@@ -169,19 +183,26 @@ export function Home() {
           </Box>
 
           <Box>
-            <Heading as="h2" size="xl" mb={4}>
+            <Heading as="h2" size="xl" mb={4} ml={5}>
               이벤트
             </Heading>
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
               {events.map((event) => (
-                <EventCard key={event.id} event={event} onClick={handleEventClick} />
+                <EventCard
+                  key={event.id}
+                  event={event}
+                  onClick={handleEventClick}
+                />
               ))}
             </SimpleGrid>
 
             {selectedEvent && (
               <Box mt={8} p={4} borderWidth="1px" borderRadius="md">
                 <Center mb={4}>
-                  <Image src={selectedEvent.imageUrl} alt={selectedEvent.title} />
+                  <Image
+                    src={selectedEvent.imageUrl}
+                    alt={selectedEvent.title}
+                  />
                 </Center>
                 <Heading as="h3" size="lg" mb={2}>
                   {selectedEvent.title}
