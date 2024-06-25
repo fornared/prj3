@@ -4,14 +4,16 @@ import {
   Box,
   Button,
   Center,
-  Flex,
   FormControl,
   FormLabel,
   Heading,
   Input,
   useToast,
   VStack,
-  Textarea
+  Textarea,
+  Avatar,
+  HStack,
+  Divider,
 } from "@chakra-ui/react";
 import { LoginContext } from "../component/LoginProvider.jsx";
 
@@ -74,12 +76,14 @@ export function MyPage() {
   };
 
   return (
-    <Center py={10}>
-      <Box w={{ base: "90%", md: "500px" }} p={8} boxShadow="lg" borderRadius="md" bg="white">
+    <Center py={10} bg="gray.50" minHeight="100vh">
+      <Box w={{ base: "90%", md: "600px" }} p={8} boxShadow="xl" borderRadius="md" bg="white">
         <Center mb={10}>
           <Heading size="lg">마이페이지</Heading>
         </Center>
         <VStack spacing={5}>
+          <Avatar size="xl" name={nickName} mb={5} />
+          <Divider />
           <FormControl>
             <FormLabel>닉네임</FormLabel>
             <Input
@@ -87,6 +91,8 @@ export function MyPage() {
               onChange={(e) => setNickName(e.target.value)}
               placeholder="닉네임을 입력하세요"
               bg="gray.100"
+              borderRadius="md"
+              _hover={{ bg: "gray.200" }}
             />
           </FormControl>
           <FormControl>
@@ -96,6 +102,8 @@ export function MyPage() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="이메일을 입력하세요"
               bg="gray.100"
+              borderRadius="md"
+              _hover={{ bg: "gray.200" }}
             />
           </FormControl>
           <FormControl>
@@ -105,14 +113,18 @@ export function MyPage() {
               onChange={(e) => setIntroduction(e.target.value)}
               placeholder="자기소개를 입력하세요"
               bg="gray.100"
+              borderRadius="md"
+              _hover={{ bg: "gray.200" }}
             />
           </FormControl>
-          <Button onClick={handleUpdate} colorScheme="blue" w="full">
-            정보 수정
-          </Button>
-          <Button onClick={handleLogout} colorScheme="blue" variant="outline" w="full">
-            로그아웃
-          </Button>
+          <HStack w="full" spacing={4}>
+            <Button onClick={handleUpdate} colorScheme="blue" flex={1}>
+              정보 수정
+            </Button>
+            <Button onClick={handleLogout} colorScheme="blue" variant="outline" flex={1}>
+              로그아웃
+            </Button>
+          </HStack>
           <Button onClick={handleDelete} colorScheme="red" w="full">
             회원 탈퇴
           </Button>
