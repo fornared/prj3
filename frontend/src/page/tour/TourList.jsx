@@ -8,7 +8,12 @@ import {
   Input,
   Select,
   SimpleGrid,
+  Table,
+  Tbody,
+  Td,
   Text,
+  Th,
+  Tr,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -149,124 +154,174 @@ export function TourList() {
       <Box mb={10}>
         <Heading>list</Heading>
       </Box>
-      <Center mb={10} gap={2}>
-        <Box>
-          <Select
-            value={contentType}
-            onChange={(e) => {
-              setContentType(e.target.value);
-              setSelectedCat1("");
-              setCategory("");
-            }}
-          >
-            <option value="">관광타입</option>
-            <option>관광지</option>
-            <option>문화시설</option>
-            <option>축제/공연/행사</option>
-            <option>여행코스</option>
-            <option>레포츠</option>
-            <option>숙박</option>
-            <option>쇼핑</option>
-            <option>음식</option>
-          </Select>
-        </Box>
-        <Box>
-          <Select
-            value={selectedCat1}
-            onChange={(e) => {
-              setSelectedCat1(e.target.value);
-              setCategory(e.target.value);
-              setSelectedCat2("");
-            }}
-          >
-            <option value="">대분류</option>
-            {cat1.map((item, index) => (
-              <option key={index}>{item}</option>
-            ))}
-          </Select>
-        </Box>
-        <Box>
-          <Select
-            value={selectedCat2}
-            onChange={(e) => {
-              const opt = e.target.value;
 
-              setSelectedCat2(opt);
+      <Table mb={10} border={"2px solid black"}>
+        <Tbody>
+          <Tr border={"1px solid blue"}>
+            <Th width={"15%"} border={"1px solid red"}>
+              관광타입
+            </Th>
+            <Td
+              border={"1px solid green"}
+              width={"100%"}
+              justifyItems={"center"}
+              display={"flex"}
+              gap={5}
+            >
+              <Box>
+                <Select
+                  value={contentType}
+                  onChange={(e) => {
+                    setContentType(e.target.value);
+                    setSelectedCat1("");
+                    setSelectedCat2("");
+                    setCategory("");
+                  }}
+                >
+                  <option value="">전체</option>
+                  <option>관광지</option>
+                  <option>문화시설</option>
+                  <option>축제/공연/행사</option>
+                  <option>여행코스</option>
+                  <option>레포츠</option>
+                  <option>숙박</option>
+                  <option>쇼핑</option>
+                  <option>음식</option>
+                </Select>
+              </Box>
+              <Box>
+                <Select
+                  value={selectedCat1}
+                  display={contentType === "" ? "none" : ""}
+                  onChange={(e) => {
+                    setSelectedCat1(e.target.value);
+                    setCategory(e.target.value);
+                    setSelectedCat2("");
+                  }}
+                >
+                  <option value="">대분류</option>
+                  {cat1.map((item, index) => (
+                    <option key={index}>{item}</option>
+                  ))}
+                </Select>
+              </Box>
+              <Box>
+                <Select
+                  value={selectedCat2}
+                  display={selectedCat1 === "" ? "none" : ""}
+                  onChange={(e) => {
+                    const opt = e.target.value;
 
-              if (opt === "") {
-                setCategory(selectedCat1);
-              } else {
-                setCategory(opt);
-              }
+                    setSelectedCat2(opt);
 
-              setSelectedCat3("");
-            }}
-          >
-            <option value="">중분류</option>
-            {cat2.map((item, index) => (
-              <option key={index}>{item}</option>
-            ))}
-          </Select>
-        </Box>
-        <Box>
-          <Select
-            value={selectedCat3}
-            onChange={(e) => {
-              const opt = e.target.value;
+                    if (opt === "") {
+                      setCategory(selectedCat1);
+                    } else {
+                      setCategory(opt);
+                    }
 
-              setSelectedCat3(opt);
+                    setSelectedCat3("");
+                  }}
+                >
+                  <option value="">중분류</option>
+                  {cat2.map((item, index) => (
+                    <option key={index}>{item}</option>
+                  ))}
+                </Select>
+              </Box>
+              <Box>
+                <Select
+                  value={selectedCat3}
+                  display={selectedCat2 === "" ? "none" : ""}
+                  onChange={(e) => {
+                    const opt = e.target.value;
 
-              if (opt === "") {
-                setCategory(selectedCat2);
-              } else {
-                setCategory(opt);
-              }
-            }}
-          >
-            <option value="">소분류</option>
-            {cat3.map((item, index) => (
-              <option key={index}>{item}</option>
-            ))}
-          </Select>
-        </Box>
+                    setSelectedCat3(opt);
 
-        <Box>
-          <Select
-            value={area}
-            onChange={(e) => {
-              setArea(e.target.value);
-              setSigungu("");
-            }}
-          >
-            <option value="">지역</option>
-            {areas.map((item, index) => (
-              <option key={index}>{item}</option>
-            ))}
-          </Select>
-        </Box>
-        <Box>
-          <Select value={sigungu} onChange={(e) => setSigungu(e.target.value)}>
-            <option value="">전체</option>
-            {sigungus.map((item, index) => (
-              <option key={index}>{item}</option>
-            ))}
-          </Select>
-        </Box>
-        <Box>
-          <Input
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            onKeyPress={handlePressEnter}
-            placeholder="검색어"
-          />
-        </Box>
-        <Box>
-          <Button onClick={handleClickSearch}>검색버튼</Button>
-        </Box>
-        <Box>
-          <Button onClick={handleClickReset}>초기화버튼</Button>
-        </Box>
-      </Center>
+                    if (opt === "") {
+                      setCategory(selectedCat2);
+                    } else {
+                      setCategory(opt);
+                    }
+                  }}
+                >
+                  <option value="">소분류</option>
+                  {cat3.map((item, index) => (
+                    <option key={index}>{item}</option>
+                  ))}
+                </Select>
+              </Box>
+            </Td>
+          </Tr>
+          <Tr>
+            <Th width={"15%"} border={"1px solid red"}>
+              지역
+            </Th>
+            <Td
+              border={"1px solid green"}
+              width={"100%"}
+              justifyItems={"center"}
+              display={"flex"}
+              gap={5}
+            >
+              <Box>
+                <Select
+                  value={area}
+                  onChange={(e) => {
+                    setArea(e.target.value);
+                    setSigungu("");
+                  }}
+                >
+                  <option value="">전체</option>
+                  {areas.map((item, index) => (
+                    <option key={index}>{item}</option>
+                  ))}
+                </Select>
+              </Box>
+              <Box>
+                <Select
+                  value={sigungu}
+                  display={area === "" ? "none" : ""}
+                  onChange={(e) => setSigungu(e.target.value)}
+                >
+                  <option value="">전체</option>
+                  {sigungus.map((item, index) => (
+                    <option key={index}>{item}</option>
+                  ))}
+                </Select>
+              </Box>
+            </Td>
+          </Tr>
+          <Tr>
+            <Th width={"15%"} border={"1px solid red"}>
+              검색어
+            </Th>
+            <Td
+              border={"1px solid green"}
+              width={"100%"}
+              justifyItems={"center"}
+              display={"flex"}
+              gap={5}
+            >
+              <Box width={"60%"}>
+                <Input
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  onKeyPress={handlePressEnter}
+                  placeholder=""
+                />
+              </Box>
+              <Box>
+                <Button onClick={handleClickSearch}>검색버튼</Button>
+              </Box>
+              <Box>
+                <Button onClick={handleClickReset}>분류초기화버튼</Button>
+              </Box>
+            </Td>
+          </Tr>
+        </Tbody>
+      </Table>
+
       <Box mb={10}>
         {tourList.length === 0 && <Center>결과없음</Center>}
         {tourList.length > 0 && (
