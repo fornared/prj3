@@ -425,7 +425,7 @@ public interface TourMapper {
             FROM content
             WHERE id=#{id}
             """)
-    List<Content> selectContnetById(Integer id);
+    List<Content> selectContentById(Integer id);
 
     // 추후에 수정일순 정렬로 변경
     @Select("""
@@ -473,4 +473,105 @@ public interface TourMapper {
             VALUES (#{contentId}, #{ageLimit}, #{bookingPlace}, #{discount}, #{startDate}, #{endDate}, #{place}, #{placeInfo}, #{playTime}, #{program}, #{useFee}, #{spendTime}, #{sponsor1}, #{telSponsor1}, #{sponsor2}, #{telSponsor2}, #{subEvent})
             """)
     int insertFestivalInfo(IntroInfo introInfo);
+
+    @Select("""
+            SELECT id
+            FROM leports_info
+            WHERE content_id=#{cid}
+            """)
+    Integer selectLeportsInfoIdByContentIdOnContent(Integer cid);
+
+    @Insert("""
+            INSERT INTO leports_info (content_id, accom_count, chk_baby_carriage, chk_credit_card, chk_pet, exp_age_range, open_period, parking, parking_fee, rest_date, reservation ,tel_center, use_fee, use_time, scale)
+            VALUES (#{contentId}, #{accomCount}, #{chkBabyCarriage}, #{chkCreditCard}, #{chkPet}, #{expAgeRange}, #{openPeriod}, #{parking}, #{parkingFee}, #{restDate}, #{reservation} , #{telCenter}, #{useFee}, #{useTime}, #{scale})
+            """)
+    int insertLeportsInfo(IntroInfo introInfo);
+
+    @Select("""
+            SELECT id
+            FROM lodging_info
+            WHERE content_id=#{cid}
+            """)
+    Integer selectLodgingInfoIdByContentIdOnContent(Integer cid);
+
+    @Insert("""
+            INSERT INTO lodging_info (content_id, accom_count, check_in, check_out, chk_cooking, food_place, parking, pickup, reservation_tel, reservation_url, tel_center, scale, room_count, room_type, sub_facility)
+            VALUES (#{contentId}, #{accomCount}, #{checkIn}, #{checkOut}, #{chkCooking}, #{foodPlace}, #{parking}, #{pickup}, #{reservationTel}, #{reservationUrl}, #{telCenter} , #{scale}, #{roomCount}, #{roomType}, #{subFacility})
+            """)
+    int insertLodgingInfo(IntroInfo introInfo);
+
+    @Select("""
+            SELECT id
+            FROM shopping_info
+            WHERE content_id=#{cid}
+            """)
+    Integer selectShoppingInfoIdByContentIdOnContent(Integer cid);
+
+    @Insert("""
+            INSERT INTO shopping_info (content_id, chk_baby_carriage, chk_credit_card, chk_pet, fair_day, open_date, open_time, parking, rest_date, rest_room, tel_center, sale_item, scale, shop_guide)
+            VALUES (#{contentId}, #{chkBabyCarriage}, #{chkCreditCard}, #{chkPet}, #{fairDay}, #{openDate}, #{openTime}, #{parking}, #{restDate}, #{restRoom} , #{telCenter}, #{saleItem}, #{scale}, #{shopGuide})
+            """)
+    int insertShoppingInfo(IntroInfo introInfo);
+
+    @Select("""
+            SELECT id
+            FROM food_info
+            WHERE content_id=#{cid}
+            """)
+    Integer selectFoodInfoIdByContentIdOnContent(Integer cid);
+
+    @Insert("""
+            INSERT INTO food_info (content_id, chk_credit_card, discount, first_menu, menu, kids_facility, open_date, open_time, packing, parking, rest_date, reservation, tel_center, scale, seat)
+            VALUES (#{contentId}, #{chkCreditCard}, #{discount}, #{firstMenu}, #{menu}, #{kidsFacility}, #{openDate}, #{openTime}, #{packing}, #{parking}, #{restDate}, #{reservation}, #{telCenter}, #{scale}, #{seat})
+            """)
+    int insertFoodInfo(IntroInfo introInfo);
+
+    @Select("""
+            SELECT *
+            FROM spot_info
+            WHERE content_id=#{contentId}
+            """)
+    List<IntroInfo> selectSpotInfoByContentId(Integer contentId);
+
+    @Select("""
+            SELECT *
+            FROM culture_info
+            WHERE content_id=#{contentId}
+            """)
+    List<IntroInfo> selectCultureInfoByContentId(Integer contentId);
+
+    @Select("""
+            SELECT *
+            FROM festival_info
+            WHERE content_id=#{contentId}
+            """)
+    List<IntroInfo> selectFestivalInfoByContentId(Integer contentId);
+
+    @Select("""
+            SELECT *
+            FROM leports_info
+            WHERE content_id=#{contentId}
+            """)
+    List<IntroInfo> selectLeportsInfoByContentId(Integer contentId);
+
+    @Select("""
+            SELECT *
+            FROM lodging_info
+            WHERE content_id=#{contentId}
+            """)
+    List<IntroInfo> selectLodgingInfoByContentId(Integer contentId);
+
+    @Select("""
+            SELECT *
+            FROM shopping_info
+            WHERE content_id=#{contentId}
+            """)
+    List<IntroInfo> selectShoppingInfoByContentId(Integer contentId);
+
+    @Select("""
+            SELECT *
+            FROM food_info
+            WHERE content_id=#{contentId}
+            """)
+    List<IntroInfo> selectFoodInfoByContentId(Integer contentId);
 }

@@ -133,6 +133,12 @@ export function TourList() {
     setSigungu("");
   }
 
+  function handlePressEnter(e) {
+    if (e.key === "Enter") {
+      handleClickSearch();
+    }
+  }
+
   return (
     <Box
       mx={{
@@ -250,10 +256,10 @@ export function TourList() {
           <Input
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
+            onKeyPress={handlePressEnter}
             placeholder="검색어"
           />
         </Box>
-
         <Box>
           <Button onClick={handleClickSearch}>검색버튼</Button>
         </Box>

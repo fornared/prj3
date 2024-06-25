@@ -147,6 +147,11 @@ public class TourController {
         return service.getInfo2(contentId);
     }
 
+    @GetMapping("/{id}/intro")
+    public List<Info2> getIntro(@PathVariable(value = "id") Integer contentId) {
+        return service.getIntro(contentId);
+    }
+
     @PostMapping("add/image")
     public ResponseEntity addImage(@RequestBody List<Image> images) {
         System.out.println(images);

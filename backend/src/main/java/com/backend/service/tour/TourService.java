@@ -502,16 +502,32 @@ public class TourService {
                         //
                     }
                     if (introInfo.getTypeId() == 28) {
-
+                        if (mapper.selectLeportsInfoIdByContentIdOnContent(cid) == null) {
+                            mapper.insertLeportsInfo(introInfo);
+                        } else {
+                            System.out.println(STR."\{cid} - 이미 입력된 정보");
+                        }
                     }
                     if (introInfo.getTypeId() == 32) {
-
+                        if (mapper.selectLodgingInfoIdByContentIdOnContent(cid) == null) {
+                            mapper.insertLodgingInfo(introInfo);
+                        } else {
+                            System.out.println(STR."\{cid} - 이미 입력된 정보");
+                        }
                     }
                     if (introInfo.getTypeId() == 38) {
-
+                        if (mapper.selectShoppingInfoIdByContentIdOnContent(cid) == null) {
+                            mapper.insertShoppingInfo(introInfo);
+                        } else {
+                            System.out.println(STR."\{cid} - 이미 입력된 정보");
+                        }
                     }
                     if (introInfo.getTypeId() == 39) {
-
+                        if (mapper.selectFoodInfoIdByContentIdOnContent(cid) == null) {
+                            mapper.insertFoodInfo(introInfo);
+                        } else {
+                            System.out.println(STR."\{cid} - 이미 입력된 정보");
+                        }
                     }
                 }
             }
@@ -523,10 +539,633 @@ public class TourService {
     }
 
     public List<Content> getContent(Integer id) {
-        return mapper.selectContnetById(id);
+        return mapper.selectContentById(id);
     }
 
     public List<Integer> getAllContentId() {
         return mapper.selectAllContentId();
+    }
+
+    public List<Info2> getIntro(Integer contentId) {
+        List<Info2> introList = new ArrayList<>();
+        Integer contentType = mapper.selectTypeIdByContentId(contentId);
+
+        List<IntroInfo> introInfoList = new ArrayList<>();
+        if (contentType == 12) {
+            introInfoList = mapper.selectSpotInfoByContentId(contentId);
+        }
+        if (contentType == 14) {
+            introInfoList = mapper.selectCultureInfoByContentId(contentId);
+        }
+        if (contentType == 15) {
+            introInfoList = mapper.selectFestivalInfoByContentId(contentId);
+        }
+        if (contentType == 28) {
+            introInfoList = mapper.selectLeportsInfoByContentId(contentId);
+        }
+        if (contentType == 32) {
+            introInfoList = mapper.selectLodgingInfoByContentId(contentId);
+        }
+        if (contentType == 38) {
+            introInfoList = mapper.selectShoppingInfoByContentId(contentId);
+        }
+        if (contentType == 39) {
+            introInfoList = mapper.selectFoodInfoByContentId(contentId);
+        }
+
+        for (IntroInfo introInfo : introInfoList) {
+            // 처음 number 는 0
+            int i = 0;
+
+
+            if (introInfo.getOpenDate() != null && !introInfo.getOpenDate().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("개장일");
+                intros.setInfoText(introInfo.getOpenDate());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getOpenPeriod() != null && !introInfo.getOpenPeriod().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("개장기간");
+                intros.setInfoText(introInfo.getOpenPeriod());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getOpenTime() != null && !introInfo.getOpenTime().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("영업시간");
+                intros.setInfoText(introInfo.getOpenTime());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getStartDate() != null && !introInfo.getStartDate().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("시작일");
+                intros.setInfoText(introInfo.getStartDate());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getEndDate() != null && !introInfo.getEndDate().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("종료일");
+                intros.setInfoText(introInfo.getEndDate());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getRestDate() != null && !introInfo.getRestDate().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("쉬는날");
+                intros.setInfoText(introInfo.getRestDate());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getCheckIn() != null && !introInfo.getCheckIn().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("입실");
+                intros.setInfoText(introInfo.getCheckIn());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getCheckOut() != null && !introInfo.getCheckOut().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("퇴실");
+                intros.setInfoText(introInfo.getCheckOut());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getAccomCount() != null && !introInfo.getAccomCount().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("수용인원");
+                intros.setInfoText(introInfo.getAccomCount());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getAgeLimit() != null && !introInfo.getAgeLimit().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("연령제한");
+                intros.setInfoText(introInfo.getAgeLimit());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getBookingPlace() != null && !introInfo.getBookingPlace().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("예매처");
+                intros.setInfoText(introInfo.getBookingPlace());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getChkBabyCarriage() != null && !introInfo.getChkBabyCarriage().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("유모차 대여");
+                intros.setInfoText(introInfo.getChkBabyCarriage());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getChkCreditCard() != null && !introInfo.getChkCreditCard().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("신용카드 사용");
+                intros.setInfoText(introInfo.getChkCreditCard());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getChkPet() != null && !introInfo.getChkPet().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("애완동물 동반");
+                intros.setInfoText(introInfo.getChkPet());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getDiscount() != null && !introInfo.getDiscount().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("할인정보");
+                intros.setInfoText(introInfo.getDiscount());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getExpAgeRange() != null && !introInfo.getExpAgeRange().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("연령제한");
+                intros.setInfoText(introInfo.getExpAgeRange());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getExpGuide() != null && !introInfo.getExpGuide().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("체험안내");
+                intros.setInfoText(introInfo.getExpGuide());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getFairDay() != null && !introInfo.getFairDay().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("장서는날");
+                intros.setInfoText(introInfo.getFairDay());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getFirstMenu() != null && !introInfo.getFirstMenu().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("대표메뉴");
+                intros.setInfoText(introInfo.getFirstMenu());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getMenu() != null && !introInfo.getMenu().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("메뉴");
+                intros.setInfoText(introInfo.getMenu());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getChkCooking() != null && !introInfo.getChkCooking().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("객실내취사");
+                intros.setInfoText(introInfo.getChkCooking());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getFoodPlace() != null && !introInfo.getFoodPlace().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("식음료장");
+                intros.setInfoText(introInfo.getFoodPlace());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getHeritage() != null && introInfo.getHeritage() != 0) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("세계유산");
+                if (introInfo.getHeritage() == 1) {
+                    intros.setInfoText("세계문화유산");
+                } else if (introInfo.getHeritage() == 2) {
+                    intros.setInfoText("세계자연유산");
+                } else if (introInfo.getHeritage() == 3) {
+                    intros.setInfoText("세계기록유산");
+                }
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getKidsFacility() != null && !introInfo.getKidsFacility().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("어린이놀이방");
+                intros.setInfoText(introInfo.getKidsFacility());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getPacking() != null && !introInfo.getPacking().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("포장");
+                intros.setInfoText(introInfo.getPacking());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getParking() != null && !introInfo.getParking().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("주차");
+                intros.setInfoText(introInfo.getParking());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getParkingFee() != null && !introInfo.getParkingFee().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("주차요금");
+                intros.setInfoText(introInfo.getParkingFee());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getPickup() != null && !introInfo.getPickup().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("픽업서비스");
+                intros.setInfoText(introInfo.getPickup());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getPlace() != null && !introInfo.getPlace().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("장소");
+                intros.setInfoText(introInfo.getPlace());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getPlaceInfo() != null && !introInfo.getPlaceInfo().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("위치안내");
+                intros.setInfoText(introInfo.getPlaceInfo());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getPlayTime() != null && !introInfo.getPlayTime().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("공연시간");
+                intros.setInfoText(introInfo.getPlayTime());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getProgram() != null && !introInfo.getProgram().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("프로그램");
+                intros.setInfoText(introInfo.getProgram());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getReservation() != null && !introInfo.getReservation().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("예약");
+                intros.setInfoText(introInfo.getReservation());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getReservationTel() != null && !introInfo.getReservationTel().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("예약");
+                intros.setInfoText(introInfo.getReservationTel());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getReservationUrl() != null && !introInfo.getReservationUrl().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("예약 페이지");
+                intros.setInfoText(introInfo.getReservationUrl());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getRestRoom() != null && !introInfo.getRestRoom().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("화장실");
+                intros.setInfoText(introInfo.getRestRoom());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getRoomType() != null && !introInfo.getRoomType().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("객실유형");
+                intros.setInfoText(introInfo.getRoomType());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getRoomCount() != null && !introInfo.getRoomCount().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("객실수");
+                intros.setInfoText(introInfo.getRoomCount());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getSaleItem() != null && !introInfo.getSaleItem().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("판매품목");
+                intros.setInfoText(introInfo.getSaleItem());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getScale() != null && !introInfo.getScale().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("규모");
+                intros.setInfoText(introInfo.getScale());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getSeat() != null && !introInfo.getSeat().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("좌석수");
+                intros.setInfoText(introInfo.getSeat());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getShopGuide() != null && !introInfo.getShopGuide().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("매장안내");
+                intros.setInfoText(introInfo.getShopGuide());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getSubEvent() != null && !introInfo.getSubEvent().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("부대행사");
+                intros.setInfoText(introInfo.getSubEvent());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getSubFacility() != null && !introInfo.getSubFacility().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("부대시설");
+                intros.setInfoText(introInfo.getSubFacility());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getTelCenter() != null && !introInfo.getTelCenter().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("문의 및 안내");
+                intros.setInfoText(introInfo.getTelCenter());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getSponsor1() != null && !introInfo.getSponsor1().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("주최자정보");
+                intros.setInfoText(introInfo.getSponsor1());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getTelSponsor1() != null && !introInfo.getTelSponsor1().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("주최자연락처");
+                intros.setInfoText(introInfo.getTelSponsor1());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getSponsor2() != null && !introInfo.getSponsor2().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("주관사정보");
+                intros.setInfoText(introInfo.getSponsor2());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getTelSponsor2() != null && !introInfo.getTelSponsor2().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("주관사연락처");
+                intros.setInfoText(introInfo.getTelSponsor2());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getUseFee() != null && !introInfo.getUseFee().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("이용요금");
+                intros.setInfoText(introInfo.getUseFee());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getUseSeason() != null && !introInfo.getUseSeason().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("이용시기");
+                intros.setInfoText(introInfo.getUseSeason());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getUseTime() != null && !introInfo.getUseTime().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("이용시간");
+                intros.setInfoText(introInfo.getUseTime());
+
+                introList.add(intros);
+
+                i++;
+            }
+            if (introInfo.getSpendTime() != null && !introInfo.getSpendTime().isEmpty()) {
+                Info2 intros = new Info2();
+
+                intros.setNumber(i);
+                intros.setInfoName("소요시간");
+                intros.setInfoText(introInfo.getSpendTime());
+
+                introList.add(intros);
+            }
+        }
+        return introList;
     }
 }

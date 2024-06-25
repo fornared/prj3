@@ -631,7 +631,7 @@ export function TourSearch() {
     });
      */
     axios
-      .get(`/api/tour/get/content/41147`)
+      .get(`/api/tour/get/content/17592`)
       .then((res) => {
         const contentList = res.data;
         for (const content of contentList) {
@@ -737,57 +737,76 @@ export function TourSearch() {
               setIntros([...intros, intro]);
             });
           }
-          // 숙박
+          // 숙박 ( 29777 )
           if (typeId === 32) {
-            axios
-              .get(`https://apis.data.go.kr/B551011/KorService1/detailIntro1`, {
-                params: {
-                  serviceKey: serviceKey,
-                  MobileOS: "ETC",
-                  MobileApp: "AppTest",
-                  _type: "json",
-                  contentId: exContentId,
-                  contentTypeId: typeId,
-                  numOfRows: 50,
-                  pageNo: 1,
-                },
-              })
-              .then((res) => {
-                const data = res.data.response.body.items.item;
-                const intro = data.map((item, index) => ({
-                  contentId: item.contentid,
-                  number: index,
-                  title: item.roomtitle,
-                  size: item.roomsize1,
-                  roomCount: item.roomcount,
-                  baseAccomCount: item.roombasecount,
-                  maxAccomCount: item.roommaxcount,
-                  offSeasonFeeWd: item.roomoffseasonminfee1,
-                  peakSeasonFeeWd: item.roompeakseasonminfee1,
-                  offSeasonFeeWe: item.roomoffseasonminfee2,
-                  peakSeasonFeeWe: item.roompeakseasonminfee2,
-                  intro: item.roomintro,
-                  aircondition: item.roomaircondition,
-                  bath: item.roombath,
-                  bathFacility: item.roombathfacility,
-                  cable: item.roomcable,
-                  cook: item.roomcook,
-                  hairdryer: item.roomhairdryer,
-                  homeTheater: item.roomhometheater, // 추가
-                  internet: item.roominternet,
-                  pc: item.roompc,
-                  sofa: item.roomsofa,
-                  refrigerator: item.roomrefrigerator,
-                  toiletries: item.roomtoiletries,
-                  tv: item.roomtv,
-                  img1: item.roomimg1,
-                  img2: item.roomimg2,
-                  img3: item.roomimg3,
-                  img4: item.roomimg4,
-                  img5: item.roomimg5,
-                }));
-                setIntros([...intros, intro]);
-              });
+            getIntroInfo(exContentId, typeId).then((data) => {
+              const intro = data.map((item) => ({
+                contentId: id,
+                typeId: typeId,
+                accomCount: item.accomcountlodging,
+                checkIn: item.checkintime,
+                checkOut: item.checkouttime,
+                chkCooking: item.chkcooking,
+                foodPlace: item.foodplace,
+                parking: item.parkinglodging,
+                pickup: item.pickup,
+                reservationTel: item.reservationlodging,
+                reservationUrl: item.reservationurl,
+                telCenter: item.infocenterlodging,
+                scale: item.scalelodging,
+                roomCount: item.roomcount,
+                roomType: item.roomtype,
+                subFacility: item.subfacility,
+              }));
+              setIntros([...intros, intro]);
+            });
+          }
+          // 쇼핑 ( 70734 )
+          if (typeId === 38) {
+            getIntroInfo(exContentId, typeId).then((data) => {
+              const intro = data.map((item) => ({
+                contentId: id,
+                typeId: typeId,
+                chkBabyCarriage: item.chkbabycarriageshopping,
+                chkCreditCard: item.chkcreditcardshopping,
+                chkPet: item.chkpetshopping,
+                fairDay: item.fairday,
+                openDate: item.opendateshopping,
+                openTime: item.opentime,
+                parking: item.parkingshopping,
+                restDate: item.restdateshopping,
+                restRoom: item.restroom,
+                telCenter: item.infocentershopping,
+                saleItem: item.saleitem,
+                scale: item.scaleshopping,
+                shopGuide: item.shopguide,
+              }));
+              setIntros([...intros, intro]);
+            });
+          }
+          // 음식점 ( 17592 )
+          if (typeId === 39) {
+            getIntroInfo(exContentId, typeId).then((data) => {
+              const intro = data.map((item) => ({
+                contentId: id,
+                typeId: typeId,
+                chkCreditCard: item.chkcreditcardfood,
+                discount: item.discountinfofood,
+                firstMenu: item.firstmenu,
+                menu: item.treatmenu,
+                kidsFacility: item.kidsfacility,
+                openDate: item.opendatefood,
+                openTime: item.opentimefood,
+                packing: item.packing,
+                parking: item.parkingfood,
+                restDate: item.restdatefood,
+                reservation: item.reservationfood,
+                telCenter: item.infocenterfood,
+                scale: item.scalefood,
+                seat: item.seat,
+              }));
+              setIntros([...intros, intro]);
+            });
           }
         }
       })
