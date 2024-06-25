@@ -18,24 +18,24 @@ import {
 import { LoginContext } from "../component/LoginProvider.jsx";
 
 export function MyPage() {
-  const { user, updateUser, deleteUser, logout } = useContext(LoginContext);
-  const [nickName, setNickName] = useState("");
-  const [email, setEmail] = useState("");
-  const [introduction, setIntroduction] = useState("");
+  const { id, nickName, email, introduction, updateUser, deleteUser, logout } = useContext(LoginContext);
+  const [nickNameInput, setNickNameInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+  const [introductionInput, setIntroductionInput] = useState("");
   const toast = useToast();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) {
-      setNickName(user.nickName || "");
-      setEmail(user.email || "");
-      setIntroduction(user.introduction || "");
+    if (id) {
+      setNickNameInput(nickName || "");
+      setEmailInput(email || "");
+      setIntroductionInput(introduction || "");
     }
-  }, [user]);
+  }, [id, nickName, email, introduction]);
 
   const handleUpdate = async () => {
     try {
-      await updateUser({ nickName, email, introduction });
+      await updateUser({ nickName: nickNameInput, email: emailInput, introduction: introductionInput });
       toast({
         status: "success",
         description: "회원 정보가 업데이트되었습니다.",
@@ -82,13 +82,13 @@ export function MyPage() {
           <Heading size="lg">마이페이지</Heading>
         </Center>
         <VStack spacing={5}>
-          <Avatar size="xl" name={nickName} mb={5} />
+          <Avatar size="xl" name={nickNameInput} mb={5} />
           <Divider />
           <FormControl>
             <FormLabel>닉네임</FormLabel>
             <Input
-              value={nickName}
-              onChange={(e) => setNickName(e.target.value)}
+              value={nickNameInput}
+              onChange={(e) => setNickNameInput(e.target.value)}
               placeholder="닉네임을 입력하세요"
               bg="gray.100"
               borderRadius="md"
@@ -98,8 +98,8 @@ export function MyPage() {
           <FormControl>
             <FormLabel>이메일</FormLabel>
             <Input
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={emailInput}
+              onChange={(e) => setEmailInput(e.target.value)}
               placeholder="이메일을 입력하세요"
               bg="gray.100"
               borderRadius="md"
@@ -109,8 +109,8 @@ export function MyPage() {
           <FormControl>
             <FormLabel>자기소개</FormLabel>
             <Textarea
-              value={introduction}
-              onChange={(e) => setIntroduction(e.target.value)}
+              value={introductionInput}
+              onChange={(e) => setIntroductionInput(e.target.value)}
               placeholder="자기소개를 입력하세요"
               bg="gray.100"
               borderRadius="md"
