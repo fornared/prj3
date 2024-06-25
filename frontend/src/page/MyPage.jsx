@@ -16,7 +16,7 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import { LoginContext } from "../component/LoginProvider.jsx";
-
+//
 export function MyPage() {
   const { id, nickName, email, introduction, updateUser, deleteUser, logout } = useContext(LoginContext);
   const [nickNameInput, setNickNameInput] = useState("");

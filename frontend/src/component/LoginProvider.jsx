@@ -49,8 +49,6 @@ export function LoginProvider({ children }) {
     setAuthority([]);
   }
 
-
-
   return (
     <LoginContext.Provider
       value={{
