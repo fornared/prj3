@@ -59,11 +59,12 @@ public class MemberController {
         }
     }
 
-    @PostMapping("/list")
-    @PreAuthorize("hasAuthority('SCOPE_admin')")
+    @GetMapping("/list")
+    @PreAuthorize("hasAuthority('SCOPE_admin')") //SCOPE_admin 권한 설정예정
     public List<Member> list() {
         return service.list();
     }
+
 
     @GetMapping("{id}")
     @PreAuthorize("isAuthenticated()")
@@ -82,7 +83,7 @@ public class MemberController {
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("isAuthenticated()")//권한
     public ResponseEntity delete(@RequestBody Member member, Authentication authentication) {
         if (service.hasAccess(member, authentication)) {
             service.remove(member.getId());
@@ -101,7 +102,6 @@ public class MemberController {
             return ResponseEntity.ok(result);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-
         }
     }
 

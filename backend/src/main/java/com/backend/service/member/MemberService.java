@@ -5,6 +5,7 @@ import com.backend.mapper.member.MemberMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
@@ -15,6 +16,7 @@ import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -69,9 +71,6 @@ public class MemberService {
         return passwordEncoder.matches(member.getPassword(), dbMember.getPassword());
     }
 
-    public void remove(Long id) {
-    }
-
     public boolean hasAccessModify(Member member, Authentication authentication) {
         if (!authentication.getName().equals(member.getId().toString())) {
             return false;
@@ -96,7 +95,18 @@ public class MemberService {
             member.setPassword(dbMember.getPassword());
         }
         mapper.update(member);
-        return Map.of(); //??
+
+        String token = "";
+
+        Jwt jwt = (Jwt) authentication.getPrincipal();
+        Map<String, Object> claims = jwt.getClaims();
+        JwtClaimsSet.Builder jwtClaimsSetBuilder = JwtClaimsSet.builder();
+        claims.forEach(jwtClaimsSetBuilder::claim);
+        jwtClaimsSetBuilder.claim("nickName", member.getNickName());
+
+        JwtClaimsSet jwtClaimsSet = jwtClaimsSetBuilder.build();
+        token = jwtEncoder.encode(JwtEncoderParameters.from(jwtClaimsSet)).getTokenValue();
+        return Map.of("token", token); //??
     }
 
     public Map<String, Object> getToken(Member member) {
@@ -110,13 +120,18 @@ public class MemberService {
                 result = new HashMap<>();
                 String token = "";
                 Instant now = Instant.now();
+
+                List<String> authority = mapper.selectAuthorityByMemberId(db.getId());
+                String authorityString = authority.stream()
+                        .collect(Collectors.joining(" "));
                 //
                 JwtClaimsSet claims = JwtClaimsSet.builder()
                         .issuer("self")
                         .issuedAt(now)
                         .expiresAt(now.plusSeconds(60 * 60 * 24 * 7))
-                        .subject(member.getEmail())
-                        .claim("scope", "")
+                        //로그인 시 토큰의 subject를 id로
+                        .subject(db.getId().toString())
+                        .claim("scope", authorityString)//권한
                         .claim("nickname", db.getNickName())
                         .build();
 
@@ -130,14 +145,13 @@ public class MemberService {
     }
 
     public boolean hasAccess(Integer id, Authentication authentication) {
-        if (!authentication.getName().equals(id.toString())) {
-            return false;
-        }
-        Member db = mapper.selectById(id);
-        if (db == null) {
-            return false;
-        }
-        return false;
+        boolean self = authentication.getName().equals(id.toString());
+
+        boolean isAdmin = authentication.getAuthorities()
+                .stream()
+                .anyMatch(a -> a.getAuthority().equals("SCOPE_admin"));
+
+        return self || isAdmin;
     }
 }
 

@@ -1,41 +1,62 @@
 import {
   Box,
-  Button, Center,
+  Button,
+  Center,
   FormControl,
-  FormLabel, Heading,
-  Input, Modal, ModalBody,
-  ModalContent, ModalFooter, ModalHeader,
+  FormLabel,
+  Heading,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   ModalOverlay,
-  Spinner, useDisclosure,
-  useToast
+  Spinner,
+  useDisclosure,
+  useToast,
+  VStack,
+  Text,
+  Divider,
 } from "@chakra-ui/react";
-import {useEffect, useState} from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import {useNavigate, useParams} from "react-router-dom";
-import { useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function MemberInfo() {
   const [member, setMember] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState("");
-  const {id} = useParams();
+  const { id } = useParams();
   const toast = useToast();
   const navigate = useNavigate();
   const account = useContext(LoginContext);
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   useEffect(() => {
-    axios.get(`/api/member/${id}`)
-      .then(res => setMember(res.data))
-      .catch(err => {
-        if (err.response && err.response.status === 404) {
+    axios
+      .get(`/api/member/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => setMember(res.data))
+      .catch((err) => {
+        if (err.response.status === 404) {
           toast({
             status: "warning",
             description: "존재하지 않는 회원입니다.",
             position: "top",
           });
           navigate("/");
+        } else if (err.response.status === 403) {
+          toast({
+            status: "error",
+            description: "권한이 없습니다.",
+            position: "top",
+          });
+          navigate(-1);
         }
       });
   }, [id, navigate, toast]);
@@ -48,7 +69,7 @@ export function MemberInfo() {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        data: {id, password},
+        data: { id, password },
       })
       .then(() => {
         toast({
@@ -69,59 +90,60 @@ export function MemberInfo() {
       .finally(() => {
         setIsLoading(false);
         setPassword("");
-        onclose();
+        onClose();
       });
   };
 
   if (member === null) {
-    return <Spinner/>;
+    return (
+      <Center mt={10}>
+        <Spinner size="xl" />
+      </Center>
+    );
   }
 
   return (
-    <Box>
+    <Box py={8} px={4} minH="100vh" bg="gray.50">
       <Center>
-        <Box w={500}>
-          <Box mb={10}>
-            <Heading>회원 정보</Heading>
-          </Box>
-          <Box mb={10}>
-            <Box mb={7}>
-              <FormControl>
-                <FormLabel>이메일</FormLabel>
-                <Input isReadOnly value={member.email} />
-              </FormControl>
-            </Box>
-            <Box mb={7}>
-              <FormControl>
-                <FormLabel>별명</FormLabel>
-                <Input isReadOnly value={member.nickName} />
-              </FormControl>
-            </Box>
-            <Box mb={7}>
-              <FormControl>
-                <FormLabel>가입일시</FormLabel>
-                <Input
-                  isReadOnly
-                  value={member.inserted}
-                  type={"datetime-local"}
-                />
-              </FormControl>
-            </Box>
+        <Box
+          w={{ base: "100%", md: 500 }}
+          p={8}
+          bg="white"
+          boxShadow="xl"
+          borderRadius="lg"
+        >
+          <Heading mb={6} textAlign="center" fontSize="2xl" fontWeight="bold">
+            마이페이지
+          </Heading>
+          <Divider mb={6} />
+          <VStack spacing={6} align="stretch">
+            <FormControl>
+              <FormLabel fontWeight="bold">이메일</FormLabel>
+              <Input isReadOnly value={member.email} bg="gray.100" />
+            </FormControl>
+            <FormControl>
+              <FormLabel fontWeight="bold">별명</FormLabel>
+              <Input isReadOnly value={member.nickName} bg="gray.100" />
+            </FormControl>
+            <FormControl>
+              <FormLabel fontWeight="bold">가입일시</FormLabel>
+              <Input isReadOnly value={member.inserted} type="datetime-local" bg="gray.100" />
+            </FormControl>
             {account.hasAccess(member.id) && (
-              <Box>
+              <Center>
                 <Button
-                  mr={2}
+                  mr={4}
                   onClick={() => navigate(`/member/edit/${member.id}`)}
-                  colorScheme={"purple"}
+                  colorScheme="blue"
                 >
                   수정
                 </Button>
-                <Button colorScheme={"red"} onClick={onOpen}>
+                <Button colorScheme="red" onClick={onOpen}>
                   탈퇴
                 </Button>
-              </Box>
+              </Center>
             )}
-          </Box>
+          </VStack>
         </Box>
       </Center>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -134,6 +156,7 @@ export function MemberInfo() {
               <Input
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                type="password"
               />
             </FormControl>
           </ModalBody>
@@ -143,7 +166,7 @@ export function MemberInfo() {
             </Button>
             <Button
               isLoading={isLoading}
-              colorScheme={"red"}
+              colorScheme="red"
               onClick={handleClickReMove}
             >
               확인

@@ -22,7 +22,7 @@ public interface MemberMapper {
     @Select("""
             SELECT id, name, email, password, nick_name, gender, birth, phone, inserted
             FROM member
-            ORDER BY id ASC
+            ORDER BY id
             """)
     List<Member> selectAll();
 
@@ -49,4 +49,11 @@ public interface MemberMapper {
             """)
     int update(Member member);
 
+
+    @Select("""
+                        SELECT name
+                        FROM authority
+                        WHERE member_id = #{member_id}
+            """)
+    List<String> selectAuthorityByMemberId(Integer member_id);
 }

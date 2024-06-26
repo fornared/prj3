@@ -37,7 +37,7 @@ export function LoginProvider({ children }) {
     const payload = jwtDecode(token);
     setExpired(payload.exp);
     setId(payload.sub);
-    setNickName(payload.nickName);
+    setNickName(payload.nickname);
     setAuthority(payload.scope.split(" ")); // "admin manager user"
   }
   // logout
