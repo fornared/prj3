@@ -7,7 +7,7 @@ import {
   ModalContent, ModalFooter, ModalHeader,
   ModalOverlay,
   Spinner, useDisclosure,
-  useToast
+  useToast, VStack
 } from "@chakra-ui/react";
 import {useEffect, useState} from "react";
 import axios from "axios";
@@ -26,19 +26,31 @@ export function MemberInfo() {
   const { isOpen, onClose, onOpen } = useDisclosure();
 
   useEffect(() => {
-    axios.get(`/api/member/${id}`)
-      .then(res => setMember(res.data))
-      .catch(err => {
-        if (err.response && err.response.status === 404) {
+    axios
+      .get(`/api/member/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
+      .then((res) => setMember(res.data))
+      .catch((err) => {
+        if (err.response.status === 404) {
           toast({
             status: "warning",
             description: "존재하지 않는 회원입니다.",
             position: "top",
           });
           navigate("/");
+        } else if (err.response.status === 403) {
+          toast({
+            status: "error",
+            description: "권한이 없습니다.",
+            position: "top",
+          });
+          navigate(-1);
         }
       });
-  }, [id, navigate, toast]);
+  }, []);
 
   const handleClickReMove = () => {
     setIsLoading(true);
@@ -71,57 +83,47 @@ export function MemberInfo() {
         setPassword("");
         onclose();
       });
-  };
+  }
 
   if (member === null) {
     return <Spinner/>;
   }
 
   return (
-    <Box>
+    <Box py={8} px={4}>
       <Center>
-        <Box w={500}>
-          <Box mb={10}>
-            <Heading>회원 정보</Heading>
-          </Box>
-          <Box mb={10}>
-            <Box mb={7}>
-              <FormControl>
-                <FormLabel>이메일</FormLabel>
-                <Input isReadOnly value={member.email} />
-              </FormControl>
-            </Box>
-            <Box mb={7}>
-              <FormControl>
-                <FormLabel>별명</FormLabel>
-                <Input isReadOnly value={member.nickName} />
-              </FormControl>
-            </Box>
-            <Box mb={7}>
-              <FormControl>
-                <FormLabel>가입일시</FormLabel>
-                <Input
-                  isReadOnly
-                  value={member.inserted}
-                  type={"datetime-local"}
-                />
-              </FormControl>
-            </Box>
+        <Box w={{ base: "100%", md: 500 }} p={8} boxShadow="lg" borderRadius="md" bg="white">
+          <Heading mb={6} textAlign="center">
+            마이페이지
+          </Heading>
+          <VStack spacing={6} align="stretch">
+            <FormControl>
+              <FormLabel>이메일</FormLabel>
+              <Input isReadOnly value={member.email} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>별명</FormLabel>
+              <Input isReadOnly value={member.nickName} />
+            </FormControl>
+            <FormControl>
+              <FormLabel>가입일시</FormLabel>
+              <Input isReadOnly value={member.inserted} type="datetime-local" />
+            </FormControl>
             {account.hasAccess(member.id) && (
-              <Box>
+              <Center>
                 <Button
-                  mr={2}
+                  mr={4}
                   onClick={() => navigate(`/member/edit/${member.id}`)}
-                  colorScheme={"purple"}
+                  colorScheme="blue"
                 >
                   수정
                 </Button>
-                <Button colorScheme={"red"} onClick={onOpen}>
+                <Button colorScheme="red" onClick={onOpen}>
                   탈퇴
                 </Button>
-              </Box>
+              </Center>
             )}
-          </Box>
+          </VStack>
         </Box>
       </Center>
       <Modal isOpen={isOpen} onClose={onClose}>
@@ -134,6 +136,7 @@ export function MemberInfo() {
               <Input
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                type="password"
               />
             </FormControl>
           </ModalBody>
@@ -143,7 +146,7 @@ export function MemberInfo() {
             </Button>
             <Button
               isLoading={isLoading}
-              colorScheme={"red"}
+              colorScheme="red"
               onClick={handleClickReMove}
             >
               확인

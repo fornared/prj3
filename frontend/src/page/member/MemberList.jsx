@@ -9,6 +9,8 @@ import {
   Th,
   Thead,
   Tr,
+  Center,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -16,26 +18,44 @@ import { useNavigate } from "react-router-dom";
 export function MemberList() {
   const [memberList, setMemberList] = useState([]);
   const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
-    axios.get("/api/member/list").then((res) => setMemberList(res.data));
+    axios.get("/api/member/list")
+      .then((res) => {
+        setMemberList(res.data);
+      })
+
+      .catch((error) => {
+        toast({
+          title: "회원 목록 로드 오류",
+          description: "회원 목록을 가져오는 중에 오류가 발생했습니다.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
   }, []);
 
   if (memberList.length === 0) {
-    return <Spinner />;
+    return (
+      <Center>
+        <Spinner />
+      </Center>
+    );
   }
+
   return (
-    <Box>
+    <Box p={4}>
       <Box mb={10}>
         <Heading>회원 목록</Heading>
       </Box>
-      <Box mb={10}>
+      <Box overflowX="auto">
         <Table>
           <Thead>
             <Tr>
               <Th w={20}>#</Th>
               <Th>이메일</Th>
-              <Th>비밀번호</Th>
               <Th>이름</Th>
               <Th w={"150px"}>별명</Th>
               <Th>성별</Th>
@@ -54,7 +74,6 @@ export function MemberList() {
               >
                 <Td>{member.id}</Td>
                 <Td>{member.email}</Td>
-                <Td>{member.password}</Td>
                 <Td>{member.name}</Td>
                 <Td>{member.nickName}</Td>
                 <Td>{member.gender}</Td>
