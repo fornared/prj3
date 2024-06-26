@@ -27,11 +27,14 @@ export function Home() {
       borderWidth="1px"
       borderRadius="md"
       overflow="hidden"
-      _hover={{ shadow: "md" }}
+      _hover={{ shadow: "lg" }}
       onClick={() => onClick(event.id)}
       cursor="pointer"
     >
-      <Image src={event.imageUrl} alt={event.title} />
+      //
+      <AspectRatio ratio={16 / 9}>
+        <Image src={event.imageUrl} alt={event.title} />
+      </AspectRatio>
       <Box p={4}>
         <Heading as="h3" size="md">
           {event.title}
@@ -48,9 +51,10 @@ export function Home() {
       borderWidth="1px"
       borderRadius="md"
       overflow="hidden"
+      _hover={{ shadow: "lg" }}
       mx={5}
     >
-      <AspectRatio ratio={3 / 2}>
+      <AspectRatio ratio={16 / 9}>
         <Image src={imageSrc} alt={title} />
       </AspectRatio>
       <Box p={4}>
@@ -63,7 +67,7 @@ export function Home() {
   );
 
   const ReviewCard = ({ title, description }) => (
-    <Box borderWidth="1px" borderRadius="md" overflow="hidden" mx={5}>
+    <Box borderWidth="1px" borderRadius="md" overflow="hidden" _hover={{ shadow: "lg" }} mx={5}>
       <Box p={4}>
         <Heading as="h3" size="md">
           {title}

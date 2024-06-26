@@ -14,6 +14,7 @@ import {
   Text,
   Th,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -36,6 +37,7 @@ export function TourList() {
   const [sigungus, setSigungus] = useState([]);
   const [keyword, setKeyword] = useState("");
   const [searchParams] = useSearchParams();
+  const toast = useToast();
 
   const navigate = useNavigate();
 
@@ -125,9 +127,6 @@ export function TourList() {
       params.append("keyword", keyword);
     }
 
-    // navigate(
-    //   `/tour/list?type=${contentType}&category=${category}&area=${area}&sigungu=${sigungu}&keyword=${keyword}`,
-    // );
     navigate(`/tour/list?${params.toString()}`);
   }
 
@@ -138,6 +137,13 @@ export function TourList() {
     setCategory("");
     setArea("");
     setSigungu("");
+    setKeyword("");
+    toast({
+      title: "검색 조건이 초기화되었습니다.",
+      status: "info",
+      position: "top",
+      duration: 2000,
+    });
   }
 
   function handlePressEnter(e) {
@@ -149,28 +155,24 @@ export function TourList() {
   return (
     <Box
       mx={{
-        base: 0,
+        base: 4,
         lg: 100,
       }}
     >
       <Box mb={10}>
-        <Heading>list</Heading>
+        <Heading textAlign="center" mb={4} mt={5}>
+          관광지 리스트
+        </Heading>
+        <Flex justify="center" mb={6}>
+          <Text>원하는 관광지를 검색하세요.</Text>
+        </Flex>
       </Box>
-
-      <Table mb={10} border={"2px solid black"}>
+      <Table mb={10} border={"2px solid"} borderColor="gray.200" borderRadius="md" boxShadow="sm">
         <Tbody>
-          <Tr border={"1px solid blue"}>
-            <Th width={"15%"} border={"1px solid red"}>
-              관광타입
-            </Th>
-            <Td
-              border={"1px solid green"}
-              width={"100%"}
-              justifyItems={"center"}
-              display={"flex"}
-              gap={5}
-            >
-              <Box>
+          <Tr>
+            <Th width={"15%"}>관광타입</Th>
+            <Td width={"85%"}>
+              <Flex gap={3}>
                 <Select
                   value={contentType}
                   onChange={(e) => {
@@ -190,83 +192,59 @@ export function TourList() {
                   <option>쇼핑</option>
                   <option>음식</option>
                 </Select>
-              </Box>
-              <Box>
-                <Select
-                  value={selectedCat1}
-                  display={contentType === "" ? "none" : ""}
-                  onChange={(e) => {
-                    setSelectedCat1(e.target.value);
-                    setCategory(e.target.value);
-                    setSelectedCat2("");
-                  }}
-                >
-                  <option value="">대분류</option>
-                  {cat1.map((item, index) => (
-                    <option key={index}>{item}</option>
-                  ))}
-                </Select>
-              </Box>
-              <Box>
-                <Select
-                  value={selectedCat2}
-                  display={selectedCat1 === "" ? "none" : ""}
-                  onChange={(e) => {
-                    const opt = e.target.value;
-
-                    setSelectedCat2(opt);
-
-                    if (opt === "") {
-                      setCategory(selectedCat1);
-                    } else {
-                      setCategory(opt);
-                    }
-
-                    setSelectedCat3("");
-                  }}
-                >
-                  <option value="">중분류</option>
-                  {cat2.map((item, index) => (
-                    <option key={index}>{item}</option>
-                  ))}
-                </Select>
-              </Box>
-              <Box>
-                <Select
-                  value={selectedCat3}
-                  display={selectedCat2 === "" ? "none" : ""}
-                  onChange={(e) => {
-                    const opt = e.target.value;
-
-                    setSelectedCat3(opt);
-
-                    if (opt === "") {
-                      setCategory(selectedCat2);
-                    } else {
-                      setCategory(opt);
-                    }
-                  }}
-                >
-                  <option value="">소분류</option>
-                  {cat3.map((item, index) => (
-                    <option key={index}>{item}</option>
-                  ))}
-                </Select>
-              </Box>
+                {contentType && (
+                  <Select
+                    value={selectedCat1}
+                    onChange={(e) => {
+                      setSelectedCat1(e.target.value);
+                      setCategory(e.target.value);
+                      setSelectedCat2("");
+                    }}
+                  >
+                    <option value="">대분류</option>
+                    {cat1.map((item, index) => (
+                      <option key={index}>{item}</option>
+                    ))}
+                  </Select>
+                )}
+                {selectedCat1 && (
+                  <Select
+                    value={selectedCat2}
+                    onChange={(e) => {
+                      const opt = e.target.value;
+                      setSelectedCat2(opt);
+                      setCategory(opt || selectedCat1);
+                      setSelectedCat3("");
+                    }}
+                  >
+                    <option value="">중분류</option>
+                    {cat2.map((item, index) => (
+                      <option key={index}>{item}</option>
+                    ))}
+                  </Select>
+                )}
+                {selectedCat2 && (
+                  <Select
+                    value={selectedCat3}
+                    onChange={(e) => {
+                      const opt = e.target.value;
+                      setSelectedCat3(opt);
+                      setCategory(opt || selectedCat2);
+                    }}
+                  >
+                    <option value="">소분류</option>
+                    {cat3.map((item, index) => (
+                      <option key={index}>{item}</option>
+                    ))}
+                  </Select>
+                )}
+              </Flex>
             </Td>
           </Tr>
           <Tr>
-            <Th width={"15%"} border={"1px solid red"}>
-              지역
-            </Th>
-            <Td
-              border={"1px solid green"}
-              width={"100%"}
-              justifyItems={"center"}
-              display={"flex"}
-              gap={5}
-            >
-              <Box>
+            <Th width={"15%"}>지역</Th>
+            <Td width={"85%"}>
+              <Flex gap={3}>
                 <Select
                   value={area}
                   onChange={(e) => {
@@ -279,85 +257,86 @@ export function TourList() {
                     <option key={index}>{item}</option>
                   ))}
                 </Select>
-              </Box>
-              <Box>
-                <Select
-                  value={sigungu}
-                  display={area === "" ? "none" : ""}
-                  onChange={(e) => setSigungu(e.target.value)}
-                >
-                  <option value="">전체</option>
-                  {sigungus.map((item, index) => (
-                    <option key={index}>{item}</option>
-                  ))}
-                </Select>
-              </Box>
+                {area && (
+                  <Select
+                    value={sigungu}
+                    onChange={(e) => setSigungu(e.target.value)}
+                  >
+                    <option value="">전체</option>
+                    {sigungus.map((item, index) => (
+                      <option key={index}>{item}</option>
+                    ))}
+                  </Select>
+                )}
+              </Flex>
             </Td>
           </Tr>
           <Tr>
-            <Th width={"15%"} border={"1px solid red"}>
-              검색어
-            </Th>
-            <Td
-              border={"1px solid green"}
-              width={"100%"}
-              justifyItems={"center"}
-              display={"flex"}
-              gap={5}
-            >
-              <Box width={"60%"}>
+            <Th width={"15%"}>검색어</Th>
+            <Td width={"85%"}>
+              <Flex gap={3}>
                 <Input
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   onKeyPress={handlePressEnter}
-                  placeholder=""
+                  placeholder="검색어를 입력하세요"
                 />
-              </Box>
-              <Box>
-                <Button onClick={handleClickSearch}>검색버튼</Button>
-              </Box>
-              <Box>
-                <Button onClick={handleClickReset}>분류초기화버튼</Button>
-              </Box>
+                <Button colorScheme="blue" onClick={handleClickSearch}>
+                  검색
+                </Button>
+                <Button colorScheme="gray" onClick={handleClickReset}>
+                  초기화
+                </Button>
+              </Flex>
             </Td>
           </Tr>
         </Tbody>
       </Table>
 
       <Box mb={10}>
-        {tourList.length === 0 && <Center>결과없음</Center>}
-        {tourList.length > 0 && (
+        {tourList.length === 0 ? (
+          <Center>검색 결과가 없습니다.</Center>
+        ) : (
           <SimpleGrid
             minChildWidth={"280px"}
-            spacing={10}
+            spacing={5}
             justifyItems={"center"}
           >
             {tourList.map((item) => (
               <Box
                 key={item.id}
-                border={"1px solid blue"}
+                border={"1px solid"}
+                borderColor="gray.200"
+                borderRadius="md"
                 width={"300px"}
                 height={"240px"}
                 cursor={"pointer"}
                 onClick={() => navigate(`/tour/${item.id}`)}
+                transition="transform 0.2s"
                 _hover={{
-                  border: "1px solid red",
+                  borderColor: "blue.300",
+                  transform: "scale(1.05)",
                 }}
+                overflow="hidden"
               >
-                <Box height={"190px"} align={"center"} overflow={"hidden"}>
-                  {item.firstImage1 !== "" && (
-                    <Image objectFit={"contain"} src={item.firstImage1} />
+                <Box height={"190px"} display="flex" alignItems="center" justifyContent="center">
+                  {item.firstImage1 ? (
+                    <Image objectFit={"cover"} src={item.firstImage1} />
+                  ) : (
+                    <Text>이미지 없음</Text>
                   )}
-                  {item.firstImage1 === "" && <Text>없음</Text>}
                 </Box>
                 <Box
-                  border={"1px solid black"}
+                  borderTop={"1px solid"}
+                  borderColor="gray.200"
                   height={"40px"}
                   mt={"5px"}
                   fontWeight={"semibold"}
                   display={"flex"}
                   alignItems={"center"}
                   justifyContent={"center"}
+                  p={2}
+                  textAlign="center"
                 >
                   {item.title}
                 </Box>
@@ -366,8 +345,9 @@ export function TourList() {
           </SimpleGrid>
         )}
       </Box>
+
       <Center mb={10}>
-        <Flex gap={1}>
+        <Flex gap={2}>
           {pageInfo.prevPageNum > 0 && (
             <>
               <Button onClick={() => handleClickPage(1)}>처음</Button>
