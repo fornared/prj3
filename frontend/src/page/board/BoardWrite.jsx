@@ -91,7 +91,6 @@ export function BoardWrite() {
                 bg="gray.100"
                 minH="200px"
               />
-              //
             </FormControl>
             <Button colorScheme="blue" onClick={handleClickSave}>
               저장
