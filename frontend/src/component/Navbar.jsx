@@ -146,7 +146,13 @@ export function Navbar() {
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               <Flex gap={2}>
-                <Box>
+                <Box
+                onClick={() => navigate(`/member/${account.id}`)}
+                cursor={"pointer"}
+                _hover={{
+                  bgColor:"gray.200",
+                }}
+                >
                   <FontAwesomeIcon icon={faUser} />
                 </Box>
                 <Box>
@@ -154,8 +160,9 @@ export function Navbar() {
                 </Box>
               </Flex>
             </MenuButton>
+
             <MenuList>
-              <MenuItem onClick={() => navigate("/mypage")}>
+              <MenuItem onClick={() => navigate(`/member/${account.id}`)}>
                 <FontAwesomeIcon icon={faCog} />
                 <Box ml={2}>마이페이지</Box>
               </MenuItem>
@@ -171,13 +178,13 @@ export function Navbar() {
 
               <MenuItem
                 onClick={() => {
-                  if (window.confirm("정말로 탈퇴하시겠습니까?")) {
-                    account.deleteUser();
-                  }
+                  account.isAdmin();
+                  navigate("/member/list")
                 }}
+                cursor={"pointer"}
               >
-                <FontAwesomeIcon icon={faTrash} />
-                <Box ml={2}>회원 탈퇴</Box>
+                <FontAwesomeIcon icon={faUsers} />
+                <Box ml={2}>회원목록</Box>
               </MenuItem>
             </MenuList>
           </Menu>
@@ -251,19 +258,6 @@ export function Navbar() {
         >
           추천코스
         </Center>
-
-        {account.isAdmin() && (
-          <Center
-            onClick={() => navigate("/member/list")}
-            cursor={"pointer"}
-            _hover={{ bgColor: "rgba(255, 255, 255, 0.5)" }}
-            p={6}
-            fontSize={20}
-            fontWeight={600}
-          >
-            <FontAwesomeIcon icon={faUsers} />
-          </Center>
-        )}
       </Flex>
     </Box>
   );
