@@ -31,6 +31,7 @@ export function Home() {
       onClick={() => onClick(event.id)}
       cursor="pointer"
     >
+      //
       <AspectRatio ratio={16 / 9}>
         <Image src={event.imageUrl} alt={event.title} />
       </AspectRatio>

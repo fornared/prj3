@@ -165,7 +165,7 @@ export function TourList() {
           <Text>원하는 관광지를 검색하세요.</Text>
         </Flex>
       </Box>
-
+//
       <Table mb={10} border={"2px solid"} borderColor="gray.200" borderRadius="md" boxShadow="sm">
         <Tbody>
           <Tr>
