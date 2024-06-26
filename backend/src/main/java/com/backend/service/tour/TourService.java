@@ -118,18 +118,27 @@ public class TourService {
         }
     }
 
-    public void addInfo1detail(List<Content> contents) {
-        for (Content content : contents) {
-            setContentId(content);
-            mapper.insertInfo1Detail(content);
+    public void addInfo1detail(List<List<Content>> contentLists) {
+        for (List<Content> contentList : contentLists) {
+            for (Content content : contentList) {
+                if (mapper.countContentByContentId(content.getId()) == 1 && mapper.selectInfo1WithDetail(content.getId()) == null) {
+                    mapper.insertInfo1Detail(content);
+                } else {
+                    System.out.println(STR."\{content.getId()} - 입력실패");
+                }
+            }
         }
     }
 
-    public void addImage(List<Image> images) {
-        for (Image image : images) {
-            Integer exContentId = image.getContentId();
-            image.setContentId(mapper.selectIdByExContentId(exContentId));
-            mapper.insertImage(image);
+    public void addImage(List<List<Image>> imageList) {
+        for (List<Image> images : imageList) {
+            for (Image image : images) {
+                if (mapper.countContentByContentId(image.getContentId()) == 1 && mapper.selectImageIdByOUrl(image) == null) {
+                    mapper.insertImage(image);
+                } else {
+                    System.out.println(STR."\{image.getContentId()} - 입력실패");
+                }
+            }
         }
     }
 
@@ -234,21 +243,19 @@ public class TourService {
         return mapper.selectAreaName();
     }
 
-    public void addInfo2(List<Info2> info2List) {
-        for (Info2 info2 : info2List) {
-            Integer dbId = mapper.selectIdByExContentId(info2.getContentId());
+    public void addInfo2(List<List<Info2>> info2Lists) {
+        for (List<Info2> info2List : info2Lists) {
+            for (Info2 info2 : info2List) {
+                // content에 있어야(1) info 데이터 삽입
+                int dbCountContent = mapper.countContentByContentId(info2.getContentId());
+                // info2에 이미 있는 데이터가 아닐때만(0) 진행
+                int dbCountInfo2 = mapper.countInfo2ByContentIdOnContent(info2.getContentId(), info2.getNumber());
 
-            // content에 있어야(1) info 데이터 삽입
-            int dbCountContent = mapper.countContentByContentId(dbId);
-            // info2에 이미 있는 데이터가 아닐때만(0) 진행
-            int dbCountInfo2 = mapper.countInfo2ByContentIdOnContent(dbId, info2.getNumber());
-
-            if (dbCountContent == 1 && dbCountInfo2 == 0) {
-                // content_id를 미리 db의 content_id로 set
-                info2.setContentId(dbId);
-                mapper.insertInfo2(info2);
-            } else {
-                System.out.println("입력실패");
+                if (dbCountContent == 1 && dbCountInfo2 == 0) {
+                    mapper.insertInfo2(info2);
+                } else {
+                    System.out.println(STR."\{info2.getContentId()} - 입력실패");
+                }
             }
         }
     }
@@ -433,28 +440,27 @@ public class TourService {
         return facilities;
     }
 
-    public void addLodgingInfo2(List<LodgingInfo2> info2List) {
-        for (LodgingInfo2 info2 : info2List) {
-            Integer dbId = mapper.selectIdByExContentId(info2.getContentId());
+    public void addLodgingInfo2(List<List<LodgingInfo2>> info2Lists) {
+        for (List<LodgingInfo2> info2List : info2Lists) {
+            for (LodgingInfo2 info2 : info2List) {
+                // content에 있어야(1) info 데이터 삽입
+                int dbCountContent = mapper.countContentByContentId(info2.getContentId());
+                // info2에 이미 있는 데이터가 아닐때만(null) 진행
+                Integer lodgingInfo2Id = mapper.selectLodgingInfo2IdByContentIdOnContent(info2.getContentId(), info2.getNumber());
 
-            // content에 있어야(1) info 데이터 삽입
-            int dbCountContent = mapper.countContentByContentId(dbId);
-            // info2에 이미 있는 데이터가 아닐때만(null) 진행
-            Integer lodgingInfo2Id = mapper.selectLodgingInfo2IdByContentIdOnContent(dbId, info2.getNumber());
+                if (dbCountContent == 1 && lodgingInfo2Id == null) {
+                    mapper.insertLodgingInfo2(info2);
 
-            if (dbCountContent == 1 && lodgingInfo2Id == null) {
-                info2.setContentId(dbId);
-                mapper.insertLodgingInfo2(info2);
-
-                String[] images = {info2.getImg1(), info2.getImg2(), info2.getImg3(), info2.getImg4(), info2.getImg5()};
-                for (String image : images) {
-                    if (!image.isEmpty()) {
-                        info2.setImgUrl(image);
-                        mapper.insertLodgingInfo2Img(info2, mapper.selectLodgingInfo2IdByContentIdOnContent(dbId, info2.getNumber()));
+                    String[] images = {info2.getImg1(), info2.getImg2(), info2.getImg3(), info2.getImg4(), info2.getImg5()};
+                    for (String image : images) {
+                        if (!image.isEmpty()) {
+                            info2.setImgUrl(image);
+                            mapper.insertLodgingInfo2Img(info2, mapper.selectLodgingInfo2IdByContentIdOnContent(info2.getContentId(), info2.getNumber()));
+                        }
                     }
+                } else {
+                    System.out.println(STR."\{info2.getContentId()} - 입력실패");
                 }
-            } else {
-                System.out.println("입력실패");
             }
         }
     }

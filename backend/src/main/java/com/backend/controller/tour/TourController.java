@@ -90,8 +90,8 @@ public class TourController {
     }
 
     @PutMapping("add/info1detail")
-    public ResponseEntity addInfo1detail(@RequestBody List<Content> contents) {
-        service.addInfo1detail(contents);
+    public ResponseEntity addInfo1detail(@RequestBody List<List<Content>> contentLists) {
+        service.addInfo1detail(contentLists);
 
         return ResponseEntity.ok().build();
     }
@@ -138,8 +138,8 @@ public class TourController {
     }
 
     @PostMapping("add/image")
-    public ResponseEntity addImage(@RequestBody List<Image> images) {
-        service.addImage(images);
+    public ResponseEntity addImage(@RequestBody List<List<Image>> imageList) {
+        service.addImage(imageList);
 
         return null;
     }
@@ -152,15 +152,15 @@ public class TourController {
     }
 
     @PostMapping("add/info2")
-    public ResponseEntity addInfo2(@RequestBody List<Info2> info2List) {
-        service.addInfo2(info2List);
+    public ResponseEntity addInfo2(@RequestBody List<List<Info2>> info2Lists) {
+        service.addInfo2(info2Lists);
 
         return null;
     }
 
     @PostMapping("add/lodgingInfo2")
-    public ResponseEntity addLodgingInfo2(@RequestBody List<LodgingInfo2> info2List) {
-        service.addLodgingInfo2(info2List);
+    public ResponseEntity addLodgingInfo2(@RequestBody List<List<LodgingInfo2>> info2Lists) {
+        service.addLodgingInfo2(info2Lists);
 
         return null;
     }
