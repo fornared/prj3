@@ -136,7 +136,8 @@ export function Navbar() {
             <Show below={"lg"}>
               <FontAwesomeIcon icon={faPencil} />
             </Show>
-            <Hide below={"lg"}>글쓰기</Hide>
+            <Hide below={"lg"}>
+              글쓰기</Hide>
           </Center>
         )}
 

@@ -102,7 +102,6 @@ public class MemberController {
             return ResponseEntity.ok(result);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-
         }
     }
 
