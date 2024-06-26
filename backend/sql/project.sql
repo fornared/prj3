@@ -21,6 +21,11 @@ CREATE TABLE authority
     name      VARCHAR(20) NOT NULL,
     PRIMARY KEY (member_id, name)
 );
+
+SELECT *
+FROM member;
+
+
 # 게시판 테이블
 CREATE TABLE board
 (
@@ -90,3 +95,5 @@ CREATE TABLE itinerary_detail
     visit_date   DATETIME NOT NULL
 );
 
+INSERT INTO authority(member_id, name)
+VALUES (7, 'admin');
