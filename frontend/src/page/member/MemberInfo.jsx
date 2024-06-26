@@ -16,6 +16,8 @@ import {
   useDisclosure,
   useToast,
   VStack,
+  Text,
+  Divider,
 } from "@chakra-ui/react";
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
@@ -107,24 +109,25 @@ export function MemberInfo() {
           w={{ base: "100%", md: 500 }}
           p={8}
           bg="white"
-          boxShadow="lg"
-          borderRadius="md"
+          boxShadow="xl"
+          borderRadius="lg"
         >
           <Heading mb={6} textAlign="center" fontSize="2xl" fontWeight="bold">
             마이페이지
           </Heading>
+          <Divider mb={6} />
           <VStack spacing={6} align="stretch">
             <FormControl>
-              <FormLabel>이메일</FormLabel>
-              <Input isReadOnly value={member.email} />
+              <FormLabel fontWeight="bold">이메일</FormLabel>
+              <Input isReadOnly value={member.email} bg="gray.100" />
             </FormControl>
             <FormControl>
-              <FormLabel>별명</FormLabel>
-              <Input isReadOnly value={member.nickName} />
+              <FormLabel fontWeight="bold">별명</FormLabel>
+              <Input isReadOnly value={member.nickName} bg="gray.100" />
             </FormControl>
             <FormControl>
-              <FormLabel>가입일시</FormLabel>
-              <Input isReadOnly value={member.inserted} type="datetime-local" />
+              <FormLabel fontWeight="bold">가입일시</FormLabel>
+              <Input isReadOnly value={member.inserted} type="datetime-local" bg="gray.100" />
             </FormControl>
             {account.hasAccess(member.id) && (
               <Center>
@@ -174,4 +177,3 @@ export function MemberInfo() {
     </Box>
   );
 }
-//
