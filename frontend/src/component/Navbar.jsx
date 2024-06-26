@@ -29,7 +29,6 @@ import {
   faUserPlus,
   faUsers,
   faCog,
-  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
