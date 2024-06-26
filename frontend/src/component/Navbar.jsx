@@ -64,6 +64,7 @@ export function Navbar() {
     "/image/sea.jpg",
     "/image/travel.jpg",
   ];
+  console.log(account)
 
   return (
     <Box position="relative">
