@@ -450,7 +450,6 @@ public class TourService {
                 for (String image : images) {
                     if (!image.isEmpty()) {
                         info2.setImgUrl(image);
-                        System.out.println(info2);
                         mapper.insertLodgingInfo2Img(info2, mapper.selectLodgingInfo2IdByContentIdOnContent(dbId, info2.getNumber()));
                     }
                 }
