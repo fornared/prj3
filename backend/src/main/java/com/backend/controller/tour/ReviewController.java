@@ -4,6 +4,8 @@ import com.backend.domain.tour.Review;
 import com.backend.service.tour.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,8 +17,10 @@ public class ReviewController {
     private final ReviewService service;
 
     @PostMapping("add/review")
-    public ResponseEntity addReview(@RequestBody Review review) {
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity addReview(@RequestBody Review review, Authentication auth) {
         System.out.println(review);
+        System.out.println(Integer.valueOf(auth.getName()));
 
         return null;
     }

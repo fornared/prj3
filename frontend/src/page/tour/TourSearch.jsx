@@ -1002,27 +1002,77 @@ export function TourSearch() {
     setIsProcessing(false);
   }
 
-  function handleTest() {
+  function handleAddSyncList() {
+    setIsProcessing(true);
     /*
-    axios.get("/api/tour/get/content/all").then((res) => {
-      const dataList = res.data;
+    axios.get(`/api/tour/get/lastmd`).then((res) => {
+      // api modifiedtime 값이 더 작아질때까지 탐색
+      const lastModified = res.data;
+      const lastModifiedDate = res.data.toString().substring(0, 8);
 
-      for (const data of dataList) {
-        const id = data.id;
-        const contentId = data.exContentId;
-        const typeId = data.typeId;
+      // for (let pageNo = 6; pageNo > 0; pageNo--) { insert
+      axios
+        .get(`https://apis.data.go.kr/B551011/KorService1/areaBasedSyncList1`, {
+          params: {
+            serviceKey: serviceKey,
+            MobileOS: "ETC",
+            MobileApp: "AppTest",
+            _type: "json",
+            listYN: "Y", // Y: 목록, N: 개수
+            arrange: "C", // 정렬 (A=제목순, C=수정일순, D=생성일순)
+            numOfRows: 1000,
+            pageNo: 1,
+          },
+        })
+        .then((res) => {
+          const data = res.data.response.body.items.item.reverse();
+          const info1 = data.map((item) => ({
+            showFlag: item.showflag,
+            contentId: item.contentid,
+            zipcode: item.zipcode,
+            address: item.addr1 + " " + item.addr2,
+            tel: item.tel,
+            homepage: null,
+            overview: null,
+            firstImage1: item.firstimage,
+            firstImage2: item.firstimage2,
+            mapx: item.mapx,
+            mapy: item.mapy,
+            created: item.createdtime,
+            modified: item.modifiedtime,
+          }));
 
-        console.log(id, contentId, typeId);
-      }
+          if (info1.showFlag === 0) {
+            // 삭제
+            axios.delete(`/api/tour/`);
+          }
+          if (info1.showFlag === 1) {
+            axios.get(`/api/tour/get/id/${info1.contentId}`).then((res) => {
+              // id 조회
+              const id = res.data;
+              if (id === null) {
+                // 없으면 추가
+                axios
+                  .post("/api/tour/add/info1", info1)
+                  .then(() => {
+                    console.log("post");
+                  })
+                  .catch(() => {})
+                  .finally(() => {});
+              } else {
+                // 이미 있으면 수정
+                axios.put(`/api/tour/modify/${id}`);
+              }
+            });
+          }
+        });
+      // }
     });
     */
-    axios.get(`/api/tour/get/contentId`).then((res) => {
-      const idList = res.data;
-      for (const id of idList) {
-        console.log(id);
-      }
-    });
+    setIsProcessing(false);
   }
+
+  function handleTest() {}
 
   return (
     <Box>
@@ -1048,7 +1098,12 @@ export function TourSearch() {
         타입-카테고리 매핑 정보 입력
       </Button>
       <Button onClick={handleAddIntroInfo}>소개정보 입력(.6)</Button>
-      <Button onClick={handleTest}>테스트 버튼</Button>
+      <Button isDisabled onClick={handleAddSyncList}>
+        정보 동기화
+      </Button>
+      <Box mt={5}>
+        <Button onClick={handleTest}>테스트 버튼</Button>
+      </Box>
 
       {area.length > 0 && (
         <Box>

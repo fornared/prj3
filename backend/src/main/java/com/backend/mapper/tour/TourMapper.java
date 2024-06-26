@@ -589,4 +589,10 @@ public interface TourMapper {
             WHERE original_url=#{originalUrl}
             """)
     Integer selectImageIdByOUrl(Image image);
+
+    @Select("""
+            SELECT MAX(modified)
+            FROM info1
+            """)
+    String selectMaxModified();
 }

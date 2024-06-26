@@ -182,9 +182,18 @@ public class TourController {
         return service.getContent(id);
     }
 
+    @GetMapping("get/id/{contentId}")
+    public Integer getId(@PathVariable Integer contentId) {
+        return service.getId(contentId);
+    }
+
     @GetMapping("get/contentId")
     public List<Integer> getContentId() {
         return service.getAllContentId();
     }
 
+    @GetMapping("get/lastmd")
+    public String getLastMD() {
+        return service.getLastMD();
+    }
 }

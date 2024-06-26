@@ -1173,4 +1173,12 @@ public class TourService {
         }
         return introList;
     }
+
+    public String getLastMD() {
+        return mapper.selectMaxModified();
+    }
+
+    public Integer getId(Integer contentId) {
+        return mapper.selectIdByExContentId(contentId);
+    }
 }
