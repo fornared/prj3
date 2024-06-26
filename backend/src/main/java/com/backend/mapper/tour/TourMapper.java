@@ -431,7 +431,8 @@ public interface TourMapper {
     @Select("""
             SELECT id
             FROM content
-            ORDER BY id
+            ORDER BY id DESC
+            LIMIT 20
             """)
     List<Integer> selectAllContentId();
 
@@ -574,4 +575,24 @@ public interface TourMapper {
             WHERE content_id=#{contentId}
             """)
     List<IntroInfo> selectFoodInfoByContentId(Integer contentId);
+
+    @Select("""
+            SELECT id
+            FROM info1
+            WHERE content_id=#{id} AND (overview IS NOT NULL OR homepage IS NOT NULL);
+            """)
+    Integer selectInfo1WithDetail(Integer id);
+
+    @Select("""
+            SELECT id
+            FROM image
+            WHERE original_url=#{originalUrl}
+            """)
+    Integer selectImageIdByOUrl(Image image);
+
+    @Select("""
+            SELECT MAX(modified)
+            FROM info1
+            """)
+    String selectMaxModified();
 }

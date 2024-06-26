@@ -133,6 +133,8 @@ export function TourList() {
 
   function handleClickReset() {
     setContentType("");
+    setSelectedCat1("");
+    setSelectedCat2("");
     setCategory("");
     setArea("");
     setSigungu("");

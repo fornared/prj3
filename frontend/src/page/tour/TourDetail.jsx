@@ -5,6 +5,12 @@ import {
   Flex,
   Heading,
   Image,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spinner,
   Table,
   Tbody,
@@ -12,11 +18,13 @@ import {
   Text,
   Th,
   Tr,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { ReviewComponent } from "../../component/review/ReviewComponent.jsx";
+import { Map, MapMarker } from "react-kakao-maps-sdk";
 
 export function TourDetail() {
   const { id } = useParams();
@@ -25,6 +33,7 @@ export function TourDetail() {
   const [info2, setInfo2] = useState(null);
   const [showAll, setShowAll] = useState(false);
   const [showBtnMore, setShowBtnMore] = useState(false);
+  const { onClose, onOpen, isOpen } = useDisclosure();
 
   const overviewRef = useRef(null);
 
@@ -121,8 +130,44 @@ export function TourDetail() {
               <Th>홈페이지</Th>
               <Td dangerouslySetInnerHTML={{ __html: info.homepage }}></Td>
             </Tr>
+            <Tr>
+              <Th>위치</Th>
+              <Td>
+                <Button onClick={onOpen} size={"sm"} colorScheme={"blue"}>
+                  지도열기
+                </Button>
+              </Td>
+            </Tr>
           </Tbody>
         </Table>
+        <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>지도</ModalHeader>
+            <ModalBody align={"center"}>
+              <Map
+                center={{ lat: info.mapy, lng: info.mapx }}
+                style={{
+                  width: "400px",
+                  height: "350px",
+                  border: "1px solid black",
+                  borderRadius: "10px",
+                }}
+                level={6}
+              >
+                <MapMarker
+                  style={{ border: "tranparent" }}
+                  position={{ lat: info.mapy, lng: info.mapx }}
+                ></MapMarker>
+              </Map>
+            </ModalBody>
+            <ModalFooter>
+              <Button mr={1} colorScheme={"red"} onClick={onClose}>
+                닫기
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
       </Box>
       {introInfo !== null && (
         <Box p={4} mt={"10px"} border="1px solid black">

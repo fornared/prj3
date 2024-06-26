@@ -8,6 +8,10 @@ export function TourSearch() {
   const [isProcessing, setIsProcessing] = useState(false);
   const serviceKey = import.meta.env.VITE_API_TOUR_SERVICE_KEY1;
   const [intros, setIntros] = useState([]);
+  const [info1Details, setInfo1Details] = useState([]);
+  const [info2List, setInfo2List] = useState([]);
+  const [lodgingInfo2List, setLodgingInfo2List] = useState([]);
+  const [imageList, setImageList] = useState([]);
 
   useEffect(() => {
     setIsProcessing(true);
@@ -49,6 +53,57 @@ export function TourSearch() {
     }
   }, [handleAddIntroInfo]);
 
+  useEffect(() => {
+    if (info1Details.length > 0) {
+      axios
+        .put("/api/tour/add/info1detail", info1Details)
+        .then(() => {})
+        .catch(() => {})
+        .finally(() => {
+          setInfo1Details([]);
+        });
+    }
+  }, [handleAddContentInfo1detail]);
+
+  useEffect(() => {
+    if (info2List.length > 0) {
+      axios
+        .post("/api/tour/add/info2", info2List)
+        .then(() => {
+          console.log("post");
+        })
+        .catch()
+        .finally(() => {
+          setInfo2List([]);
+        });
+    }
+    if (lodgingInfo2List.length > 0) {
+      axios
+        .post("/api/tour/add/lodgingInfo2", lodgingInfo2List)
+        .then(() => {
+          console.log("post");
+        })
+        .catch()
+        .finally(() => {
+          setLodgingInfo2List([]);
+        });
+    }
+  }, [handleAddContentInfo2]);
+
+  useEffect(() => {
+    if (imageList.length > 0) {
+      axios
+        .post("/api/tour/add/image", imageList)
+        .then(() => {
+          console.log("post");
+        })
+        .catch(() => {})
+        .finally(() => {
+          setImageList([]);
+        });
+    }
+  }, [handleAddImages]);
+
   if (isProcessing) {
     return <Spinner />;
   }
@@ -67,7 +122,7 @@ export function TourSearch() {
         setAreaCodes(res.data);
         console.log("get");
       })
-      .catch(() => console.log("add error1"))
+      .catch(() => console.log("get error1"))
       .finally();
   }
 
@@ -218,6 +273,7 @@ export function TourSearch() {
   }
 
   function handleAddContent1() {
+    // 미사용
     axios
       .get(`https://apis.data.go.kr/B551011/KorService1/detailCommon1`, {
         params: {
@@ -237,7 +293,7 @@ export function TourSearch() {
           pageNo: 1,
         },
       })
-      .then(async (res) => {
+      .then((res) => {
         const data = res.data.response.body.items.item;
         const content = data.map((item) => ({
           contentId: item.contentid,
@@ -258,7 +314,7 @@ export function TourSearch() {
           created: item.createdtime,
           modified: item.modifiedtime,
         }));
-        await axios
+        axios
           .post("/api/tour/add/content", content)
           .then(() => console.log("post"));
       });
@@ -358,183 +414,312 @@ export function TourSearch() {
 
   function handleAddContentInfo1detail() {
     setIsProcessing(true);
-    axios
-      .get(`https://apis.data.go.kr/B551011/KorService1/detailCommon1`, {
-        params: {
-          serviceKey: serviceKey,
-          MobileOS: "ETC",
-          MobileApp: "AppTest",
-          _type: "json",
-          contentId: 126508,
-          defaultYN: "Y",
-          firstImageYN: "N",
-          areacodeYN: "N",
-          catcodeYN: "N",
-          addrinfoYN: "N",
-          mapinfoYN: "N",
-          overviewYN: "Y",
-          numOfRows: 1,
-          pageNo: 1,
-        },
-      })
-      .then((res) => {
-        const data = res.data.response.body.items.item;
-        const info1detail = data.map((item) => ({
-          // info1 의 나머지 정보
-          contentId: item.contentid,
-          homepage: item.homepage,
-          overview: item.overview,
-        }));
+    /*
+    axios.get(`/api/tour/get/contentId`).then((res) => {
+      const idList = res.data;
+      for (const id of idList) {
+      //   모든 데이터 호출용
+        (get id값 바꿀것)
+      }
+    }).catch((err) => console.log(err))
+      .finally(() => setIsProcessing(false));;
+     */
 
-        axios
-          .put("/api/tour/add/info1detail", info1detail)
-          .then(() => {
-            console.log("post");
-          })
-          .catch()
-          .finally(() => {
-            setIsProcessing(false);
-          });
+    axios
+      .get(`/api/tour/get/content/29777`)
+      .then((res) => {
+        const contentList = res.data;
+        for (const content of contentList) {
+          const id = content.id;
+          const exContentId = content.exContentId;
+
+          axios
+            .get(`https://apis.data.go.kr/B551011/KorService1/detailCommon1`, {
+              params: {
+                serviceKey: serviceKey,
+                MobileOS: "ETC",
+                MobileApp: "AppTest",
+                _type: "json",
+                contentId: exContentId,
+                defaultYN: "Y",
+                firstImageYN: "N",
+                areacodeYN: "N",
+                catcodeYN: "N",
+                addrinfoYN: "N",
+                mapinfoYN: "N",
+                overviewYN: "Y",
+                numOfRows: 5,
+                pageNo: 1,
+              },
+            })
+            .then((res) => {
+              const data = res.data.response.body.items.item;
+              const info1detail = data.map((item) => ({
+                // info1 의 나머지 정보
+                id: id,
+                contentId: item.contentid,
+                homepage: item.homepage,
+                overview: item.overview,
+              }));
+              setInfo1Details([...info1Details, info1detail]);
+            });
+        }
+      })
+      .catch()
+      .finally(() => {
+        setIsProcessing(false);
       });
   }
 
   function handleAddContentInfo2() {
     setIsProcessing(true);
+    /* // 모든 데이터 호출용
+    axios
+      .get(`/api/tour/get/contentId`)
+      .then((res) => {
+        const idList = res.data;
+        for (const id of idList) {
+          axios.get(`/api/tour/get/content/${id}`).then((res) => {
+            const contentList = res.data;
+            for (const content of contentList) {
+              const exContentId = content.exContentId;
+              const typeId = content.typeId;
 
-    const contentTypeId = 32;
+              // typeId 가 32가 아니면
+              if (typeId !== 32) {
+                axios
+                  .get(
+                    `https://apis.data.go.kr/B551011/KorService1/detailInfo1`,
+                    {
+                      params: {
+                        serviceKey: serviceKey,
+                        MobileOS: "ETC",
+                        MobileApp: "AppTest",
+                        _type: "json",
+                        contentId: exContentId,
+                        contentTypeId: typeId,
+                        numOfRows: 100,
+                        pageNo: 1,
+                      },
+                    },
+                  )
+                  .then((res) => {
+                    const data = res.data.response.body.items.item;
+                    const info2 = data.map((item) => ({
+                      contentId: id,
+                      number: item.serialnum,
+                      infoName: item.infoname,
+                      infoText: item.infotext,
+                    }));
+                    setInfo2List([...info2List, info2]);
+                  });
+              }
+              // typeId 가 32일 경우
+              if (typeId === 32) {
+                axios
+                  .get(
+                    `https://apis.data.go.kr/B551011/KorService1/detailInfo1`,
+                    {
+                      params: {
+                        serviceKey: serviceKey,
+                        MobileOS: "ETC",
+                        MobileApp: "AppTest",
+                        _type: "json",
+                        contentId: exContentId,
+                        contentTypeId: typeId,
+                        numOfRows: 100,
+                        pageNo: 1,
+                      },
+                    },
+                  )
+                  .then((res) => {
+                    const data = res.data.response.body.items.item;
+                    const info2 = data.map((item, index) => ({
+                      contentId: id,
+                      number: index,
+                      title: item.roomtitle,
+                      size: item.roomsize1,
+                      roomCount: item.roomcount,
+                      baseAccomCount: item.roombasecount,
+                      maxAccomCount: item.roommaxcount,
+                      offSeasonFeeWd: item.roomoffseasonminfee1,
+                      peakSeasonFeeWd: item.roompeakseasonminfee1,
+                      offSeasonFeeWe: item.roomoffseasonminfee2,
+                      peakSeasonFeeWe: item.roompeakseasonminfee2,
+                      intro: item.roomintro,
+                      aircondition: item.roomaircondition,
+                      bath: item.roombath,
+                      bathFacility: item.roombathfacility,
+                      cable: item.roomcable,
+                      cook: item.roomcook,
+                      hairdryer: item.roomhairdryer,
+                      homeTheater: item.roomhometheater, // 추가
+                      internet: item.roominternet,
+                      pc: item.roompc,
+                      sofa: item.roomsofa,
+                      refrigerator: item.roomrefrigerator,
+                      toiletries: item.roomtoiletries,
+                      tv: item.roomtv,
+                      img1: item.roomimg1,
+                      img2: item.roomimg2,
+                      img3: item.roomimg3,
+                      img4: item.roomimg4,
+                      img5: item.roomimg5,
+                    }));
+                    setLodgingInfo2List([...lodgingInfo2List, info2]);
+                  });
+              }
+            }
+          });
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setIsProcessing(false));
+     */
 
-    // typeId 가 32가 아니면
-    if (contentTypeId !== 32) {
-      axios
-        .get(`https://apis.data.go.kr/B551011/KorService1/detailInfo1`, {
-          params: {
-            serviceKey: serviceKey,
-            MobileOS: "ETC",
-            MobileApp: "AppTest",
-            _type: "json",
-            contentId: 126508,
-            contentTypeId: contentTypeId,
-            numOfRows: 100,
-            pageNo: 1,
-          },
-        })
-        .then((res) => {
-          const data = res.data.response.body.items.item;
-          const info2 = data.map((item) => ({
-            contentId: item.contentid,
-            number: item.serialnum,
-            infoName: item.infoname,
-            infoText: item.infotext,
-          }));
+    // test
+    axios
+      .get(`/api/tour/get/content/29777`)
+      .then((res) => {
+        const contentList = res.data;
+        for (const content of contentList) {
+          const id = content.id;
+          const exContentId = content.exContentId;
+          const typeId = content.typeId;
 
-          axios
-            .post("/api/tour/add/info2", info2)
-            .then(() => {
-              console.log("post");
-            })
-            .catch()
-            .finally(() => {
-              setIsProcessing(false);
-            });
-        });
-    }
-    // typeId 가 32일 경우
-    if (contentTypeId === 32) {
-      axios
-        .get(`https://apis.data.go.kr/B551011/KorService1/detailInfo1`, {
-          params: {
-            serviceKey: serviceKey,
-            MobileOS: "ETC",
-            MobileApp: "AppTest",
-            _type: "json",
-            contentId: 138361,
-            contentTypeId: contentTypeId,
-            numOfRows: 100,
-            pageNo: 1,
-          },
-        })
-        .then((res) => {
-          const data = res.data.response.body.items.item;
-          const info2 = data.map((item, index) => ({
-            contentId: item.contentid,
-            number: index,
-            title: item.roomtitle,
-            size: item.roomsize1,
-            roomCount: item.roomcount,
-            baseAccomCount: item.roombasecount,
-            maxAccomCount: item.roommaxcount,
-            offSeasonFeeWd: item.roomoffseasonminfee1,
-            peakSeasonFeeWd: item.roompeakseasonminfee1,
-            offSeasonFeeWe: item.roomoffseasonminfee2,
-            peakSeasonFeeWe: item.roompeakseasonminfee2,
-            intro: item.roomintro,
-            aircondition: item.roomaircondition,
-            bath: item.roombath,
-            bathFacility: item.roombathfacility,
-            cable: item.roomcable,
-            cook: item.roomcook,
-            hairdryer: item.roomhairdryer,
-            homeTheater: item.roomhometheater, // 추가
-            internet: item.roominternet,
-            pc: item.roompc,
-            sofa: item.roomsofa,
-            refrigerator: item.roomrefrigerator,
-            toiletries: item.roomtoiletries,
-            tv: item.roomtv,
-            img1: item.roomimg1,
-            img2: item.roomimg2,
-            img3: item.roomimg3,
-            img4: item.roomimg4,
-            img5: item.roomimg5,
-          }));
-          axios
-            .post("/api/tour/add/lodgingInfo2", info2)
-            .then(() => {
-              console.log("post");
-            })
-            .catch()
-            .finally(() => {
-              setIsProcessing(false);
-            });
-        });
-    }
+          // typeId 가 32가 아니면
+          if (typeId !== 32) {
+            axios
+              .get(`https://apis.data.go.kr/B551011/KorService1/detailInfo1`, {
+                params: {
+                  serviceKey: serviceKey,
+                  MobileOS: "ETC",
+                  MobileApp: "AppTest",
+                  _type: "json",
+                  contentId: exContentId,
+                  contentTypeId: typeId,
+                  numOfRows: 100,
+                  pageNo: 1,
+                },
+              })
+              .then((res) => {
+                const data = res.data.response.body.items.item;
+                const info2 = data.map((item) => ({
+                  contentId: id,
+                  number: item.serialnum,
+                  infoName: item.infoname,
+                  infoText: item.infotext,
+                }));
+                setInfo2List([...info2List, info2]);
+              });
+          }
+          // typeId 가 32일 경우
+          if (typeId === 32) {
+            axios
+              .get(`https://apis.data.go.kr/B551011/KorService1/detailInfo1`, {
+                params: {
+                  serviceKey: serviceKey,
+                  MobileOS: "ETC",
+                  MobileApp: "AppTest",
+                  _type: "json",
+                  contentId: exContentId,
+                  contentTypeId: typeId,
+                  numOfRows: 100,
+                  pageNo: 1,
+                },
+              })
+              .then((res) => {
+                const data = res.data.response.body.items.item;
+                const info2 = data.map((item, index) => ({
+                  contentId: id,
+                  number: index,
+                  title: item.roomtitle,
+                  size: item.roomsize1,
+                  roomCount: item.roomcount,
+                  baseAccomCount: item.roombasecount,
+                  maxAccomCount: item.roommaxcount,
+                  offSeasonFeeWd: item.roomoffseasonminfee1,
+                  peakSeasonFeeWd: item.roompeakseasonminfee1,
+                  offSeasonFeeWe: item.roomoffseasonminfee2,
+                  peakSeasonFeeWe: item.roompeakseasonminfee2,
+                  intro: item.roomintro,
+                  aircondition: item.roomaircondition,
+                  bath: item.roombath,
+                  bathFacility: item.roombathfacility,
+                  cable: item.roomcable,
+                  cook: item.roomcook,
+                  hairdryer: item.roomhairdryer,
+                  homeTheater: item.roomhometheater, // 추가
+                  internet: item.roominternet,
+                  pc: item.roompc,
+                  sofa: item.roomsofa,
+                  refrigerator: item.roomrefrigerator,
+                  toiletries: item.roomtoiletries,
+                  tv: item.roomtv,
+                  img1: item.roomimg1,
+                  img2: item.roomimg2,
+                  img3: item.roomimg3,
+                  img4: item.roomimg4,
+                  img5: item.roomimg5,
+                }));
+                setLodgingInfo2List([...lodgingInfo2List, info2]);
+              });
+          }
+        }
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setIsProcessing(false));
   }
 
   function handleAddImages() {
     setIsProcessing(true);
-    axios
-      .get(`https://apis.data.go.kr/B551011/KorService1/detailImage1`, {
-        params: {
-          serviceKey: serviceKey,
-          MobileOS: "ETC",
-          MobileApp: "AppTest",
-          _type: "json",
-          contentId: 126508,
-          imageYN: "Y",
-          subImageYN: "Y",
-          numOfRows: 100,
-          pageNo: 1,
-        },
-      })
-      .then((res) => {
-        const data = res.data.response.body.items.item;
-        const images = data.map((item) => ({
-          // info1 의 나머지 정보
-          contentId: item.contentid,
-          originalUrl: item.originimgurl,
-          smallUrl: item.smallimageurl,
-        }));
 
-        axios
-          .post("/api/tour/add/image", images)
-          .then(() => {
-            console.log("post");
-          })
-          .catch(() => {})
-          .finally(() => {
-            setIsProcessing(false);
-          });
-      });
+    /*
+    axios.get(`/api/tour/get/contentId`).then((res) => {
+      const idList = res.data;
+      for (const id of idList) {
+      //   모든 데이터 호출용
+        (get id값 바꿀것)
+      }
+    }).catch((err) => console.log(err))
+      .finally(() => setIsProcessing(false));;
+     */
+
+    axios
+      .get(`/api/tour/get/content/29777`)
+      .then((res) => {
+        const contentList = res.data;
+        for (const content of contentList) {
+          const id = content.id;
+          const exContentId = content.exContentId;
+
+          axios
+            .get(`https://apis.data.go.kr/B551011/KorService1/detailImage1`, {
+              params: {
+                serviceKey: serviceKey,
+                MobileOS: "ETC",
+                MobileApp: "AppTest",
+                _type: "json",
+                contentId: exContentId,
+                imageYN: "Y",
+                subImageYN: "Y",
+                numOfRows: 100,
+                pageNo: 1,
+              },
+            })
+            .then((res) => {
+              const data = res.data.response.body.items.item;
+              const images = data.map((item) => ({
+                contentId: id,
+                originalUrl: item.originimgurl,
+                smallUrl: item.smallimageurl,
+              }));
+              setImageList([...imageList, images]);
+            });
+        }
+      })
+      .catch()
+      .finally(() => setIsProcessing(false));
   }
 
   function handleAddTypeCategoryMapping() {
@@ -627,6 +812,7 @@ export function TourSearch() {
       const idList = res.data;
       for (const id of idList) {
       //   모든 데이터 호출용
+        (get id값 바꿀것)
       }
     });
      */
@@ -816,27 +1002,77 @@ export function TourSearch() {
     setIsProcessing(false);
   }
 
-  function handleTest() {
+  function handleAddSyncList() {
+    setIsProcessing(true);
     /*
-    axios.get("/api/tour/get/content/all").then((res) => {
-      const dataList = res.data;
+    axios.get(`/api/tour/get/lastmd`).then((res) => {
+      // api modifiedtime 값이 더 작아질때까지 탐색
+      const lastModified = res.data;
+      const lastModifiedDate = res.data.toString().substring(0, 8);
 
-      for (const data of dataList) {
-        const id = data.id;
-        const contentId = data.exContentId;
-        const typeId = data.typeId;
+      // for (let pageNo = 6; pageNo > 0; pageNo--) { insert
+      axios
+        .get(`https://apis.data.go.kr/B551011/KorService1/areaBasedSyncList1`, {
+          params: {
+            serviceKey: serviceKey,
+            MobileOS: "ETC",
+            MobileApp: "AppTest",
+            _type: "json",
+            listYN: "Y", // Y: 목록, N: 개수
+            arrange: "C", // 정렬 (A=제목순, C=수정일순, D=생성일순)
+            numOfRows: 1000,
+            pageNo: 1,
+          },
+        })
+        .then((res) => {
+          const data = res.data.response.body.items.item.reverse();
+          const info1 = data.map((item) => ({
+            showFlag: item.showflag,
+            contentId: item.contentid,
+            zipcode: item.zipcode,
+            address: item.addr1 + " " + item.addr2,
+            tel: item.tel,
+            homepage: null,
+            overview: null,
+            firstImage1: item.firstimage,
+            firstImage2: item.firstimage2,
+            mapx: item.mapx,
+            mapy: item.mapy,
+            created: item.createdtime,
+            modified: item.modifiedtime,
+          }));
 
-        console.log(id, contentId, typeId);
-      }
+          if (info1.showFlag === 0) {
+            // 삭제
+            axios.delete(`/api/tour/`);
+          }
+          if (info1.showFlag === 1) {
+            axios.get(`/api/tour/get/id/${info1.contentId}`).then((res) => {
+              // id 조회
+              const id = res.data;
+              if (id === null) {
+                // 없으면 추가
+                axios
+                  .post("/api/tour/add/info1", info1)
+                  .then(() => {
+                    console.log("post");
+                  })
+                  .catch(() => {})
+                  .finally(() => {});
+              } else {
+                // 이미 있으면 수정
+                axios.put(`/api/tour/modify/${id}`);
+              }
+            });
+          }
+        });
+      // }
     });
     */
-    axios.get(`/api/tour/get/contentId`).then((res) => {
-      const idList = res.data;
-      for (const id of idList) {
-        console.log(id);
-      }
-    });
+    setIsProcessing(false);
   }
+
+  function handleTest() {}
 
   return (
     <Box>
@@ -850,22 +1086,24 @@ export function TourSearch() {
         콘텐츠 입력1
       </Button>
       <Button isDisabled onClick={handleAddContent2}>
-        콘텐츠 입력2
+        콘텐츠 입력2(.1)
       </Button>
-      <Button onClick={handleAddContentInfo1}>콘텐츠 기본 정보 입력</Button>
+      <Button onClick={handleAddContentInfo1}>콘텐츠 기본 정보 입력(.2)</Button>
       <Button onClick={handleAddContentInfo1detail}>
-        나머지 기본 정보 입력
+        나머지 기본 정보 입력(.3)
       </Button>
-      <Button onClick={handleAddContentInfo2}>콘텐츠 상세 정보 입력</Button>
-      <Button onClick={handleAddImages}>
-        {/* 음식점 제외 */}
-        이미지 입력
-      </Button>
+      <Button onClick={handleAddContentInfo2}>콘텐츠 상세 정보 입력(.4)</Button>
+      <Button onClick={handleAddImages}>이미지 입력(.5)</Button>
       <Button onClick={handleAddTypeCategoryMapping}>
         타입-카테고리 매핑 정보 입력
       </Button>
-      <Button onClick={handleAddIntroInfo}>소개정보 입력</Button>
-      <Button onClick={handleTest}>테스트 버튼</Button>
+      <Button onClick={handleAddIntroInfo}>소개정보 입력(.6)</Button>
+      <Button isDisabled onClick={handleAddSyncList}>
+        정보 동기화
+      </Button>
+      <Box mt={5}>
+        <Button onClick={handleTest}>테스트 버튼</Button>
+      </Box>
 
       {area.length > 0 && (
         <Box>
