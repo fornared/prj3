@@ -54,7 +54,7 @@ export function MemberEdit() {
       });
   }, [id, navigate, toast]);
 
-  function handleClickSave() {
+  const handleClickSave = () => {
     axios
       .put("/api/member/modify", { ...member, oldPassword })
       .then((res) => {
@@ -77,10 +77,14 @@ export function MemberEdit() {
         onClose();
         setOldPassword("");
       });
-  }
+  };
 
   if (member === null) {
-    return <Spinner />;
+    return (
+      <Center mt={10}>
+        <Spinner size="xl" />
+      </Center>
+    );
   }
 
   let isDisableNickNameCheckButton = false;
@@ -107,7 +111,7 @@ export function MemberEdit() {
     isDisableSaveButton = true;
   }
 
-  function handleCheckNickName() {
+  const handleCheckNickName = () => {
     setIsCheckedNickName(false); // 중복 확인 초기화
     axios
       .get(`/api/member/check-nickName?nickName=${member.nickName}`)
@@ -128,85 +132,91 @@ export function MemberEdit() {
           setIsCheckedNickName(true);
         }
       });
-  }
+  };
 
   return (
-    <Box>
+    <Box py={8} px={4} minH="100vh" bg="gray.50">
       <Center>
-        <Box w={500}>
-          <Box mb={10}>
-            <Heading>회원 정보 수정</Heading>
+        <Box
+          w={{ base: "100%", md: 500 }}
+          p={8}
+          bg="white"
+          boxShadow="lg"
+          borderRadius="md"
+        >
+          <Heading mb={6} textAlign="center" fontSize="2xl" fontWeight="bold">
+            회원 정보 수정
+          </Heading>
+          <Box mb={6}>
+            <FormControl>
+              <FormLabel>이메일</FormLabel>
+              <Input readOnly value={member.email} />
+            </FormControl>
           </Box>
-          <Box mb={10}>
-            <Box mb={7}>
-              <FormControl>
-                <FormLabel>이메일</FormLabel>
-                <Input readOnly value={member.email} />
-              </FormControl>
-            </Box>
-            <Box mb={7}>
-              <FormControl>
-                <FormLabel>암호</FormLabel>
-                <Input
-                  onChange={(e) =>
-                    setMember({ ...member, password: e.target.value })
-                  }
-                  placeholder={"암호를 변경하려면 입력하세요"}
-                  type="password"
-                />
-                <FormHelperText>
-                  입력하지 않으면 기존 암호를 변경하지 않습니다.
+          <Box mb={6}>
+            <FormControl>
+              <FormLabel>암호</FormLabel>
+              <Input
+                onChange={(e) =>
+                  setMember({ ...member, password: e.target.value })
+                }
+                placeholder={"암호를 변경하려면 입력하세요"}
+                type="password"
+              />
+              <FormHelperText>
+                입력하지 않으면 기존 암호를 변경하지 않습니다.
+              </FormHelperText>
+            </FormControl>
+          </Box>
+          <Box mb={6}>
+            <FormControl>
+              <FormLabel>암호 확인</FormLabel>
+              <Input
+                onChange={(e) => setPasswordCheck(e.target.value)}
+                type="password"
+              />
+              {member.password !== passwordCheck && (
+                <FormHelperText color="red.500">
+                  암호가 일치하지 않습니다.
                 </FormHelperText>
-              </FormControl>
-            </Box>
-            <Box mb={7}>
-              <FormControl>
-                <FormLabel>암호 확인</FormLabel>
-                <Input
-                  onChange={(e) => setPasswordCheck(e.target.value)}
-                  type="password"
-                />
-                {member.password !== passwordCheck && (
-                  <FormHelperText color="red.500">
-                    암호가 일치하지 않습니다.
-                  </FormHelperText>
-                )}
-              </FormControl>
-            </Box>
-            <Box mb={7}>
-              <FormControl>
-                <FormLabel>별명</FormLabel>
-                <InputGroup>
-                  <Input
-                    onChange={(e) => {
-                      const newNickName = e.target.value.trim();
-                      setMember({ ...member, nickName: newNickName });
-                      setIsCheckedNickName(newNickName === oldNickName);
-                    }}
-                    value={member.nickName}
-                  />
-                  <InputRightElement w={"75px"} mr={1}>
-                    <Button
-                      isDisabled={isDisableNickNameCheckButton}
-                      size={"sm"}
-                      onClick={handleCheckNickName}
-                    >
-                      중복확인
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-              </FormControl>
-            </Box>
-            <Box mb={7}>
-              <Button
-                isDisabled={isDisableSaveButton}
-                onClick={onOpen}
-                colorScheme={"blue"}
-              >
-                저장
-              </Button>
-            </Box>
+              )}
+            </FormControl>
           </Box>
+          <Box mb={6}>
+            <FormControl>
+              <FormLabel>별명</FormLabel>
+              <InputGroup>
+                <Input
+                  onChange={(e) => {
+                    const newNickName = e.target.value.trim();
+                    setMember({ ...member, nickName: newNickName });
+                    setIsCheckedNickName(newNickName === oldNickName);
+                  }}
+                  value={member.nickName}
+                />
+                <InputRightElement w={"75px"} mr={1}>
+                  <Button
+                    isDisabled={isDisableNickNameCheckButton}
+                    size={"sm"}
+                    onClick={handleCheckNickName}
+                  >
+                    중복확인
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+          </Box>
+          <Center>
+            <Button
+              isDisabled={isDisableSaveButton}
+              onClick={onOpen}
+              colorScheme="blue"
+              w="100%"
+              py={6}
+            >
+              저장
+            </Button>
+          </Center>
         </Box>
       </Center>
       <Modal isOpen={isOpen} onClose={onClose}>

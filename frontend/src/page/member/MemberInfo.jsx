@@ -1,25 +1,32 @@
 import {
   Box,
-  Button, Center,
+  Button,
+  Center,
   FormControl,
-  FormLabel, Heading,
-  Input, Modal, ModalBody,
-  ModalContent, ModalFooter, ModalHeader,
+  FormLabel,
+  Heading,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   ModalOverlay,
-  Spinner, useDisclosure,
-  useToast, VStack
+  Spinner,
+  useDisclosure,
+  useToast,
+  VStack,
 } from "@chakra-ui/react";
-import {useEffect, useState} from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
-import {useNavigate, useParams} from "react-router-dom";
-import { useContext } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
 
 export function MemberInfo() {
   const [member, setMember] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [password, setPassword] = useState("");
-  const {id} = useParams();
+  const { id } = useParams();
   const toast = useToast();
   const navigate = useNavigate();
   const account = useContext(LoginContext);
@@ -50,7 +57,7 @@ export function MemberInfo() {
           navigate(-1);
         }
       });
-  }, []);
+  }, [id, navigate, toast]);
 
   const handleClickReMove = () => {
     setIsLoading(true);
@@ -60,7 +67,7 @@ export function MemberInfo() {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        data: {id, password},
+        data: { id, password },
       })
       .then(() => {
         toast({
@@ -81,19 +88,29 @@ export function MemberInfo() {
       .finally(() => {
         setIsLoading(false);
         setPassword("");
-        onclose();
+        onClose();
       });
-  }
+  };
 
   if (member === null) {
-    return <Spinner/>;
+    return (
+      <Center mt={10}>
+        <Spinner size="xl" />
+      </Center>
+    );
   }
 
   return (
-    <Box py={8} px={4}>
+    <Box py={8} px={4} minH="100vh" bg="gray.50">
       <Center>
-        <Box w={{ base: "100%", md: 500 }} p={8} boxShadow="lg" borderRadius="md" bg="white">
-          <Heading mb={6} textAlign="center">
+        <Box
+          w={{ base: "100%", md: 500 }}
+          p={8}
+          bg="white"
+          boxShadow="lg"
+          borderRadius="md"
+        >
+          <Heading mb={6} textAlign="center" fontSize="2xl" fontWeight="bold">
             마이페이지
           </Heading>
           <VStack spacing={6} align="stretch">
