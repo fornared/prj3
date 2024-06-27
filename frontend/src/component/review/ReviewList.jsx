@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Box } from "@chakra-ui/react"; // import { faSStar } from "@fortawesome/free-solid-svg-icons";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { ReviewItem } from "./ReviewItem.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -25,7 +25,7 @@ export function ReviewList({ contentId, isSending, setIsSending }) {
   }, [isSending]);
 
   if (reviewList.length === 0) {
-    return <Box>리뷰가 없습니다..!</Box>;
+    return <Box>리뷰가 없습니다.</Box>;
   }
 
   const StarIcon = ({ index, rating }) => {
@@ -47,20 +47,31 @@ export function ReviewList({ contentId, isSending, setIsSending }) {
 
   return (
     <Box mt={2}>
-      <Box>
+      <Flex alignItems="center" mb={4}>
         {[0, 1, 2, 3, 4].map((index) => (
           <StarIcon key={index} index={index} rating={avgRating(reviewList)} />
         ))}
-        {avgRating(reviewList)}
-      </Box>
+        <Text ml={2} fontWeight="bold">
+          {avgRating(reviewList)}
+        </Text>
+      </Flex>
       {reviewList.map((review) => (
-        <ReviewItem
-          review={review}
+        <Box
           key={review.id}
-          isSending={isSending}
-          setIsSending={setIsSending}
-          StarIcon={StarIcon}
-        />
+          p={4}
+          mb={4}
+          borderWidth="1px"
+          borderRadius="lg"
+          boxShadow="sm"
+          bg="white"
+        >
+          <ReviewItem
+            review={review}
+            isSending={isSending}
+            setIsSending={setIsSending}
+            StarIcon={StarIcon}
+          />
+        </Box>
       ))}
     </Box>
   );

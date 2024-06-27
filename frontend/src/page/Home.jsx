@@ -19,6 +19,7 @@ import axios from "axios";
 export function Home() {
   const [contents1, setContents1] = useState([]);
   const [contents2, setContents2] = useState([]);
+  const [selectedStory, setSelectedStory] = useState(null);
 
   const navigate = useNavigate();
 
@@ -171,6 +172,11 @@ export function Home() {
     setSelectedEvent(event);
   };
 
+  const handleStoryClick = (storyId) => {
+    const story = stories.find((s) => s.id === storyId);
+    setSelectedStory(story);
+  };
+
   return (
     <Box mt={10} bg="gray.50" p={4}>
       <VStack spacing={8} align="stretch">
@@ -223,30 +229,51 @@ export function Home() {
           <Heading as="h2" size="xl" mb={4} ml={5} color="teal.700">
             스토리
           </Heading>
-          <Slider {...settings}>
-            {stories.map((story) => (
-              <Box
-                key={story.id}
-                borderWidth="1px"
-                borderRadius="lg"
-                overflow="hidden"
-                bg="white"
-                mx={2} // Margin between slides
-              >
-                <AspectRatio ratio={16 / 9}>
-                  <Image src={story.imageUrl} alt={story.title} />
-                </AspectRatio>
-                <Box p={4}>
-                  <Heading as="h3" size="md" color="teal.600">
-                    {story.title}
-                  </Heading>
-                  <Text mt={2} color="gray.600">
-                    {story.description}
-                  </Text>
-                </Box>
+          {selectedStory ? (
+            <Box p={4} bg="white" borderRadius="lg" boxShadow="lg">
+              <Button mb={4} onClick={() => setSelectedStory(null)}>
+                뒤로가기
+              </Button>
+              <AspectRatio ratio={16 / 9}>
+                <Image src={selectedStory.imageUrl} alt={selectedStory.title} />
+              </AspectRatio>
+              <Box mt={4}>
+                <Heading as="h3" size="lg" color="teal.700">
+                  {selectedStory.title}
+                </Heading>
+                <Text mt={2} color="gray.600">
+                  {selectedStory.description}
+                </Text>
               </Box>
-            ))}
-          </Slider>
+            </Box>
+          ) : (
+            <Slider {...settings}>
+              {stories.map((story) => (
+                <Box
+                  key={story.id}
+                  borderWidth="1px"
+                  borderRadius="lg"
+                  overflow="hidden"
+                  bg="white"
+                  mx={2} // Margin between slides
+                  cursor="pointer"
+                  onClick={() => handleStoryClick(story.id)}
+                >
+                  <AspectRatio ratio={16 / 9}>
+                    <Image src={story.imageUrl} alt={story.title} />
+                  </AspectRatio>
+                  <Box p={4}>
+                    <Heading as="h3" size="md" color="teal.600">
+                      {story.title}
+                    </Heading>
+                    <Text mt={2} color="gray.600">
+                      {story.description}
+                    </Text>
+                  </Box>
+                </Box>
+              ))}
+            </Slider>
+          )}
         </Box>
 
         <Box>
