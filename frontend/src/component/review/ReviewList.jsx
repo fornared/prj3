@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Box, Flex, Spacer, Text } from "@chakra-ui/react"; // import { faSStar } from "@fortawesome/free-solid-svg-icons";
-import { faStar as sStar } from "@fortawesome/free-solid-svg-icons";
-import { faStar as rStar } from "@fortawesome/free-regular-svg-icons";
+import { Box } from "@chakra-ui/react"; // import { faSStar } from "@fortawesome/free-solid-svg-icons";
+import { ReviewItem } from "./ReviewItem.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faStar as sStar,
+  faStarHalfStroke as hStar,
+} from "@fortawesome/free-solid-svg-icons";
+import { faStar as rStar } from "@fortawesome/free-regular-svg-icons";
 
-export function ReviewList({ contentId, isSending }) {
+export function ReviewList({ contentId, isSending, setIsSending }) {
   const [reviewList, setReviewList] = useState([]);
 
   useEffect(() => {
@@ -26,29 +30,38 @@ export function ReviewList({ contentId, isSending }) {
 
   const StarIcon = ({ index, rating }) => {
     if (index < rating) {
-      return <FontAwesomeIcon icon={sStar} color="Orange" />;
+      if (rating - index < 1) {
+        return <FontAwesomeIcon icon={hStar} color="Orange" />;
+      } else {
+        return <FontAwesomeIcon icon={sStar} color="Orange" />;
+      }
     } else {
       return <FontAwesomeIcon icon={rStar} color="gray" />;
     }
   };
 
+  function avgRating(review) {
+    const total = reviewList.reduce((acc, review) => acc + review.rating, 0);
+    return (total / reviewList.length).toFixed(1);
+  }
+
   return (
     <Box mt={2}>
+      <Box>
+        {[0, 1, 2, 3, 4].map((index) => (
+          <StarIcon key={index} index={index} rating={avgRating(reviewList)} />
+        ))}
+        {avgRating(reviewList)}
+      </Box>
+      <Box></Box>
       {reviewList.map((review) => (
-        <Box key={review.id} border={"1px solid black"} my={3}>
-          <Flex>
-            <Box>{review.nickName}</Box>
-            <Spacer />
-            <Box>{review.inserted}</Box>
-          </Flex>
-          <Flex alignItems="center">
-            {[0, 1, 2, 3, 4].map((index) => (
-              <StarIcon key={index} index={index} rating={review.rating} />
-            ))}
-            <Text ml={1}>{review.rating}</Text>
-          </Flex>
-          <Box>{review.review}</Box>
-        </Box>
+        <ReviewItem
+          review={review}
+          key={review.id}
+          isSending={isSending}
+          setIsSending={setIsSending}
+          StarIcon={StarIcon}
+        />
       ))}
     </Box>
   );
