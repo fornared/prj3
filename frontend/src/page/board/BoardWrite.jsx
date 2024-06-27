@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useContext, useState} from "react";
 import {
   Box,
   Button,
@@ -9,15 +9,17 @@ import {
   Heading,
   VStack,
   Center,
-  useToast,
+  useToast, FormHelperText,
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {LoginContext} from "../../component/LoginProvider.jsx";
 
 export function BoardWrite() {
   const [title, setTitle] = useState("");
-  const [writer, setWriter] = useState("");
   const [content, setContent] = useState("");
+  const [files, setFiles] = useState([]);
+  const account = useContext(LoginContext);
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -32,12 +34,18 @@ export function BoardWrite() {
       return;
     }
     axios
-      .post("/api/board/add", {
-        title: title,
-        content: content,
+      .postForm("/api/board/add", {
+        title : title,
+        content : content,
+        files : files,
       })
       .then(() => {
-        navigate("/board");
+        toast({
+          description: "새 글이 등록되었습니다.",
+          status:"success",
+          position:"top",
+        })
+        navigate("/board/list");
       })
       .catch(() => {
         toast({
@@ -47,6 +55,12 @@ export function BoardWrite() {
           duration: 2000,
         });
       });
+  }
+
+  //file 목록작성
+  const fileNameList = [];
+  for (let i = 0; i < files.length; i++) {
+    fileNameList.push(<li>{files[i].name}</li>)
   }
 
   return (
@@ -60,7 +74,7 @@ export function BoardWrite() {
           borderRadius="md"
         >
           <Heading mb={6} textAlign="center" fontSize="2xl" fontWeight="bold">
-            글 작성
+            글쓰기
           </Heading>
           <VStack spacing={6} align="stretch">
             <FormControl>
@@ -74,13 +88,7 @@ export function BoardWrite() {
             </FormControl>
             <FormControl>
               <FormLabel fontWeight="bold">작성자</FormLabel>
-              <Input
-                value={writer}
-                onChange={(e) => setWriter(e.target.value)}
-                placeholder="작성자를 입력하세요"
-                readOnly
-                bg="gray.100"
-              />
+              <Input readOnly value={account.nickName} />
             </FormControl>
             <FormControl>
               <FormLabel fontWeight="bold">내용</FormLabel>
@@ -92,6 +100,25 @@ export function BoardWrite() {
                 minH="200px"
               />
             </FormControl>
+
+            <Box>
+              <FormControl>
+                <FormLabel>파일</FormLabel>
+                <Input
+                  multiple={true}
+                  type="file"
+                  accept="image/*"
+                  onChange={e=>
+                    setFiles(e.target.files)}
+                    />
+                <FormHelperText>총 용량은 20MB, 한 파일은 1MB를 초과할 수 없습니다!</FormHelperText>
+              </FormControl>
+            </Box>
+            <Box>
+              <ul>
+                {fileNameList} {/* <--뭔가 문제있음 */}
+              </ul>
+            </Box>
             <Button colorScheme="blue" onClick={handleClickSave}>
               저장
             </Button>
