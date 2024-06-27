@@ -19,9 +19,11 @@ import { TourList } from "./page/tour/TourList";
 import { TourDetail } from "./page/tour/TourDetail";
 import Schedule from "./page/menu/Schedule";
 import { BoardDetail } from "./page/board/BoardDetail";
-import {MemberInfo} from "./page/member/MemberInfo.jsx";
-import {MemberEdit} from "./page/member/MemberEdit.jsx";
+import { MemberInfo } from "./page/member/MemberInfo.jsx";
+import { MemberEdit } from "./page/member/MemberEdit.jsx";
 import axios from "axios";
+import { ItineraryDate } from "./page/itinerary/ItineraryDate.jsx";
+import { ItineraryDetail } from "./page/itinerary/ItineraryDetail.jsx"; // axios interceptor 설정
 
 // axios interceptor 설정
 axios.interceptors.request.use((config) => {
@@ -61,17 +63,18 @@ const router = createBrowserRouter([
       { path: "schedule", element: <Schedule /> },
       { path: "member/:id", element: <MemberInfo /> },
       { path: "member/edit/:id", element: <MemberEdit /> },
+      { path: "itinerary/date", element: <ItineraryDate /> },
+      { path: "itinerary/detail", element: <ItineraryDetail /> },
     ],
   },
 ]);
 
-
 function App() {
   return (
     <LoginProvider>
-    <ChakraProvider>
+      <ChakraProvider>
         <RouterProvider router={router} />
-    </ChakraProvider>
+      </ChakraProvider>
     </LoginProvider>
   );
 }

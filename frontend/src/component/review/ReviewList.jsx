@@ -41,8 +41,8 @@ export function ReviewList({ contentId, isSending, setIsSending }) {
   };
 
   function avgRating(review) {
-    const total = reviewList.reduce((acc, review) => acc + review.rating, 0);
-    return (total / reviewList.length).toFixed(1);
+    const sum = reviewList.reduce((acc, review) => acc + review.rating, 0);
+    return (sum / reviewList.length).toFixed(1);
   }
 
   return (
@@ -53,7 +53,6 @@ export function ReviewList({ contentId, isSending, setIsSending }) {
         ))}
         {avgRating(reviewList)}
       </Box>
-      <Box></Box>
       {reviewList.map((review) => (
         <ReviewItem
           review={review}
