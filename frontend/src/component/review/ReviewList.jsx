@@ -21,7 +21,7 @@ export function ReviewList({ contentId, isSending }) {
   }, [isSending]);
 
   if (reviewList.length === 0) {
-    return <Box>리뷰가 없습니다..</Box>;
+    return <Box>리뷰가 없습니다..!</Box>;
   }
 
   const StarIcon = ({ index, rating }) => {

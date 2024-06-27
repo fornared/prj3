@@ -82,37 +82,57 @@ export function TourDetail() {
   return (
     <Box
       mt="30px"
-      border="1px solid black"
+      border="1px solid"
+      borderColor="gray.200"
+      borderRadius="lg"
+      p={5}
+      bg="white"
       mx={{
-        base: 0,
+        base: 4,
         lg: 100,
       }}
+      boxShadow="lg"
     >
-      <Box>
-        <Heading>detail</Heading>
+      <Heading size="lg" mb={6} color="teal.700">
+        Detail
+      </Heading>
+      <Box mb={6}>
+        <Image
+          src={info.firstImage1}
+          borderRadius="lg"
+          boxShadow="md"
+          maxHeight="400px"
+          objectFit="cover"
+          width="100%"
+        />
       </Box>
-      <Box p={4} mt={"10px"} border="1px solid black">
-        (사진..)
-        <Image src={info.firstImage1} />
-      </Box>
-      <Box p={4} mt={"10px"} border="1px solid black">
-        (설명..)
-        <Box whiteSpace="pre-wrap">
+      <Box mb={6}>
+        <Heading size="md" mb={4} color="teal.700">
+          설명
+        </Heading>
+        <Box whiteSpace="pre-wrap" lineHeight="tall">
           <Collapse startingHeight={"6em"} in={showAll}>
             <div ref={overviewRef}>{info.overview}</div>
           </Collapse>
         </Box>
         {showBtnMore && (
           <Flex justifyContent="flex-end">
-            <Button variant="unstyled" size={"sm"} onClick={handleToggleShow}>
+            <Button
+              variant="link"
+              colorScheme="teal"
+              size="sm"
+              onClick={handleToggleShow}
+            >
               {showAll ? "접기" : "..더보기"}
             </Button>
           </Flex>
         )}
       </Box>
-      <Box p={4} mt={"10px"} border="1px solid black">
-        (정보..)
-        <Table>
+      <Box mb={6}>
+        <Heading size="md" mb={4} color="teal.700">
+          정보
+        </Heading>
+        <Table variant="simple">
           <Tbody>
             <Tr>
               <Th>우편번호</Th>
@@ -156,7 +176,7 @@ export function TourDetail() {
                 level={6}
               >
                 <MapMarker
-                  style={{ border: "tranparent" }}
+                  style={{ border: "transparent" }}
                   position={{ lat: info.mapy, lng: info.mapx }}
                 ></MapMarker>
               </Map>
@@ -170,9 +190,11 @@ export function TourDetail() {
         </Modal>
       </Box>
       {introInfo !== null && (
-        <Box p={4} mt={"10px"} border="1px solid black">
-          (소개정보..)
-          <Table>
+        <Box mb={6}>
+          <Heading size="md" mb={4} color="teal.700">
+            소개정보
+          </Heading>
+          <Table variant="simple">
             <Tbody>
               {introInfo.map((item) => (
                 <Tr key={item.number}>
@@ -187,9 +209,11 @@ export function TourDetail() {
         </Box>
       )}
       {info2 !== null && (
-        <Box p={4} mt={"10px"} border="1px solid black">
-          (상세정보..)
-          <Table>
+        <Box mb={6}>
+          <Heading size="md" mb={4} color="teal.700">
+            상세정보
+          </Heading>
+          <Table variant="simple">
             <Tbody>
               {info2.map((item) => (
                 <Tr key={item.number}>
@@ -197,11 +221,9 @@ export function TourDetail() {
                   <Td>
                     {item.infoName === "객실사진" &&
                     item.infoText.trim().length > 0 ? (
-                      item.infoText
-                        .split(",")
-                        .map((imgUrl, index) => (
-                          <Image key={index} src={imgUrl.trim()} />
-                        ))
+                      item.infoText.split(",").map((imgUrl, index) => (
+                        <Image key={index} src={imgUrl.trim()} />
+                      ))
                     ) : (
                       <Text
                         dangerouslySetInnerHTML={{ __html: item.infoText }}
@@ -214,10 +236,14 @@ export function TourDetail() {
           </Table>
         </Box>
       )}
-      <Box p={4} mt={"10px"} border="1px solid black">
-        (리뷰..)
+      <Box mb={6}>
+        <Heading size="md" mb={4} color="teal.700">
+          리뷰
+        </Heading>
         <ReviewComponent contentId={info.id} />
       </Box>
     </Box>
   );
 }
+
+export default TourDetail;

@@ -177,16 +177,15 @@ export function Navbar() {
                 <Box ml={2}>로그아웃</Box>
               </MenuItem>
 
-              <MenuItem
-                onClick={() => {
-                  account.isAdmin();
-                  navigate("/member/list")
-                }}
-                cursor={"pointer"}
-              >
-                <FontAwesomeIcon icon={faUsers} />
-                <Box ml={2}>회원목록</Box>
-              </MenuItem>
+              {account.isAdmin() && (
+                <MenuItem
+                  onClick={() => navigate("/member/list")}
+                  cursor={"pointer"}
+                >
+                  <FontAwesomeIcon icon={faUsers} />
+                  <Box ml={2}>회원목록</Box>
+                </MenuItem>
+              )}
             </MenuList>
           </Menu>
         )}
