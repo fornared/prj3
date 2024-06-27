@@ -30,4 +30,10 @@ public interface BoardMapper {
             WHERE b.id = #{id}
             """)
     Board selectById(Integer id);
+
+    @Insert("""
+                        INSERT INTO board_file (board_id, name)
+                        VALUES (#{boardId}, #{name})
+            """)
+    int insertFileName(Integer boardId, String name);
 }
