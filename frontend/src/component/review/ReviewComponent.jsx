@@ -13,7 +13,11 @@ export function ReviewComponent({ contentId }) {
         isSending={isSending}
         setIsSending={setIsSending}
       />
-      <ReviewList contentId={contentId} isSending={isSending} />
+      <ReviewList
+        contentId={contentId}
+        isSending={isSending}
+        setIsSending={setIsSending}
+      />
     </Box>
   );
 }

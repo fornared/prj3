@@ -69,8 +69,6 @@ export function TourDetail() {
       .catch();
   }, [info.overview]);
 
-  useEffect(() => {}, []);
-
   if (info && info.length === 0) {
     return <Spinner />;
   }
