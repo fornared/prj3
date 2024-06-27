@@ -29,6 +29,7 @@ import {
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { useLocation } from "react-router-dom";
 
 export function ItineraryDetail() {
   const [places, setPlaces] = useState([]);
@@ -75,6 +76,12 @@ export function ItineraryDetail() {
     onOpen: onOpenDetail,
   } = useDisclosure();
   const toast = useToast();
+  const location = useLocation();
+  const startDate = location.state?.startDate || "";
+  const endDate = location.state?.endDate || "";
+
+  console.log(startDate);
+  console.log(endDate);
 
   useEffect(() => {
     if (isOpenList) {
@@ -216,6 +223,7 @@ export function ItineraryDetail() {
   function handleAddContent() {
     const visit = {
       index: visitIndex,
+      title: info.title,
       contentId: id,
       description: "메모",
       visitTime: "00:00:00",
@@ -237,6 +245,13 @@ export function ItineraryDetail() {
     setIsAdd(true);
   }
 
+  function handleDeleteVisit(index) {
+    const newVisit = [...visitList];
+    newVisit.splice(index, 1);
+    setVisitList(newVisit);
+    setIsAdd(true);
+  }
+
   return (
     <Box
       maxW="1200px"
@@ -253,14 +268,16 @@ export function ItineraryDetail() {
           <Stack spacing={2} mb={4}>
             <Heading size="md">day1</Heading>
             {/* 장소 목록을 보여주는 부분 */}
-            {places.map((place, index) => (
+            {visitList.map((item, index) => (
               <Flex key={index} alignItems="center">
-                <Text>{place.name}</Text>
+                <Box>{item.title}</Box>
+                <Box>{item.description}</Box>
+                <Box>{item.visitTime}</Box>
                 <Spacer />
                 <Button
                   size="sm"
                   colorScheme="red"
-                  // onClick={() => handleDeletePlace(index)}
+                  onClick={() => handleDeleteVisit(index)}
                 >
                   삭제
                 </Button>
