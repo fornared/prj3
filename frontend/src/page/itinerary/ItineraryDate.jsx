@@ -41,7 +41,9 @@ export function ItineraryDate() {
       <Center>
         <Button
           colorScheme="blue"
-          onClick={() => navigate(`/itinerary/detail`)}
+          onClick={() =>
+            navigate(`/itinerary/detail`, { state: { startDate, endDate } })
+          }
         >
           다음
         </Button>
