@@ -5,6 +5,9 @@ import com.backend.domain.itinerary.ItineraryDetail;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Select;
+
+import java.util.List;
 
 @Mapper
 public interface ItineraryMapper {
@@ -20,4 +23,12 @@ public interface ItineraryMapper {
             VALUES (#{itineraryId}, #{contentId}, #{description}, #{visitDay}, #{visitTime})
             """)
     int InsertItineraryDetail(ItineraryDetail visit);
+
+    @Select("""
+            SELECT *
+            FROM itinerary
+            WHERE member_id=#{memberId}
+            ORDER BY inserted DESC
+            """)
+    List<Itinerary> selectAll(Integer memberId);
 }

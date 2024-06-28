@@ -15,12 +15,12 @@ import {
   ModalOverlay,
   Select,
   SimpleGrid,
-  Spacer,
   Stack,
   Table,
   Tbody,
   Td,
   Text,
+  Textarea,
   Th,
   Tr,
   useDisclosure,
@@ -33,7 +33,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import moment from "moment";
 
 export function ItineraryDetail() {
-  const [places, setPlaces] = useState([]);
   // 리스트
   const [tourList, setTourList] = useState([]);
   const [pageInfo, setPageInfo] = useState({});
@@ -60,7 +59,11 @@ export function ItineraryDetail() {
 
   const [visitList, setVisitList] = useState([]);
   const [visitIndex, setVisitIndex] = useState(0);
+  const [description, setDescription] = useState("");
+  const [time, setTime] = useState("00:00");
+  const [selectedIndex, setSelectedIndex] = useState(null);
   const [isAdd, setIsAdd] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
 
   const {
     isOpen: isOpenList,
@@ -72,6 +75,11 @@ export function ItineraryDetail() {
     onClose: onCloseDetail,
     onOpen: onOpenDetail,
   } = useDisclosure();
+  const {
+    isOpen: isOpenVisit,
+    onClose: onCloseVisit,
+    onOpen: onOpenVisit,
+  } = useDisclosure();
   const toast = useToast();
   const location = useLocation();
   const startDate = location.state?.startDate || "";
@@ -79,30 +87,14 @@ export function ItineraryDetail() {
   const navigate = useNavigate();
   const days = moment(endDate).diff(moment(startDate), "days") + 1;
   const [day, setDay] = useState(1);
+  const dayPlan = [];
 
-  const itinerary = { name: "제목", startDate, endDate };
-  // const [itinerary, setItinerary] = useState({
-  //   startDate: moment(startDate),
-  //   endDate: moment(endDate),
-  // });
-
-  const date1 = moment(startDate).format("YYYY-MM-DD");
-  const date2 = moment(endDate).format("YYYY-MM-DD");
-  // const differenceDays = date2.diff(date1, "days");
-  // console.log(differenceDays);
-  // console.log(moment(startDate).format("YYYY-MM-DD"));
+  const itinerary = { name: location.state?.name || "", startDate, endDate };
 
   useEffect(() => {
-    if (days > 0) {
-      console.log(days);
-      // const initialVisits = [];
-      // for (let i = 0; i < days; i++) {
-      //   initialVisits[i] = 0;
-      //   setVisitList(initialVisits);
-      // }
-    } else {
+    if (days < 1) {
       alert("여행 날짜를 설정해주세요");
-      navigate("/itinerary");
+      navigate("/itinerary/new");
     }
   }, []);
 
@@ -168,7 +160,6 @@ export function ItineraryDetail() {
 
   useEffect(() => {
     if (isAdd === true) {
-      console.log(visitList);
       setIsAdd(false);
     }
   }, [isAdd]);
@@ -248,13 +239,9 @@ export function ItineraryDetail() {
       index: visitIndex,
       title: info.title,
       contentId: id,
-      description: "메모",
-      visitTime: "00:00",
+      description: description,
+      visitTime: time,
     };
-
-    // const newList = [...visitList];
-    // newList[day - 1] = [visit];
-    // setVisitList(newList);
 
     setVisitList([...visitList, visit]);
     setSearchParam("");
@@ -265,8 +252,11 @@ export function ItineraryDetail() {
     setArea("");
     setSigungu("");
     setKeyword("");
+    setDescription("");
+    setTime("00:00");
     onCloseDetail();
     onCloseList();
+    onCloseVisit();
     setVisitIndex(visitIndex + 1);
 
     setIsAdd(true);
@@ -274,8 +264,16 @@ export function ItineraryDetail() {
 
   function handleDeleteVisit(index) {
     const newVisit = [...visitList];
+
+    for (let i = 0; i < newVisit.length; i++) {
+      if (newVisit[i].index > index) {
+        newVisit[i].index--;
+      }
+    }
     newVisit.splice(index, 1);
+    setVisitIndex(visitIndex - 1);
     setVisitList(newVisit);
+
     setIsAdd(true);
   }
 
@@ -283,15 +281,39 @@ export function ItineraryDetail() {
     axios
       .post(`/api/itinerary/add`, itinerary)
       .then((res) => {
-        console.log("11");
         axios.post(`/api/itinerary/add/detail`, visitList);
       })
       .catch()
-      .finally();
+      .finally(() => {
+        toast({
+          description: "일정이 저장되었습니다.",
+          status: "success",
+          position: "top",
+        });
+        navigate(`/itinerary`);
+      });
   }
 
-  const dayPlan = [];
+  function handleEditVisit(item) {
+    setDescription(item.description);
+    setTime(item.visitTime);
+
+    onOpenVisit();
+  }
+
+  function handleEditContent() {
+    const newVisitList = [...visitList];
+    newVisitList[selectedIndex].visitTime = time;
+    newVisitList[selectedIndex].description = description;
+    setVisitList(newVisitList);
+
+    setDescription("");
+    setTime("00:00");
+    onCloseVisit();
+  }
+
   for (let i = 1; i <= days; i++) {
+    // 장소 목록
     dayPlan.push(
       <Box
         key={i}
@@ -302,34 +324,64 @@ export function ItineraryDetail() {
         boxShadow="md"
       >
         <Box>
-          {/* 장소 목록 */}
           <Stack spacing={2} mb={4}>
-            <Heading size="md">day{[i]}</Heading>
+            <Heading size="md">
+              {moment(startDate)
+                .add(i - 1, "d")
+                .format("MM-DD")}
+              <Text fontSize="md">(day{[i]})</Text>
+              <Flex
+                justifyContent="space-between"
+                fontSize={"md"}
+                mt={5}
+                mx={10}
+              >
+                <Text>장소명</Text>
+                <Text>메모</Text>
+                <Text>방문시각</Text>
+                <Text></Text>
+              </Flex>
+            </Heading>
             {/* 장소 목록을 보여주는 부분 */}
             {visitList.map((item, index) => {
               if (item.visitDay === i)
                 return (
-                  <Flex key={index} alignItems="center">
+                  <Flex
+                    justifyContent="space-between"
+                    key={index}
+                    alignItems="center"
+                    mx={10}
+                  >
                     <Box>{item.title}</Box>
-                    <Spacer />
                     <Box>{item.description}</Box>
-                    <Spacer />
                     <Box>{item.visitTime}</Box>
-                    <Spacer />
-                    <Spacer />
-                    <Button
-                      size="sm"
-                      colorScheme="red"
-                      onClick={() => handleDeleteVisit(index)}
-                    >
-                      삭제
-                    </Button>
+                    <Box>
+                      <Button
+                        size="sm"
+                        colorScheme="green"
+                        onClick={() => {
+                          setIsEdit(true);
+                          setSelectedIndex(item.index);
+                          handleEditVisit(item, index);
+                        }}
+                      >
+                        수정
+                      </Button>
+                      <Button
+                        size="sm"
+                        colorScheme="red"
+                        onClick={() => handleDeleteVisit(index)}
+                      >
+                        삭제
+                      </Button>
+                    </Box>
                   </Flex>
                 );
             })}
           </Stack>
           <Button
             onClick={() => {
+              setIsEdit(false);
               onOpenList();
               setDay(i);
             }}
@@ -352,9 +404,10 @@ export function ItineraryDetail() {
       boxShadow="md"
     >
       <Box>{dayPlan}</Box>
+
       <Center>
         <Button onClick={handleSubmitItinerary} mt={10} colorScheme="blue">
-          등록
+          저장
         </Button>
       </Center>
       {/* 리스트 모달 */}
@@ -732,15 +785,73 @@ export function ItineraryDetail() {
             </Box>
           </ModalBody>
           <ModalFooter gap={2}>
-            <Button
-              onClick={() => {
-                handleAddContent();
-              }}
-              colorScheme="blue"
-            >
-              추가
+            <Button onClick={onOpenVisit} colorScheme="blue">
+              선택
             </Button>
             <Button onClick={onCloseDetail}>닫기</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+      {/*메모 모달*/}
+      <Modal isOpen={isOpenVisit} onClose={onCloseVisit} size="xl">
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>장소추가</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            <Box
+              mt={4}
+              mx={{
+                base: 0,
+                lg: 10,
+              }}
+            >
+              <Box p={4} borderWidth={1} borderRadius="md" boxShadow="md">
+                <Input
+                  onChange={(e) => setTime(e.target.value)}
+                  value={time}
+                  size="md"
+                  type="time"
+                />
+              </Box>
+              <Box
+                mt={8}
+                p={4}
+                borderWidth={1}
+                borderRadius="md"
+                boxShadow="md"
+              >
+                <Textarea
+                  onChange={(e) => setDescription(e.target.value)}
+                  value={description}
+                  h={"150px"}
+                  placeholder="메모"
+                ></Textarea>
+              </Box>
+            </Box>
+          </ModalBody>
+          <ModalFooter>
+            {isEdit ? (
+              <Button
+                onClick={() => {
+                  handleEditContent();
+                }}
+                colorScheme="blue"
+              >
+                수정
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  handleAddContent();
+                }}
+                colorScheme="blue"
+              >
+                추가
+              </Button>
+            )}
+
+            <Button onClick={onCloseVisit}>닫기</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
