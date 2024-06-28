@@ -64,10 +64,9 @@ export function Navbar() {
     "/image/sea.jpg",
     "/image/travel.jpg",
   ];
-  console.log(account)
 
   return (
-    <Box position="relative">
+    <Box position="relative" fontFamily="HSSaemaul-Regular, sans-serif">
       <Slider {...settings} style={{ height: "500px" }}>
         {images.map((src, index) => (
           <Box
@@ -90,6 +89,7 @@ export function Navbar() {
         left={0}
         right={0}
         align="center"
+        fontFamily="HSSaemaul-Regular, sans-serif"
       >
         <Center
           onClick={() => navigate("/")}
@@ -132,12 +132,12 @@ export function Navbar() {
             p={6}
             fontSize={20}
             fontWeight={600}
+            color={"white"}
           >
             <Show below={"lg"}>
               <FontAwesomeIcon icon={faPencil} />
             </Show>
-            <Hide below={"lg"}>
-              글쓰기</Hide>
+            <Hide below={"lg"}>글쓰기</Hide>
           </Center>
         )}
 
@@ -148,11 +148,11 @@ export function Navbar() {
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               <Flex gap={2}>
                 <Box
-                onClick={() => navigate(`/member/${account.id}`)}
-                cursor={"pointer"}
-                _hover={{
-                  bgColor:"gray.200",
-                }}
+                  onClick={() => navigate(`/member/${account.id}`)}
+                  cursor={"pointer"}
+                  _hover={{
+                    bgColor:"gray.200",
+                  }}
                 >
                   <FontAwesomeIcon icon={faUser} />
                 </Box>
