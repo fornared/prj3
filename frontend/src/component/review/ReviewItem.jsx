@@ -18,7 +18,7 @@ export function ReviewItem({ review, isSending, setIsSending, StarIcon }) {
   }
 
   return (
-    <Box key={review.id} border={"1px solid black"} my={3}>
+    <Box key={review.id} my={3}>
       <Flex>
         <Box>{review.nickName}</Box>
         <Spacer />

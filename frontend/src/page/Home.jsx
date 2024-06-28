@@ -9,6 +9,8 @@ import {
   SimpleGrid,
   Text,
   VStack,
+  Stack,
+  Divider,
 } from "@chakra-ui/react";
 import { Outlet, useNavigate } from "react-router-dom";
 import Slider from "react-slick";
@@ -20,6 +22,7 @@ export function Home() {
   const [contents1, setContents1] = useState([]);
   const [contents2, setContents2] = useState([]);
   const [selectedStory, setSelectedStory] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const navigate = useNavigate();
 
@@ -141,7 +144,7 @@ export function Home() {
     },
     {
       id: 3,
-      title: "스토리 3",
+      title: "별마당도서관",
       imageUrl: "/image/slider-image3.jpg",
       description: "스토리 3에 대한 설명입니다.",
     },
@@ -165,8 +168,6 @@ export function Home() {
     },
   ];
 
-  const [selectedEvent, setSelectedEvent] = useState(null);
-
   const handleEventClick = (eventId) => {
     const event = events.find((e) => e.id === eventId);
     setSelectedEvent(event);
@@ -179,7 +180,7 @@ export function Home() {
 
   return (
     <Box mt={10} bg="gray.50" p={4}>
-      <VStack spacing={8} align="stretch">
+      <VStack spacing={10} align="stretch">
         <Box>
           <Heading as="h2" size="xl" mb={4} ml={5} color="teal.700">
             가볼만한곳
@@ -196,6 +197,8 @@ export function Home() {
             ))}
           </SimpleGrid>
         </Box>
+
+        <Divider />
 
         <Box>
           <Heading as="h2" size="xl" mb={4} ml={5} color="teal.700">
@@ -214,6 +217,8 @@ export function Home() {
           </SimpleGrid>
         </Box>
 
+        <Divider />
+
         <Box>
           <Heading as="h2" size="xl" mb={4} ml={5} color="teal.700">
             최근 리뷰
@@ -224,6 +229,8 @@ export function Home() {
             <ReviewCard title="리뷰 3" description="리뷰 내용 3" />
           </SimpleGrid>
         </Box>
+
+        <Divider />
 
         <Box>
           <Heading as="h2" size="xl" mb={4} ml={5} color="teal.700">
@@ -275,6 +282,8 @@ export function Home() {
             </Slider>
           )}
         </Box>
+
+        <Divider />
 
         <Box>
           <Heading as="h2" size="xl" mb={4} ml={5} color="teal.700">

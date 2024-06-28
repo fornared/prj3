@@ -158,20 +158,32 @@ export function TourList() {
         base: 4,
         lg: 100,
       }}
+      mt={10}
+      bg="gray.50"
+      p={4}
+      borderRadius="lg"
+      boxShadow="md"
     >
       <Box mb={10}>
-        <Heading textAlign="center" mb={4} mt={5}>
+        <Heading textAlign="center" mb={4} mt={5} color="teal.700">
           관광지 리스트
         </Heading>
         <Flex justify="center" mb={6}>
-          <Text>원하는 관광지를 검색하세요.</Text>
+          <Text color="gray.600">원하는 관광지를 검색하세요.</Text>
         </Flex>
       </Box>
-      <Table mb={10} border={"2px solid"} borderColor="gray.200" borderRadius="md" boxShadow="sm">
+      <Table
+        mb={10}
+        border="2px solid"
+        borderColor="gray.200"
+        borderRadius="md"
+        boxShadow="sm"
+        bg="white"
+      >
         <Tbody>
           <Tr>
-            <Th width={"15%"}>관광타입</Th>
-            <Td width={"85%"}>
+            <Th width="15%">관광타입</Th>
+            <Td width="85%">
               <Flex gap={3}>
                 <Select
                   value={contentType}
@@ -181,6 +193,8 @@ export function TourList() {
                     setSelectedCat2("");
                     setCategory("");
                   }}
+                  bg="white"
+                  borderColor="gray.300"
                 >
                   <option value="">전체</option>
                   <option>관광지</option>
@@ -200,6 +214,8 @@ export function TourList() {
                       setCategory(e.target.value);
                       setSelectedCat2("");
                     }}
+                    bg="white"
+                    borderColor="gray.300"
                   >
                     <option value="">대분류</option>
                     {cat1.map((item, index) => (
@@ -216,6 +232,8 @@ export function TourList() {
                       setCategory(opt || selectedCat1);
                       setSelectedCat3("");
                     }}
+                    bg="white"
+                    borderColor="gray.300"
                   >
                     <option value="">중분류</option>
                     {cat2.map((item, index) => (
@@ -231,6 +249,8 @@ export function TourList() {
                       setSelectedCat3(opt);
                       setCategory(opt || selectedCat2);
                     }}
+                    bg="white"
+                    borderColor="gray.300"
                   >
                     <option value="">소분류</option>
                     {cat3.map((item, index) => (
@@ -242,8 +262,8 @@ export function TourList() {
             </Td>
           </Tr>
           <Tr>
-            <Th width={"15%"}>지역</Th>
-            <Td width={"85%"}>
+            <Th width="15%">지역</Th>
+            <Td width="85%">
               <Flex gap={3}>
                 <Select
                   value={area}
@@ -251,6 +271,8 @@ export function TourList() {
                     setArea(e.target.value);
                     setSigungu("");
                   }}
+                  bg="white"
+                  borderColor="gray.300"
                 >
                   <option value="">전체</option>
                   {areas.map((item, index) => (
@@ -261,6 +283,8 @@ export function TourList() {
                   <Select
                     value={sigungu}
                     onChange={(e) => setSigungu(e.target.value)}
+                    bg="white"
+                    borderColor="gray.300"
                   >
                     <option value="">전체</option>
                     {sigungus.map((item, index) => (
@@ -272,19 +296,29 @@ export function TourList() {
             </Td>
           </Tr>
           <Tr>
-            <Th width={"15%"}>검색어</Th>
-            <Td width={"85%"}>
+            <Th width="15%">검색어</Th>
+            <Td width="85%">
               <Flex gap={3}>
                 <Input
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
                   onKeyPress={handlePressEnter}
                   placeholder="검색어를 입력하세요"
+                  bg="white"
+                  borderColor="gray.300"
                 />
-                <Button colorScheme="blue" onClick={handleClickSearch}>
+                <Button
+                  colorScheme="blue"
+                  onClick={handleClickSearch}
+                  _hover={{ bg: "blue.600" }}
+                >
                   검색
                 </Button>
-                <Button colorScheme="gray" onClick={handleClickReset}>
+                <Button
+                  colorScheme="gray"
+                  onClick={handleClickReset}
+                  _hover={{ bg: "gray.400" }}
+                >
                   초기화
                 </Button>
               </Flex>
@@ -292,25 +326,25 @@ export function TourList() {
           </Tr>
         </Tbody>
       </Table>
-
       <Box mb={10}>
         {tourList.length === 0 ? (
           <Center>검색 결과가 없습니다.</Center>
         ) : (
           <SimpleGrid
-            minChildWidth={"280px"}
+            minChildWidth="280px"
             spacing={5}
-            justifyItems={"center"}
+            justifyItems="center"
+            mt={5}
           >
             {tourList.map((item) => (
               <Box
                 key={item.id}
-                border={"1px solid"}
+                border="1px solid"
                 borderColor="gray.200"
                 borderRadius="md"
-                width={"300px"}
-                height={"240px"}
-                cursor={"pointer"}
+                width="300px"
+                height="240px"
+                cursor="pointer"
                 onClick={() => navigate(`/tour/${item.id}`)}
                 transition="transform 0.2s"
                 _hover={{
@@ -319,24 +353,25 @@ export function TourList() {
                 }}
                 overflow="hidden"
               >
-                <Box height={"190px"} display="flex" alignItems="center" justifyContent="center">
+                <Box height="190px" display="flex" alignItems="center" justifyContent="center">
                   {item.firstImage1 ? (
-                    <Image objectFit={"cover"} src={item.firstImage1} />
+                    <Image objectFit="cover" src={item.firstImage1} />
                   ) : (
                     <Text>이미지 없음</Text>
                   )}
                 </Box>
                 <Box
-                  borderTop={"1px solid"}
+                  borderTop="1px solid"
                   borderColor="gray.200"
-                  height={"40px"}
-                  mt={"5px"}
-                  fontWeight={"semibold"}
-                  display={"flex"}
-                  alignItems={"center"}
-                  justifyContent={"center"}
+                  height="40px"
+                  mt="5px"
+                  fontWeight="semibold"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
                   p={2}
                   textAlign="center"
+                  bg="white"
                 >
                   {item.title}
                 </Box>
@@ -350,8 +385,10 @@ export function TourList() {
         <Flex gap={2}>
           {pageInfo.prevPageNum > 0 && (
             <>
-              <Button onClick={() => handleClickPage(1)}>처음</Button>
-              <Button onClick={() => handleClickPage(pageInfo.prevPageNum)}>
+              <Button onClick={() => handleClickPage(1)} _hover={{ bg: "blue.600" }}>
+                처음
+              </Button>
+              <Button onClick={() => handleClickPage(pageInfo.prevPageNum)} _hover={{ bg: "blue.600" }}>
                 이전
               </Button>
             </>
@@ -361,16 +398,17 @@ export function TourList() {
               key={pageNum}
               onClick={() => handleClickPage(pageNum)}
               colorScheme={pageNum === pageInfo.currPageNum ? "blue" : "gray"}
+              _hover={{ bg: "blue.600" }}
             >
               {pageNum}
             </Button>
           ))}
           {pageInfo.nextPageNum < pageInfo.lastPageNum && (
             <>
-              <Button onClick={() => handleClickPage(pageInfo.nextPageNum)}>
+              <Button onClick={() => handleClickPage(pageInfo.nextPageNum)} _hover={{ bg: "blue.600" }}>
                 다음
               </Button>
-              <Button onClick={() => handleClickPage(pageInfo.lastPageNum)}>
+              <Button onClick={() => handleClickPage(pageInfo.lastPageNum)} _hover={{ bg: "blue.600" }}>
                 끝
               </Button>
             </>

@@ -111,7 +111,7 @@ export function BoardWrite() {
                   onChange={e=>
                     setFiles(e.target.files)}
                     />
-                <FormHelperText>총 용량은 20MB, 한 파일은 1MB를 초과할 수 없습니다!</FormHelperText>
+                <FormHelperText>총 용량은 20MB, 한 파일은 10MB를 초과할 수 없습니다!</FormHelperText>
               </FormControl>
             </Box>
             <Box>
