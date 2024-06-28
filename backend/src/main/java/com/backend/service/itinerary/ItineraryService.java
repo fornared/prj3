@@ -32,4 +32,8 @@ public class ItineraryService {
             mapper.InsertItineraryDetail(visit);
         }
     }
+
+    public List<Itinerary> list(Authentication auth) {
+        return mapper.selectAll(Integer.valueOf(auth.getName()));
+    }
 }

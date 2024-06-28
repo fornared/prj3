@@ -23,7 +23,9 @@ import { MemberInfo } from "./page/member/MemberInfo.jsx";
 import { MemberEdit } from "./page/member/MemberEdit.jsx";
 import axios from "axios";
 import { ItineraryDate } from "./page/itinerary/ItineraryDate.jsx";
-import { ItineraryDetail } from "./page/itinerary/ItineraryDetail.jsx"; // axios interceptor 설정
+import { ItineraryDetail } from "./page/itinerary/ItineraryDetail.jsx";
+import { ItineraryList } from "./page/itinerary/ItineraryList.jsx";
+import { ItineraryView } from "./page/itinerary/ItineraryView.jsx"; // axios interceptor 설정
 
 // axios interceptor 설정
 axios.interceptors.request.use((config) => {
@@ -63,8 +65,10 @@ const router = createBrowserRouter([
       { path: "schedule", element: <Schedule /> },
       { path: "member/:id", element: <MemberInfo /> },
       { path: "member/edit/:id", element: <MemberEdit /> },
-      { path: "itinerary", element: <ItineraryDate /> },
+      { path: "itinerary/new", element: <ItineraryDate /> },
       { path: "itinerary/detail", element: <ItineraryDetail /> },
+      { path: "itinerary", element: <ItineraryList /> },
+      { path: "itinerary/:id", element: <ItineraryView /> },
     ],
   },
 ]);

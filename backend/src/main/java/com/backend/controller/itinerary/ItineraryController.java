@@ -7,10 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,6 +32,18 @@ public class ItineraryController {
         System.out.println(visitList);
 
         service.addDetail(visitList);
+        return null;
+    }
+
+    @GetMapping("list")
+    @PreAuthorize("isAuthenticated()")
+    public List<Itinerary> list(Authentication auth) {
+        return service.list(auth);
+    }
+
+    @GetMapping("{id}")
+    @PreAuthorize("isAuthenticated()")
+    public Itinerary get(@PathVariable Integer id, Authentication auth) {
         return null;
     }
 }
