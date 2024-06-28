@@ -102,7 +102,7 @@ export function ItineraryDetail() {
       // }
     } else {
       alert("여행 날짜를 설정해주세요");
-      navigate("/itinerary/date");
+      navigate("/itinerary");
     }
   }, []);
 

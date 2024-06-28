@@ -1,19 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import {
   Box,
+  Button,
   Center,
   Flex,
   Hide,
-  Show,
-  Spacer,
   Input,
   InputGroup,
   InputRightElement,
-  Button,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
+  Show,
+  Spacer,
 } from "@chakra-ui/react";
 import React, { useContext, useState } from "react";
 import { LoginContext } from "./LoginProvider.jsx";
@@ -21,6 +21,7 @@ import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
+  faCog,
   faHouse,
   faMagnifyingGlass,
   faPencil,
@@ -28,7 +29,6 @@ import {
   faRightToBracket,
   faUserPlus,
   faUsers,
-  faCog,
 } from "@fortawesome/free-solid-svg-icons";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
@@ -151,7 +151,7 @@ export function Navbar() {
                   onClick={() => navigate(`/member/${account.id}`)}
                   cursor={"pointer"}
                   _hover={{
-                    bgColor:"gray.200",
+                    bgColor: "gray.200",
                   }}
                 >
                   <FontAwesomeIcon icon={faUser} />
@@ -257,6 +257,19 @@ export function Navbar() {
           color={"white"}
         >
           추천코스
+        </Center>
+
+        <Center
+          ml={4}
+          cursor={"pointer"}
+          onClick={() => navigate("/itinerary")}
+          _hover={{ bgColor: "rgba(255, 255, 255, 0.5)" }}
+          p={6}
+          fontSize={20}
+          fontWeight={600}
+          color={"white"}
+        >
+          일정관리
         </Center>
       </Flex>
     </Box>
