@@ -63,7 +63,7 @@ const router = createBrowserRouter([
       { path: "schedule", element: <Schedule /> },
       { path: "member/:id", element: <MemberInfo /> },
       { path: "member/edit/:id", element: <MemberEdit /> },
-      { path: "itinerary/date", element: <ItineraryDate /> },
+      { path: "itinerary", element: <ItineraryDate /> },
       { path: "itinerary/detail", element: <ItineraryDetail /> },
     ],
   },
