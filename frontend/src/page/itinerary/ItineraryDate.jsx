@@ -1,4 +1,12 @@
-import { Box, Button, Center, Heading, Input, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  Input,
+  Text,
+  VStack,
+} from "@chakra-ui/react";
 import Calendar from "react-calendar";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +25,9 @@ export function ItineraryDate() {
   const inputRef = useRef(null);
 
   useEffect(() => {
-    inputRef.current.focus();
+    if (endDate) {
+      inputRef.current.focus();
+    }
   }, [endDate]);
 
   const handleDateChange = (date) => {
@@ -41,50 +51,58 @@ export function ItineraryDate() {
 
   return (
     <Box
-      maxW="1200px"
+      maxW="600px"
       mx="auto"
       mt={8}
-      p={4}
+      p={8}
       borderWidth={1}
-      borderRadius="md"
-      boxShadow="md"
+      borderRadius="lg"
+      boxShadow="lg"
     >
-      <Heading>새 일정</Heading>
-      <Center fontWeight={"bold"}>(여행 날짜를 설정하세요)</Center>
-      <Box mt={10}>
-        <Center mb={10}>
+      <VStack spacing={8}>
+        <Heading as="h1" size="xl" textAlign="center">
+          새 일정
+        </Heading>
+        <Text fontSize="lg" fontWeight="bold" textAlign="center">
+          여행 날짜를 설정하세요
+        </Text>
+        <Center>
           <Calendar
             onChange={handleDateChange}
             value={startDate && endDate ? [startDate, endDate] : startDate}
-            selectRange={true}
+            selectRange
           />
         </Center>
-        <Box mt={5} align="center">
-          <Text mb={5}>시작일: {start}</Text>
-          <Text mb={10}>종료일: {end} </Text>
-          <Box display={endDate !== null ? "block" : "none"}>
-            <Text mb={5}>여행 제목을 입력하세요</Text>
+        {startDate && (
+          <Box textAlign="center">
+            <Text fontSize="md">시작일: {start}</Text>
+            <Text fontSize="md">종료일: {end}</Text>
+          </Box>
+        )}
+        {endDate && (
+          <Box textAlign="center">
+            <Text fontSize="lg" mb={4}>
+              여행 제목을 입력하세요
+            </Text>
             <Input
+              placeholder="여행 제목"
               onChange={(e) => setName(e.target.value)}
               onKeyPress={handlePressEnter}
               ref={inputRef}
-              htmlSize={50}
-              width="auto"
+              size="lg"
+              maxW="400px"
             />
           </Box>
-        </Box>
-      </Box>
-
-      <Center>
+        )}
         <Button
           isDisabled={endDate === null || name === ""}
-          mt={10}
           colorScheme="blue"
+          size="lg"
           onClick={handleClickNext}
         >
           다음
         </Button>
-      </Center>
+      </VStack>
     </Box>
   );
 }

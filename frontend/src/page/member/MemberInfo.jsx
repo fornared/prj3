@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  Divider,
   FormControl,
   FormLabel,
   Heading,
@@ -13,13 +14,12 @@ import {
   ModalHeader,
   ModalOverlay,
   Spinner,
+  useColorModeValue,
   useDisclosure,
   useToast,
   VStack,
-  Text,
-  Divider,
 } from "@chakra-ui/react";
-import { useEffect, useState, useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { LoginContext } from "../../component/LoginProvider.jsx";
@@ -103,13 +103,18 @@ export function MemberInfo() {
   }
 
   return (
-    <Box py={8} px={4} minH="100vh" bg="gray.50">
+    <Box
+      py={8}
+      px={4}
+      minH="100vh"
+      bg={useColorModeValue("gray.50", "gray.800")}
+    >
       <Center>
         <Box
           w={{ base: "100%", md: 500 }}
           p={8}
-          bg="white"
-          boxShadow="xl"
+          bg={useColorModeValue("white", "gray.700")}
+          boxShadow="2xl"
           borderRadius="lg"
         >
           <Heading mb={6} textAlign="center" fontSize="2xl" fontWeight="bold">
@@ -119,15 +124,28 @@ export function MemberInfo() {
           <VStack spacing={6} align="stretch">
             <FormControl>
               <FormLabel fontWeight="bold">이메일</FormLabel>
-              <Input isReadOnly value={member.email} bg="gray.100" />
+              <Input
+                isReadOnly
+                value={member.email}
+                bg={useColorModeValue("gray.100", "gray.600")}
+              />
             </FormControl>
             <FormControl>
               <FormLabel fontWeight="bold">별명</FormLabel>
-              <Input isReadOnly value={member.nickName} bg="gray.100" />
+              <Input
+                isReadOnly
+                value={member.nickName}
+                bg={useColorModeValue("gray.100", "gray.600")}
+              />
             </FormControl>
             <FormControl>
               <FormLabel fontWeight="bold">가입일시</FormLabel>
-              <Input isReadOnly value={member.inserted} type="datetime-local" bg="gray.100" />
+              <Input
+                isReadOnly
+                value={member.inserted}
+                type="datetime-local"
+                bg={useColorModeValue("gray.100", "gray.600")}
+              />
             </FormControl>
             {account.hasAccess(member.id) && (
               <Center>

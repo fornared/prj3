@@ -1,14 +1,14 @@
 import { useState } from "react";
 import {
+  Box,
   Button,
   Flex,
+  Heading,
   Radio,
   RadioGroup,
   Stack,
   Textarea,
   useToast,
-  Box,
-  Heading,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -42,14 +42,19 @@ export function ReviewWrite({ contentId, isSending, setIsSending }) {
 
   return (
     <Box p={6} bg="white" borderRadius="md" boxShadow="md">
-      <Heading as="h3" size="lg" mb={4} textAlign="left" color="teal.500">
+      <Heading as="h3" size="lg" mb={4} textAlign="center" color="teal.500">
         리뷰 작성란
       </Heading>
       <Flex direction="column" mb={4}>
         <RadioGroup defaultValue="5" onChange={setRating}>
-          <Stack spacing={4} direction="row" justify="left">
+          <Stack spacing={4} direction="row" justify="center">
             {[1, 2, 3, 4, 5].map((index) => (
-              <Radio key={index} value={index.toString()} size="lg" colorScheme="teal">
+              <Radio
+                key={index}
+                value={index.toString()}
+                size="lg"
+                colorScheme="teal"
+              >
                 {index}
               </Radio>
             ))}
