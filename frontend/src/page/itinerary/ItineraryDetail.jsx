@@ -89,7 +89,11 @@ export function ItineraryDetail() {
   const [day, setDay] = useState(1);
   const dayPlan = [];
 
-  const itinerary = { name: location.state?.name || "", startDate, endDate };
+  const itinerary = {
+    name: location.state?.name || "",
+    startDate: moment(startDate).format("YYYY-MM-DD"),
+    endDate: moment(endDate).format("YYYY-MM-DD"),
+  };
 
   useEffect(() => {
     if (days < 1) {

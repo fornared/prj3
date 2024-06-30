@@ -55,7 +55,7 @@ export function ItineraryList() {
             {itinerary.map((item, index) => (
               <Tr key={index}>
                 <Td>
-                  {item.startDate} - {item.endDate}
+                  {item.startDate} ~ {item.endDate}
                 </Td>
                 <Td>
                   <Text
