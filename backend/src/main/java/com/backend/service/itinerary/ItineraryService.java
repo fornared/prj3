@@ -8,7 +8,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class ItineraryService {
     public Integer add(Itinerary itinerary, Authentication auth) {
         itinerary.setMemberId(Integer.valueOf(auth.getName()));
 
-        mapper.InsertItinerary(itinerary);
+        mapper.insertItinerary(itinerary);
         itineraryId = itinerary.getId();
 
         return null;
@@ -28,12 +30,35 @@ public class ItineraryService {
 
     public void addDetail(List<ItineraryDetail> visitList) {
         for (ItineraryDetail visit : visitList) {
-            visit.setItineraryId(itineraryId);
-            mapper.InsertItineraryDetail(visit);
+            if (visit.getItineraryId() == null) {
+                visit.setItineraryId(itineraryId);
+            }
+            mapper.insertItineraryDetail(visit);
         }
     }
 
     public List<Itinerary> list(Authentication auth) {
         return mapper.selectAll(Integer.valueOf(auth.getName()));
+    }
+
+    public Map<String, Object> get(Integer id) {
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("itinerary", mapper.selectById(id));
+        result.put("detail", mapper.selectDetailById(id));
+        System.out.println(mapper.selectDetailById(id));
+
+        return result;
+    }
+
+    public void modifyDetail(List<ItineraryDetail> visitList) {
+        for (ItineraryDetail visit : visitList) {
+            mapper.updateItineraryDetail(visit);
+        }
+    }
+
+    public void remove(Integer id) {
+        mapper.deleteDetailByItineraryId(id);
+        mapper.deleteById(id);
     }
 }

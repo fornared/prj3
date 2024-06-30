@@ -12,5 +12,6 @@ public class Itinerary {
     private String name;
     private LocalDate startDate;
     private LocalDate endDate;
+    private Integer days;
     private LocalDateTime inserted;
 }

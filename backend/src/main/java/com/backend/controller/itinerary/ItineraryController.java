@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/itinerary")
@@ -20,8 +21,6 @@ public class ItineraryController {
     @PostMapping("add")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity add(@RequestBody Itinerary Itinerary, Authentication auth) {
-        System.out.println(Itinerary);
-
         service.add(Itinerary, auth);
         return null;
     }
@@ -29,8 +28,6 @@ public class ItineraryController {
     @PostMapping("add/detail")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity addDetail(@RequestBody List<ItineraryDetail> visitList) {
-        System.out.println(visitList);
-
         service.addDetail(visitList);
         return null;
     }
@@ -43,7 +40,21 @@ public class ItineraryController {
 
     @GetMapping("{id}")
     @PreAuthorize("isAuthenticated()")
-    public Itinerary get(@PathVariable Integer id, Authentication auth) {
+    public Map<String, Object> get(@PathVariable Integer id) {
+        return service.get(id);
+    }
+
+    @PutMapping("{id}/modify/detail")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity modifyDetail(@RequestBody List<ItineraryDetail> visitList) {
+        service.modifyDetail(visitList);
+        return null;
+    }
+
+    @DeleteMapping("{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity delete(@PathVariable Integer id) {
+        service.remove(id);
         return null;
     }
 }
