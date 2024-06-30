@@ -673,26 +673,26 @@ export function ItineraryDetail() {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader></ModalHeader>
+          <ModalHeader>상세보기</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Box
-              mt={4}
-              border="1px solid black"
-              mx={{
-                base: 0,
-                lg: 10,
-              }}
-            >
-              <Heading>{info.title}</Heading>
-              <Box p={4} mt={"10px"} border="1px solid black">
-                (사진..)
-                <Image src={info.firstImage1} />
+            <Box mt={4} mx={{ base: 0, lg: 15 }}>
+              <Heading mb={4} size="lg">
+                {info.title}
+              </Heading>
+
+              <Box p={4} mt={4} boxShadow="md" borderRadius="md">
+                <Text mb={2} fontSize="lg" fontWeight="bold">
+                  사진
+                </Text>
+                <Image src={info.firstImage1} alt="이미지" borderRadius="md" />
               </Box>
 
-              <Box p={4} mt={"10px"} border="1px solid black">
-                (정보..)
-                <Table>
+              <Box p={4} mt={4} boxShadow="md" borderRadius="md">
+                <Text mb={2} fontSize="lg" fontWeight="bold">
+                  정보
+                </Text>
+                <Table variant="simple">
                   <Tbody>
                     <Tr>
                       <Th>우편번호</Th>
@@ -718,15 +718,14 @@ export function ItineraryDetail() {
                         <Map
                           center={{ lat: info.mapy, lng: info.mapx }}
                           style={{
-                            width: "400px",
+                            width: "100%",
                             height: "350px",
-                            border: "1px solid black",
                             borderRadius: "10px",
                           }}
                           level={6}
                         >
                           <MapMarker
-                            style={{ border: "tranparent" }}
+                            style={{ border: "transparent" }}
                             position={{ lat: info.mapy, lng: info.mapx }}
                           ></MapMarker>
                         </Map>
@@ -735,10 +734,13 @@ export function ItineraryDetail() {
                   </Tbody>
                 </Table>
               </Box>
-              {introInfo !== null && (
-                <Box p={4} mt={"10px"} border="1px solid black">
-                  (소개정보..)
-                  <Table>
+
+              {introInfo && (
+                <Box p={4} mt={4} boxShadow="md" borderRadius="md">
+                  <Text mb={2} fontSize="lg" fontWeight="bold">
+                    소개정보
+                  </Text>
+                  <Table variant="simple">
                     <Tbody>
                       {introInfo.map((item) => (
                         <Tr key={item.number}>
@@ -756,10 +758,13 @@ export function ItineraryDetail() {
                   </Table>
                 </Box>
               )}
-              {info2 !== null && (
-                <Box p={4} mt={"10px"} border="1px solid black">
-                  (상세정보..)
-                  <Table>
+
+              {info2 && (
+                <Box p={4} mt={4} boxShadow="md" borderRadius="md">
+                  <Text mb={2} fontSize="lg" fontWeight="bold">
+                    상세정보
+                  </Text>
+                  <Table variant="simple">
                     <Tbody>
                       {info2.map((item) => (
                         <Tr key={item.number}>
@@ -770,7 +775,13 @@ export function ItineraryDetail() {
                               item.infoText
                                 .split(",")
                                 .map((imgUrl, index) => (
-                                  <Image key={index} src={imgUrl.trim()} />
+                                  <Image
+                                    key={index}
+                                    src={imgUrl.trim()}
+                                    alt="객실사진"
+                                    borderRadius="md"
+                                    mt={2}
+                                  />
                                 ))
                             ) : (
                               <Text
@@ -796,65 +807,41 @@ export function ItineraryDetail() {
           </ModalFooter>
         </ModalContent>
       </Modal>
-      {/*메모 모달*/}
+      {/* 메모 모달 */}
       <Modal isOpen={isOpenVisit} onClose={onCloseVisit} size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>장소추가</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Box
-              mt={4}
-              mx={{
-                base: 0,
-                lg: 10,
-              }}
-            >
-              <Box p={4} borderWidth={1} borderRadius="md" boxShadow="md">
+            <Box mt={4} mx={{ base: 0, lg: 10 }}>
+              <Box p={4} boxShadow="md" borderRadius="md" mb={4}>
                 <Input
                   onChange={(e) => setTime(e.target.value)}
                   value={time}
                   size="md"
                   type="time"
+                  placeholder="시간을 입력하세요"
                 />
               </Box>
-              <Box
-                mt={8}
-                p={4}
-                borderWidth={1}
-                borderRadius="md"
-                boxShadow="md"
-              >
+              <Box p={4} boxShadow="md" borderRadius="md">
                 <Textarea
                   onChange={(e) => setDescription(e.target.value)}
                   value={description}
                   h={"150px"}
-                  placeholder="메모"
+                  placeholder="메모를 입력하세요"
                 ></Textarea>
               </Box>
             </Box>
           </ModalBody>
           <ModalFooter>
-            {isEdit ? (
-              <Button
-                onClick={() => {
-                  handleEditContent();
-                }}
-                colorScheme="blue"
-              >
-                수정
-              </Button>
-            ) : (
-              <Button
-                onClick={() => {
-                  handleAddContent();
-                }}
-                colorScheme="blue"
-              >
-                추가
-              </Button>
-            )}
-
+            <Button
+              onClick={isEdit ? handleEditContent : handleAddContent}
+              colorScheme="blue"
+              mr={3}
+            >
+              {isEdit ? "수정" : "추가"}
+            </Button>
             <Button onClick={onCloseVisit}>닫기</Button>
           </ModalFooter>
         </ModalContent>
