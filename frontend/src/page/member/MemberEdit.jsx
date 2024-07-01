@@ -149,19 +149,20 @@ export function MemberEdit() {
           </Heading>
           <Box mb={6}>
             <FormControl>
-              <FormLabel>이메일</FormLabel>
-              <Input readOnly value={member.email} />
+              <FormLabel fontWeight="bold">이메일</FormLabel>
+              <Input readOnly value={member.email} bg="gray.100" />
             </FormControl>
           </Box>
           <Box mb={6}>
             <FormControl>
-              <FormLabel>암호</FormLabel>
+              <FormLabel fontWeight="bold">암호</FormLabel>
               <Input
                 onChange={(e) =>
                   setMember({ ...member, password: e.target.value })
                 }
                 placeholder={"암호를 변경하려면 입력하세요"}
                 type="password"
+                bg="gray.100"
               />
               <FormHelperText>
                 입력하지 않으면 기존 암호를 변경하지 않습니다.
@@ -170,10 +171,11 @@ export function MemberEdit() {
           </Box>
           <Box mb={6}>
             <FormControl>
-              <FormLabel>암호 확인</FormLabel>
+              <FormLabel fontWeight="bold">암호 확인</FormLabel>
               <Input
                 onChange={(e) => setPasswordCheck(e.target.value)}
                 type="password"
+                bg="gray.100"
               />
               {member.password !== passwordCheck && (
                 <FormHelperText color="red.500">
@@ -184,7 +186,7 @@ export function MemberEdit() {
           </Box>
           <Box mb={6}>
             <FormControl>
-              <FormLabel>별명</FormLabel>
+              <FormLabel fontWeight="bold">별명</FormLabel>
               <InputGroup>
                 <Input
                   onChange={(e) => {
@@ -193,17 +195,40 @@ export function MemberEdit() {
                     setIsCheckedNickName(newNickName === oldNickName);
                   }}
                   value={member.nickName}
+                  bg="gray.100"
                 />
                 <InputRightElement w={"75px"} mr={1}>
                   <Button
                     isDisabled={isDisableNickNameCheckButton}
                     size={"sm"}
                     onClick={handleCheckNickName}
+                    colorScheme="blue"
                   >
                     중복확인
                   </Button>
                 </InputRightElement>
               </InputGroup>
+            </FormControl>
+          </Box>
+          <Box mb={6}>
+            <FormControl>
+              <FormLabel fontWeight="bold">생년월일</FormLabel>
+              <Input
+                type="date"
+                value={member.birth}
+                onChange={(e) => setMember({ ...member, birth: e.target.value })}
+                bg="gray.100"
+              />
+            </FormControl>
+          </Box>
+          <Box mb={6}>
+            <FormControl>
+              <FormLabel fontWeight="bold">전화번호</FormLabel>
+              <Input
+                value={member.phone}
+                onChange={(e) => setMember({ ...member, phone: e.target.value })}
+                bg="gray.100"
+              />
             </FormControl>
           </Box>
           <Center>
@@ -229,6 +254,7 @@ export function MemberEdit() {
               <Input
                 type="password"
                 onChange={(e) => setOldPassword(e.target.value)}
+                bg="gray.100"
               />
             </FormControl>
           </ModalBody>
@@ -245,4 +271,3 @@ export function MemberEdit() {
     </Box>
   );
 }
-//

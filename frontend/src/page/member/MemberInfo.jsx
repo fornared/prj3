@@ -16,8 +16,9 @@ import {
   useDisclosure,
   useToast,
   VStack,
-  Text,
   Divider,
+  Avatar,
+  HStack,
 } from "@chakra-ui/react";
 import { useEffect, useState, useContext } from "react";
 import axios from "axios";
@@ -61,7 +62,7 @@ export function MemberInfo() {
       });
   }, [id, navigate, toast]);
 
-  const handleClickReMove = () => {
+  const handleClickRemove = () => {
     setIsLoading(true);
 
     axios
@@ -106,27 +107,42 @@ export function MemberInfo() {
     <Box py={8} px={4} minH="100vh" bg="gray.50">
       <Center>
         <Box
-          w={{ base: "100%", md: 500 }}
+          w={{ base: "100%", md: 600 }}
           p={8}
           bg="white"
           boxShadow="xl"
           borderRadius="lg"
         >
-          <Heading mb={6} textAlign="center" fontSize="2xl" fontWeight="bold">
+          <Center>
+            <Avatar size="xl" src={member.profileImage} mb={6} />
+          </Center>
+          <Heading mb={6} textAlign="center" fontSize="2xl" fontWeight="bold" color="teal.500">
             마이페이지
           </Heading>
           <Divider mb={6} />
-          <VStack spacing={6} align="stretch">
+          <VStack spacing={4} align="stretch">
             <FormControl>
-              <FormLabel fontWeight="bold">이메일</FormLabel>
+              <FormLabel fontWeight="bold" color="gray.600">이메일</FormLabel>
               <Input isReadOnly value={member.email} bg="gray.100" />
             </FormControl>
             <FormControl>
-              <FormLabel fontWeight="bold">별명</FormLabel>
+              <FormLabel fontWeight="bold" color="gray.600">이름</FormLabel>
+              <Input isReadOnly value={member.name} bg="gray.100" />
+            </FormControl>
+            <FormControl>
+              <FormLabel fontWeight="bold" color="gray.600">별명</FormLabel>
               <Input isReadOnly value={member.nickName} bg="gray.100" />
             </FormControl>
             <FormControl>
-              <FormLabel fontWeight="bold">가입일시</FormLabel>
+              <FormLabel fontWeight="bold" color="gray.600">생년월일</FormLabel>
+              <Input isReadOnly value={new Date(member.birth).toLocaleDateString()} bg="gray.100" />
+            </FormControl>
+            <FormControl>
+              <FormLabel fontWeight="bold" color="gray.600">전화번호</FormLabel>
+              <Input isReadOnly value={member.phone} bg="gray.100" />
+            </FormControl>
+            <FormControl>
+              <FormLabel fontWeight="bold" color="gray.600">가입일시</FormLabel>
               <Input isReadOnly value={member.inserted} type="datetime-local" bg="gray.100" />
             </FormControl>
             {account.hasAccess(member.id) && (
@@ -167,7 +183,7 @@ export function MemberInfo() {
             <Button
               isLoading={isLoading}
               colorScheme="red"
-              onClick={handleClickReMove}
+              onClick={handleClickRemove}
             >
               확인
             </Button>
