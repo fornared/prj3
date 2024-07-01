@@ -66,6 +66,8 @@ export function ReviewWrite({ contentId, isSending, setIsSending }) {
           borderColor="teal.500"
           _focus={{ borderColor: "teal.600" }}
           size="lg"
+          minHeight="170px" //텍스트 영역의 최소 높이를 설정
+          resize="vertical" //사용자가 세로 방향으로만 크기를 조절가능
         />
         <Button
           onClick={handleClickReviewSubmit}

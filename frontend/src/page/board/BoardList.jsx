@@ -45,7 +45,7 @@ export function BoardList() {
   const headingColor = useColorModeValue("teal.700", "teal.300");
   const searchBgColor = useColorModeValue("gray.50", "gray.700");
   const tableHeaderBg = useColorModeValue("gray.100", "gray.700");
-  const buttonBgColor = useColorModeValue("teal.50", "teal.700");
+  // const buttonBgColor = useColorModeValue("teal.50", "teal.700");
 
   return (
     <Box p={8} bg={bgColor} minH="100vh">
@@ -109,9 +109,9 @@ export function BoardList() {
               key={pageNumber}
               onClick={() => fetchBoardList(pageNumber)}
               m={1}
-              colorScheme="teal"
+              colorScheme="gray"
               variant="outline"
-              bg={buttonBgColor}
+              // bg={buttonBgColor}
             >
               {pageNumber}
             </Button>

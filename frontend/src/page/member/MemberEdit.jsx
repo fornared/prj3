@@ -144,7 +144,7 @@ export function MemberEdit() {
           boxShadow="lg"
           borderRadius="md"
         >
-          <Heading mb={6} textAlign="center" fontSize="2xl" fontWeight="bold">
+          <Heading mb={6} textAlign="center" fontSize="2xl" fontWeight="bold" color={"teal"}>
             회원 정보 수정
           </Heading>
           <Box mb={6}>

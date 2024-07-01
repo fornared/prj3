@@ -68,7 +68,7 @@ export function BoardWrite() {
   return (
     <Box py={8} px={4} minH="100vh" bg="gray.50">
       <Container maxW="container.md" bg="white" p={6} borderRadius="md" boxShadow="md">
-        <Heading mb={6} textAlign="center" fontSize="2xl" fontWeight="bold">
+        <Heading mb={6} textAlign="center" fontSize="2xl" fontWeight="bold" color={"teal"}>
           글쓰기
         </Heading>
         <VStack spacing={6} align="stretch">
@@ -83,7 +83,7 @@ export function BoardWrite() {
           </FormControl>
           <FormControl>
             <FormLabel fontWeight="bold">작성자</FormLabel>
-            <Input readOnly value={account.nickName} />
+            <Input readOnly value={account.nickName}/>
           </FormControl>
           <FormControl>
             <FormLabel fontWeight="bold">내용</FormLabel>
@@ -101,6 +101,7 @@ export function BoardWrite() {
               multiple={true}
               type="file"
               accept="image/*"
+              cursor={"pointer"}
               onChange={(e) => setFiles(e.target.files)}
             />
             <FormHelperText>총 용량은 20MB, 한 파일은 10MB를 초과할 수 없습니다!</FormHelperText>
