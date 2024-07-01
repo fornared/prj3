@@ -18,6 +18,7 @@ import {
   ModalOverlay,
   Select,
   SimpleGrid,
+  Spinner,
   Stack,
   Table,
   Tbody,
@@ -69,6 +70,7 @@ export function ItineraryView() {
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [isAdd, setIsAdd] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const {
     isOpen: isOpenList,
@@ -97,8 +99,18 @@ export function ItineraryView() {
         setVisitList(res.data.detail);
         setVisitIndex(res.data.detail.length);
       })
-      .catch()
+      .catch((err) => {
+        if (err.response.status === 401) {
+          toast({
+            status: "warning",
+            description: "로그인 후 이용해주세요.",
+            position: "top",
+          });
+          navigate("/login");
+        }
+      })
       .finally(() => {});
+    setIsLoading(false);
   }, []);
 
   // 수정 및 추가
@@ -419,6 +431,10 @@ export function ItineraryView() {
       });
       navigate(`/itinerary`);
     });
+  }
+
+  if (isLoading) {
+    return <Spinner />;
   }
 
   return (

@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Center,
+  Spinner,
   Table,
   Tbody,
   Td,
@@ -9,6 +10,7 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -17,18 +19,37 @@ import moment from "moment";
 
 export function ItineraryList() {
   const [itinerary, setItinerary] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     axios
-      .get("/api/itinerary/list")
+      .get("/api/itinerary/list", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      })
       .then((res) => {
         setItinerary(res.data);
       })
-      .catch()
+      .catch((err) => {
+        if (err.response.status === 401) {
+          toast({
+            status: "warning",
+            description: "로그인 후 이용해주세요.",
+            position: "top",
+          });
+          navigate("/login");
+        }
+      })
       .finally();
+    setIsLoading(false);
   }, []);
 
-  const navigate = useNavigate();
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <Box>

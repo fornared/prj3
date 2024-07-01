@@ -96,7 +96,8 @@ export function ItineraryDetail() {
   };
 
   useEffect(() => {
-    if (days < 1) {
+    console.log(days);
+    if (days < 1 || isNaN(days)) {
       alert("여행 날짜를 설정해주세요");
       navigate("/itinerary/new");
     }
