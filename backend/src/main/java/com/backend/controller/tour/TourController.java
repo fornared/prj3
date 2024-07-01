@@ -196,4 +196,44 @@ public class TourController {
     public String getLastMD() {
         return service.getLastMD();
     }
+
+    @DeleteMapping("remove/{contentId}")
+    public ResponseEntity removeContent(@PathVariable Integer contentId) {
+        service.removeContent(contentId);
+        return null;
+    }
+
+    @PutMapping("modify/content")
+    public ResponseEntity modifyContent(@RequestBody List<Content> contents) {
+        service.modifyContent(contents);
+        return null;
+    }
+
+    @PutMapping("modify/info1")
+    public ResponseEntity modifyInfo1(@RequestBody List<Content> contents) {
+        service.modifyInfo1(contents);
+
+        return null;
+    }
+
+    @DeleteMapping("remove/info2")
+    public ResponseEntity removeInfo2(@RequestBody Integer contentId) {
+        service.removeInfo2(contentId);
+
+        return null;
+    }
+
+    @DeleteMapping("remove/lodgingInfo2")
+    public ResponseEntity removeLodgingInfo2(@RequestBody Integer contentId) {
+        service.removeLodgingInfo2(contentId);
+
+        return null;
+    }
+
+    @DeleteMapping("remove/image")
+    public ResponseEntity removeImage(@RequestBody Integer contentId) {
+        service.removeImage(contentId);
+
+        return null;
+    }
 }

@@ -87,7 +87,11 @@ public class TourService {
     public void addContent(List<Content> contents) {
         for (Content content : contents) {
             int dbCount = mapper.countContentByExContentId(content.getContentId());
-            if (dbCount == 0) {
+            if (dbCount == 0
+                    && mapper.selectTypeId().contains(content.getTypeId())
+                    && mapper.selectAreaCode().contains(content.getAreaCode())
+                    && mapper.selectCat3().contains(content.getCat3())
+                    && mapper.selectSigungu().contains(content.getSigunguCode())) {
                 mapper.insertContent(content);
             }
         }
@@ -123,6 +127,7 @@ public class TourService {
             for (Content content : contentList) {
                 if (mapper.countContentByContentId(content.getId()) == 1 && mapper.selectInfo1WithDetail(content.getId()) == null) {
                     mapper.insertInfo1Detail(content);
+                    System.out.println(STR."\{content.getId()}");
                 } else {
                     System.out.println(STR."\{content.getId()} - 입력실패");
                 }
@@ -135,6 +140,7 @@ public class TourService {
             for (Image image : images) {
                 if (mapper.countContentByContentId(image.getContentId()) == 1 && mapper.selectImageIdByOUrl(image) == null) {
                     mapper.insertImage(image);
+                    System.out.println(STR."\{image.getContentId()}");
                 } else {
                     System.out.println(STR."\{image.getContentId()} - 입력실패");
                 }
@@ -253,6 +259,7 @@ public class TourService {
 
                 if (dbCountContent == 1 && dbCountInfo2 == 0) {
                     mapper.insertInfo2(info2);
+                    System.out.println(STR."\{info2.getContentId()}");
                 } else {
                     System.out.println(STR."\{info2.getContentId()} - 입력실패");
                 }
@@ -485,6 +492,7 @@ public class TourService {
                                 introInfo.setHeritage(0);
                             }
                             mapper.insertSpotInfo(introInfo);
+                            System.out.println(cid);
                         } else {
                             System.out.println(STR."\{cid} - 이미 입력된 정보");
                         }
@@ -492,6 +500,7 @@ public class TourService {
                     if (introInfo.getTypeId() == 14) {
                         if (mapper.selectCultureInfoIdByContentIdOnContent(cid) == null) {
                             mapper.insertCultureInfo(introInfo);
+                            System.out.println(cid);
                         } else {
                             System.out.println(STR."\{cid} - 이미 입력된 정보");
                         }
@@ -499,16 +508,15 @@ public class TourService {
                     if (introInfo.getTypeId() == 15) {
                         if (mapper.selectFestivalInfoIdByContentIdOnContent(cid) == null) {
                             mapper.insertFestivalInfo(introInfo);
+                            System.out.println(cid);
                         } else {
                             System.out.println(STR."\{cid} - 이미 입력된 정보");
                         }
                     }
-                    if (introInfo.getTypeId() == 25) {
-                        //
-                    }
                     if (introInfo.getTypeId() == 28) {
                         if (mapper.selectLeportsInfoIdByContentIdOnContent(cid) == null) {
                             mapper.insertLeportsInfo(introInfo);
+                            System.out.println(cid);
                         } else {
                             System.out.println(STR."\{cid} - 이미 입력된 정보");
                         }
@@ -516,6 +524,7 @@ public class TourService {
                     if (introInfo.getTypeId() == 32) {
                         if (mapper.selectLodgingInfoIdByContentIdOnContent(cid) == null) {
                             mapper.insertLodgingInfo(introInfo);
+                            System.out.println(cid);
                         } else {
                             System.out.println(STR."\{cid} - 이미 입력된 정보");
                         }
@@ -523,6 +532,7 @@ public class TourService {
                     if (introInfo.getTypeId() == 38) {
                         if (mapper.selectShoppingInfoIdByContentIdOnContent(cid) == null) {
                             mapper.insertShoppingInfo(introInfo);
+                            System.out.println(cid);
                         } else {
                             System.out.println(STR."\{cid} - 이미 입력된 정보");
                         }
@@ -530,6 +540,7 @@ public class TourService {
                     if (introInfo.getTypeId() == 39) {
                         if (mapper.selectFoodInfoIdByContentIdOnContent(cid) == null) {
                             mapper.insertFoodInfo(introInfo);
+                            System.out.println(cid);
                         } else {
                             System.out.println(STR."\{cid} - 이미 입력된 정보");
                         }
@@ -1180,5 +1191,75 @@ public class TourService {
 
     public Integer getId(Integer contentId) {
         return mapper.selectIdByExContentId(contentId);
+    }
+
+    public void removeContent(Integer contentId) {
+        Integer id = mapper.selectIdByExContentId(contentId);
+
+        // 타입 id 조회
+        Integer contentType = mapper.selectTypeIdByContentId(id);
+        // info2 있으면 삭제, info1 있으면 삭제, 타입별 info 삭제
+        switch (contentType) {
+            case 12 -> mapper.deleteSpotInfo(id);
+            case 14 -> mapper.deleteCultureInfo(id);
+            case 15 -> mapper.deleteFestivalInfo(id);
+            case 28 -> mapper.deleteLeportsInfo(id);
+            case 32 -> {
+                removeLodgingInfo2(id);
+                mapper.deleteLodgingInfo(id);
+            }
+            case 38 -> mapper.deleteShoppingInfo(id);
+            case 39 -> mapper.deleteFoodInfo(id);
+            default -> System.out.println(STR."\{id} - 소개정보 없음");
+        }
+        if (!mapper.selectInfo2ByContentId(id).isEmpty()) {
+            removeInfo2(id);
+        }
+        if (!mapper.selectInfo1ByContentId(id).isEmpty()) {
+            mapper.deleteInfo1(id);
+        }
+        if (!mapper.selectImageByContentId(id).isEmpty()) {
+            removeImage(id);
+        }
+        if (!mapper.selectContentById(id).isEmpty()) {
+            mapper.deleteContent(id);
+        }
+    }
+
+    public void modifyContent(List<Content> contents) {
+        for (Content content : contents) {
+            int dbCount = mapper.countContentByExContentId(content.getContentId());
+            if (dbCount == 1) {
+                mapper.updateContent(content);
+            }
+        }
+    }
+
+    public void modifyInfo1(List<Content> contents) {
+        for (Content content : contents) {
+            String mapxPattern = "^[0-9]{1,3}\\.[0-9]{1,10}$";
+            String mapyPattern = "^[0-9]{1,2}\\.[0-9]{1,10}$";
+
+            if (!mapper.selectInfo1ByContentId(content.getId()).isEmpty()
+                    && content.getMapx().toString().matches(mapxPattern)
+                    && content.getMapy().toString().matches(mapyPattern)) {
+                mapper.updateInfo1(content);
+            } else {
+                System.out.println(STR."\{content.getContentId()} - 입력실패");
+            }
+        }
+    }
+
+    public void removeInfo2(Integer contentId) {
+        mapper.deleteInfo2(contentId);
+    }
+
+    public void removeLodgingInfo2(Integer contentId) {
+        mapper.deleteLodgingInfo2Img(contentId);
+        mapper.deleteLodgingInfo2(contentId);
+    }
+
+    public void removeImage(Integer contentId) {
+        mapper.deleteImage(contentId);
     }
 }

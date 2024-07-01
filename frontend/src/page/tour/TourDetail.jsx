@@ -2,6 +2,7 @@ import {
   Box,
   Button,
   Collapse,
+  Divider,
   Flex,
   Heading,
   Image,
@@ -19,7 +20,6 @@ import {
   Th,
   Tr,
   useDisclosure,
-  Divider,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
@@ -93,7 +93,7 @@ export function TourDetail() {
       boxShadow="lg"
     >
       <Heading size="lg" mb={6} color="teal.700">
-        관광지 이름
+        {info.title}
       </Heading>
       <Box mb={6} boxShadow="md" borderRadius="lg" overflow="hidden">
         <Image
@@ -108,7 +108,7 @@ export function TourDetail() {
       </Box>
       <Box mb={6} p={4} borderWidth="1px" borderRadius="lg" boxShadow="sm">
         <Heading size="md" mb={4} color="teal.700">
-          설명
+          개요
         </Heading>
         <Box whiteSpace="pre-wrap" lineHeight="tall">
           <Collapse startingHeight={"6em"} in={showAll}>
@@ -222,18 +222,20 @@ export function TourDetail() {
                   <Td>
                     {item.infoName === "객실사진" &&
                     item.infoText.trim().length > 0 ? (
-                      item.infoText.split(",").map((imgUrl, index) => (
-                        <Image
-                          key={index}
-                          src={imgUrl.trim()}
-                          borderRadius="lg"
-                          boxShadow="md"
-                          maxHeight="200px"
-                          objectFit="cover"
-                          transition="transform 0.3s"
-                          _hover={{ transform: "scale(1.05)" }}
-                        />
-                      ))
+                      item.infoText
+                        .split(",")
+                        .map((imgUrl, index) => (
+                          <Image
+                            key={index}
+                            src={imgUrl.trim()}
+                            borderRadius="lg"
+                            boxShadow="md"
+                            maxHeight="200px"
+                            objectFit="cover"
+                            transition="transform 0.3s"
+                            _hover={{ transform: "scale(1.05)" }}
+                          />
+                        ))
                     ) : (
                       <Text
                         dangerouslySetInnerHTML={{ __html: item.infoText }}
