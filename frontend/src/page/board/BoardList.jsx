@@ -15,6 +15,8 @@ import {
   Thead,
   Tr,
   VStack,
+  Stack,
+  useColorModeValue,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -39,18 +41,23 @@ export function BoardList() {
     setBoardList(response.data);
   };
 
+  const bgColor = useColorModeValue("white", "gray.800");
+  const headingColor = useColorModeValue("teal.700", "teal.300");
+  const searchBgColor = useColorModeValue("gray.50", "gray.700");
+  const tableHeaderBg = useColorModeValue("gray.100", "gray.700");
+  // const buttonBgColor = useColorModeValue("teal.50", "teal.700");
+
   return (
-    <Box p={8} bg="gray.50" minH="100vh">
-      <Heading mb={8} textAlign="center" fontSize="2xl" fontWeight="bold">
-        리뷰
+    <Box p={8} bg={bgColor} minH="100vh">
+      <Heading mb={8} textAlign="center" fontSize="2xl" fontWeight="bold" color={headingColor}>
+        게시판
       </Heading>
-      <Box mb={8}>
-        <Flex justifyContent="space-between" alignItems="center">
-          <Flex>
+      <Box mb={8} bg={searchBgColor} p={4} borderRadius="md" boxShadow="sm">
+        <Flex justifyContent="space-between" alignItems="center" flexWrap="wrap">
+          <Stack direction={{ base: "column", md: "row" }} spacing={2} align="center">
             <Select
               value={searchType}
               onChange={(e) => setSearchType(e.target.value)}
-              mr={2}
               width="150px"
             >
               <option value="title">제목</option>
@@ -60,12 +67,12 @@ export function BoardList() {
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
               placeholder="검색어 입력"
-              mr={2}
+              width={{ base: "100%", md: "auto" }}
             />
             <Button onClick={handleSearch} colorScheme="blue">
               검색
             </Button>
-          </Flex>
+          </Stack>
           <Link to="/write">
             <Button colorScheme="green">글쓰기</Button>
           </Link>
@@ -73,7 +80,7 @@ export function BoardList() {
       </Box>
       <Box bg="white" p={6} boxShadow="lg" borderRadius="md">
         <Table variant="simple">
-          <Thead bg="gray.100">
+          <Thead bg={tableHeaderBg}>
             <Tr>
               <Th>#</Th>
               <Th>제목</Th>
@@ -89,7 +96,7 @@ export function BoardList() {
                   <Link to={`/board/${board.id}`}>{board.title}</Link>
                 </Td>
                 <Td>{board.writer}</Td>
-                <Td>{board.createdAt}</Td>
+                <Td>{board.inserted}</Td>
               </Tr>
             ))}
           </Tbody>
@@ -102,8 +109,9 @@ export function BoardList() {
               key={pageNumber}
               onClick={() => fetchBoardList(pageNumber)}
               m={1}
-              colorScheme="teal"
+              colorScheme="gray"
               variant="outline"
+              // bg={buttonBgColor}
             >
               {pageNumber}
             </Button>
@@ -113,4 +121,5 @@ export function BoardList() {
     </Box>
   );
 }
-//
+
+export default BoardList;

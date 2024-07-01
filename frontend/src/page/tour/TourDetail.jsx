@@ -249,7 +249,7 @@ export function TourDetail() {
       <Divider mb={6} />
       <Box mb={6}>
         <Heading size="md" mb={4} color="teal.700">
-          리뷰
+
         </Heading>
         <ReviewComponent contentId={info.id} />
       </Box>

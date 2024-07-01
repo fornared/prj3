@@ -75,10 +75,12 @@ export function Home() {
     </Box>
   );
 
-  const ReviewCard = ({ title, description }) => (
+  const ReviewCard = ({ title, description, id }) => (
     <Box
       borderWidth="1px"
       borderRadius="lg"
+      cursor={"pointer"}
+      onClick={() => navigate(`/board/${id}`)}
       overflow="hidden"
       _hover={{ shadow: "lg", transform: "scale(1.05)", transition: "0.3s" }}
       mx={5}
@@ -117,16 +119,22 @@ export function Home() {
   const events = [
     {
       id: 1,
-      title: "이벤트 제목 1",
-      description: "이벤트 내용 1",
-      imageUrl: "/image/event1.jpg",
+      title: "광화문 관람 패키지",
+      description: "판매가 : 550,000~",
+      imageUrl: "/image/event-image.png",
     },
     {
       id: 2,
-      title: "이벤트 제목 2",
-      description: "이벤트 내용 2",
-      imageUrl: "/image/event2.jpg",
+      title: "경주 여행 패키지",
+      description: "판매가 : 700,000",
+      imageUrl: "/image/event-image2.jpg",
     },
+    {
+      id: 3,
+      title: "광명동굴 패키지",
+      description: "판매가 : 400,000",
+      imageUrl: "/image/event-image3.jpg",
+    }
   ];
 
   const stories = [
@@ -216,7 +224,6 @@ export function Home() {
             ))}
           </SimpleGrid>
         </Box>
-
         <Divider />
 
         <Box>
@@ -224,12 +231,11 @@ export function Home() {
             최근 리뷰
           </Heading>
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-            <ReviewCard title="리뷰 1" description="리뷰 내용 1" />
-            <ReviewCard title="리뷰 2" description="리뷰 내용 2" />
-            <ReviewCard title="리뷰 3" description="리뷰 내용 3" />
+            <ReviewCard title="리뷰 1" description="리뷰 내용 1" id={1} />
+            <ReviewCard title="리뷰 2" description="리뷰 내용 2" id={2} />
+            <ReviewCard title="리뷰 3" description="리뷰 내용 3" id={3} />
           </SimpleGrid>
         </Box>
-
         <Divider />
 
         <Box>
@@ -289,7 +295,7 @@ export function Home() {
           <Heading as="h2" size="xl" mb={4} ml={5} color="teal.700">
             이벤트
           </Heading>
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+          <SimpleGrid columns={{ base: 1, md: 3 }} spacing={6}>
             {events.map((event) => (
               <EventCard
                 key={event.id}
@@ -300,19 +306,26 @@ export function Home() {
           </SimpleGrid>
 
           {selectedEvent && (
-            <Box mt={8} p={4} borderWidth="1px" borderRadius="lg" bg="white">
+            <Box mt={8} p={6} maxW="xl" mx="auto" borderWidth="1px" borderRadius="lg" bg="white" boxShadow="md">
               <Center mb={4}>
-                <Image src={selectedEvent.imageUrl} alt={selectedEvent.title} />
+                <Image
+                  src={selectedEvent.imageUrl}
+                  alt={selectedEvent.title}
+                  borderRadius="md"
+                  boxShadow="sm"
+                />
               </Center>
-              <Heading as="h3" size="lg" mb={2} color="teal.700">
-                {selectedEvent.title}
-              </Heading>
-              <Text mb={4} color="gray.600">
-                {selectedEvent.description}
-              </Text>
-              <Button onClick={() => setSelectedEvent(null)} colorScheme="teal">
-                뒤로가기
-              </Button>
+              <VStack spacing={4} align="start">
+                <Heading as="h3" size="lg" color="teal.700">
+                  {selectedEvent.title}
+                </Heading>
+                <Text fontSize="md" color="gray.600">
+                  {selectedEvent.description}
+                </Text>
+                <Button onClick={() => setSelectedEvent(null)} colorScheme="teal" alignSelf="center">
+                  뒤로가기
+                </Button>
+              </VStack>
             </Box>
           )}
         </Box>
