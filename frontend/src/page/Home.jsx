@@ -75,10 +75,12 @@ export function Home() {
     </Box>
   );
 
-  const ReviewCard = ({ title, description }) => (
+  const ReviewCard = ({ title, description, id }) => (
     <Box
       borderWidth="1px"
       borderRadius="lg"
+      cursor={"pointer"}
+      onClick={() => navigate(`/board/${id}`)}
       overflow="hidden"
       _hover={{ shadow: "lg", transform: "scale(1.05)", transition: "0.3s" }}
       mx={5}
@@ -216,7 +218,6 @@ export function Home() {
             ))}
           </SimpleGrid>
         </Box>
-
         <Divider />
 
         <Box>
@@ -224,12 +225,11 @@ export function Home() {
             최근 리뷰
           </Heading>
           <SimpleGrid columns={{ base: 1, md: 3 }} spacing={4}>
-            <ReviewCard title="리뷰 1" description="리뷰 내용 1" />
-            <ReviewCard title="리뷰 2" description="리뷰 내용 2" />
-            <ReviewCard title="리뷰 3" description="리뷰 내용 3" />
+            <ReviewCard title="리뷰 1" description="리뷰 내용 1" id={1} />
+            <ReviewCard title="리뷰 2" description="리뷰 내용 2" id={2} />
+            <ReviewCard title="리뷰 3" description="리뷰 내용 3" id={3} />
           </SimpleGrid>
         </Box>
-
         <Divider />
 
         <Box>
