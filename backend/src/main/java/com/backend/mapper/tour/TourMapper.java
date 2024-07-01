@@ -1,10 +1,7 @@
 package com.backend.mapper.tour;
 
 import com.backend.domain.tour.*;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -29,10 +26,10 @@ public interface TourMapper {
     int insertSigungu(Area area);
 
     @Select("""
-            SELECT *
+            SELECT sigungu_code
             FROM sigungu
             """)
-    Area selectSigungu();
+    List<Integer> selectSigungu();
 
     @Select("""
             SELECT cat1
@@ -432,7 +429,7 @@ public interface TourMapper {
             SELECT id
             FROM content
             ORDER BY id DESC
-            LIMIT 20
+            LIMIT 100
             """)
     List<Integer> selectAllContentId();
 
@@ -595,4 +592,111 @@ public interface TourMapper {
             FROM info1
             """)
     String selectMaxModified();
+
+    @Select("""
+            SELECT *
+            FROM info1
+            WHERE content_id=#{id}
+            """)
+    List<Content> selectInfo1ByContentId(Integer id);
+
+    @Delete("""
+            DELETE FROM info2
+            WHERE content_id=#{id}
+            """)
+    int deleteInfo2(Integer id);
+
+    @Delete("""
+            DELETE FROM info1
+            WHERE content_id=#{id}
+            """)
+    int deleteInfo1(Integer id);
+
+    @Delete("""
+            DELETE FROM spot_info
+            WHERE content_id=#{id}
+            """)
+    int deleteSpotInfo(Integer id);
+
+    @Delete("""
+            DELETE FROM culture_info
+            WHERE content_id=#{id}
+            """)
+    int deleteCultureInfo(Integer id);
+
+    @Delete("""
+            DELETE FROM festival_info
+            WHERE content_id=#{id}
+            """)
+    int deleteFestivalInfo(Integer id);
+
+    @Delete("""
+            DELETE FROM leports_info
+            WHERE content_id=#{id}
+            """)
+    int deleteLeportsInfo(Integer id);
+
+    @Delete("""
+            DELETE FROM lodging_info2_img
+            WHERE content_id=#{id}
+            """)
+    int deleteLodgingInfo2Img(Integer id);
+
+    @Delete("""
+            DELETE FROM lodging_info2
+            WHERE content_id=#{id}
+            """)
+    int deleteLodgingInfo2(Integer id);
+
+    @Delete("""
+            DELETE FROM lodging_info
+            WHERE content_id=#{id}
+            """)
+    int deleteLodgingInfo(Integer id);
+
+    @Delete("""
+            DELETE FROM shopping_info
+            WHERE content_id=#{id}
+            """)
+    int deleteShoppingInfo(Integer id);
+
+    @Delete("""
+            DELETE FROM food_info
+            WHERE content_id=#{id}
+            """)
+    int deleteFoodInfo(Integer id);
+
+    @Delete("""
+            DELETE FROM content
+            WHERE id=#{id}
+            """)
+    int deleteContent(Integer id);
+
+    @Update("""
+            UPDATE content
+            SET type_id=#{typeId}, cat3=#{cat3}, area_code=#{areaCode}, sigungu_code=#{sigunguCode}, title=#{title}
+            WHERE ex_content_id=#{contentId}
+            """)
+    int updateContent(Content content);
+
+    @Update("""
+            UPDATE info1
+            SET zipcode=#{zipcode}, address=#{address}, tel=#{tel}, homepage=#{homepage}, overview=#{overview},
+                first_image1=#{firstImage1}, first_image2=#{firstImage2}, mapx=#{mapx}, mapy=#{mapy}, created=#{created}, modified=#{modified}
+            WHERE cotentid=#{id}
+            """)
+    int updateInfo1(Content content);
+
+    @Select("""
+            SELECT id
+            FROM image
+            WHERE content_id=#{id}
+            """)
+    List<Image> selectImageByContentId(Integer id);
+
+    @Delete("""
+            DELETE FROM image
+            WHERE content_id=#{id}
+            """)
+    int deleteImage(Integer id);
 }
