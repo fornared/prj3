@@ -371,7 +371,7 @@ export function TourSearch() {
 
   async function handleAddContentInfo1() {
     try {
-      for (let pageNo = 3; pageNo > 0; pageNo--) {
+      for (let pageNo = 6; pageNo > 0; pageNo--) {
         setIsProcessing(true);
         await axios
           .get(

@@ -4,9 +4,11 @@ import {
   Divider,
   Heading,
   Input,
+  Spinner,
   Stack,
   Text,
   useColorModeValue,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import Calendar from "react-calendar";
@@ -18,13 +20,28 @@ export function ItineraryDate() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [name, setName] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const start =
     startDate !== null ? moment(startDate).format("YYYY-MM-DD") : "";
   const end = endDate !== null ? moment(endDate).format("YYYY-MM-DD") : "";
 
   const navigate = useNavigate();
+  const toast = useToast();
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast({
+        status: "warning",
+        description: "로그인 후 이용해주세요.",
+        position: "top",
+      });
+      navigate(`/login`);
+    }
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
     if (endDate) {
@@ -50,6 +67,10 @@ export function ItineraryDate() {
   const handleClickNext = () => {
     navigate(`/itinerary/detail`, { state: { startDate, endDate, name } });
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <Box

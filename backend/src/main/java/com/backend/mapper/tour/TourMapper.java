@@ -429,7 +429,6 @@ public interface TourMapper {
             SELECT id
             FROM content
             ORDER BY id DESC
-            LIMIT 100
             """)
     List<Integer> selectAllContentId();
 
