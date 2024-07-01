@@ -56,7 +56,7 @@ export function MemberList() {
           <Table variant="simple">
             <Thead bg="gray.100">
               <Tr>
-                <Th w={20}>#</Th>
+                <Th w={20}>ID</Th>
                 <Th>이메일</Th>
                 <Th>이름</Th>
                 <Th w={"150px"}>별명</Th>
