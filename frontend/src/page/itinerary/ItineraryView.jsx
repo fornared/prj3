@@ -640,12 +640,19 @@ export function ItineraryView() {
                     >
                       <Box
                         height={"190px"}
+                        width={"100%"}
                         display="flex"
                         alignItems="center"
                         justifyContent="center"
+                        overflow="hidden" // Ensure the image doesn't overflow its container
                       >
                         {item.firstImage1 ? (
-                          <Image objectFit={"cover"} src={item.firstImage1} />
+                          <Image
+                            objectFit="cover"
+                            width="100%"
+                            height="100%"
+                            src={item.firstImage1}
+                          />
                         ) : (
                           <Text>이미지 없음</Text>
                         )}
